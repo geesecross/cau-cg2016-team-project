@@ -1,4 +1,4 @@
-#include "Model.hpp"
+#include "Model.h"
 
 Model::Model() {
 	this->color = Vector4f({ 0, 0, 0, 0 });

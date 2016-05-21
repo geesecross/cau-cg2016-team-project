@@ -1,23 +1,10 @@
-#include "ShaderProgramBuilder.hpp"
+#include "ShaderProgramBuilder.h"
+#include <iostream>
 #include <vector>
 
-GLuint ShaderProgramBuilder::compileShaderFromFile(GLenum type, const std::string & fileName) {
-	std::cerr << "** Compiling Shader: " << fileName << std::endl;
-
-	std::ifstream is(fileName);
-	if (!is.is_open()) {
-		std::cerr << "** Failed to open shader code file" << std::endl;
-		return 0;
-	}
-
-	std::string shaderCode, line;
-	while (std::getline(is, line)) {
-		shaderCode += line + "\n";
-	}
-	is.close();
-
-	GLuint shaderId = glCreateShader(type);
-	const char * shaderCodePtr = shaderCode.c_str();
+GLuint ShaderProgramBuilder::compileShader(ShaderType shaderType, const std::string & code) {
+	GLuint shaderId = glCreateShader((GLenum) shaderType);
+	const char * shaderCodePtr = code.c_str();
 	glShaderSource(shaderId, 1, &shaderCodePtr, nullptr);
 	glCompileShader(shaderId);
 
@@ -39,37 +26,17 @@ GLuint ShaderProgramBuilder::compileShaderFromFile(GLenum type, const std::strin
 	return shaderId;
 }
 
-ShaderProgramBuilder &  ShaderProgramBuilder::setVertexShaderId(GLuint shaderId) {
-	if (0 != this->vertexShaderId) {
-		glDeleteShader(this->vertexShaderId);
-	}
-	this->vertexShaderId = shaderId;
-
-	return *this;
-}
-
-ShaderProgramBuilder & ShaderProgramBuilder::setFragmentShaderId(GLuint shaderId) {
-	if (0 != this->fragmentShaderId) {
-		glDeleteShader(this->fragmentShaderId);
-	}
-	this->fragmentShaderId = shaderId;
-
-	return *this;
-}
-
 ShaderProgramBuilder::~ShaderProgramBuilder() {
-	this->setVertexShaderId(0);
-	this->setFragmentShaderId(0);
+	for (GLuint shaderId : this->shaderIds) {
+		glDeleteShader(shaderId);
+	}
 }
 
-ShaderProgramBuilder & ShaderProgramBuilder::setVertexShaderFromFile(const std::string & fileName) {
-	this->setVertexShaderId(this->compileShaderFromFile(GL_VERTEX_SHADER, fileName));
-
-	return *this;
-}
-
-ShaderProgramBuilder & ShaderProgramBuilder::setFragmentShaderFromFile(const std::string & fileName) {
-	this->setFragmentShaderId(this->compileShaderFromFile(GL_FRAGMENT_SHADER, fileName));
+ShaderProgramBuilder & ShaderProgramBuilder::addShader(ShaderType shaderType, const std::string & code) {
+	GLuint id = this->compileShader(shaderType, code);
+	if (0 != id) {
+		this->shaderIds.push_back(id);
+	}
 
 	return *this;
 }
@@ -78,11 +45,8 @@ GLuint ShaderProgramBuilder::buildProgram() {
 	GLuint programId = glCreateProgram();
 
 	try {
-		if (0 != this->vertexShaderId) {
-			glAttachShader(programId, this->vertexShaderId);
-		}
-		if (0 != this->fragmentShaderId) {
-			glAttachShader(programId, this->fragmentShaderId);
+		for (GLuint shaderId : this->shaderIds) {
+			glAttachShader(programId, shaderId);
 		}
 
 		// link
@@ -106,6 +70,10 @@ GLuint ShaderProgramBuilder::buildProgram() {
 			glDeleteProgram(programId);
 			programId = 0;
 		}
+	}
+
+	for (GLuint shaderId : this->shaderIds) {
+		glDetachShader(programId, shaderId);
 	}
 
 	return programId;

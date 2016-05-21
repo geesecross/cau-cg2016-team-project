@@ -1,9 +1,10 @@
 #define _USE_MATH_DEFINES
 
-#include "ShaderProgramBuilder.hpp"
-#include "TransformBuilder.hpp"
+#include "ShaderProgramBuilder.h"
+#include "TransformBuilder.h"
+#include "FileHelper.h"
 
-#include "Camera.hpp"
+#include "Camera.h"
 
 #include <cmath>
 
@@ -17,8 +18,8 @@ GLuint Camera::vertexPositionId = 0;
 
 void Camera::initShader() {
 	Camera::transformProgramId = ShaderProgramBuilder()
-		.setVertexShaderFromFile("shaders/Transform.vert")
-		.setFragmentShaderFromFile("shaders/Color.frag")
+		.addShader(ShaderProgramBuilder::VertexShader, FileHelper::loadTextFile("shaders/Transform.vert"))
+		.addShader(ShaderProgramBuilder::FragmentShader, FileHelper::loadTextFile("shaders/Color.frag"))
 		.buildProgram();
 	Camera::modelMatrixId = glGetUniformLocation(transformProgramId, "modelMatrix");
 	Camera::viewMatrixId = glGetUniformLocation(transformProgramId, "viewMatrix");

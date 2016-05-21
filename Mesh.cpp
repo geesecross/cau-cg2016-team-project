@@ -1,4 +1,4 @@
-#include "Mesh.hpp"
+#include "Mesh.h"
 
 Mesh * Mesh::createFromDatFile(const std::string & filename) {
 	Mesh * model = new Mesh();

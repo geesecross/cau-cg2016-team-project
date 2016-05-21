@@ -3,8 +3,8 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 
-#include "Vector.hpp"
-#include "Model.hpp"
+#include "Vector.h"
+#include "Model.h"
 
 class Camera {
 private:

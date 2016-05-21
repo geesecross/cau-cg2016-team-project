@@ -4,9 +4,9 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-#include "TransformBuilder.hpp"
-#include "Model.hpp"
-#include "Camera.hpp"
+#include "TransformBuilder.h"
+#include "Model.h"
+#include "Camera.h"
 
 float timeDelta = 0;
 std::vector<Mesh *> meshes;

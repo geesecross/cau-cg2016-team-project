@@ -142,13 +142,14 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <ClCompile Include="ShaderProgramBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.hpp" />
-    <ClInclude Include="Matrix.hpp" />
-    <ClInclude Include="TransformBuilder.hpp" />
-    <ClInclude Include="Mesh.hpp" />
-    <ClInclude Include="Model.hpp" />
-    <ClInclude Include="ShaderProgramBuilder.hpp" />
-    <ClInclude Include="Vector.hpp" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="FileHelper.h" />
+    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="TransformBuilder.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="ShaderProgramBuilder.h" />
+    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\Color.frag" />

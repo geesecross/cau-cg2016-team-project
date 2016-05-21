@@ -1,6 +1,6 @@
 #pragma once
 #pragma once
-#include "Mesh.hpp"
+#include "Mesh.h"
 
 class Model {
 private:

@@ -3,8 +3,8 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 
-#include "Vector.hpp"
-#include "Matrix.hpp"
+#include "Vector.h"
+#include "Matrix.h"
 
 #include <fstream>
 #include <iostream>
