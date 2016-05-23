@@ -53,7 +53,7 @@ Camera::~Camera() {
 
 Camera & Camera::setScale(GLfloat scale) {
 	this->scale = scale;
-	this->updateViewMatrix();
+	this->updateProjectionMatrix();
 	return *this;
 }
 
@@ -120,11 +120,10 @@ void Camera::updateViewMatrix() {
 	gluLookAt(this->viewReferencePoint[0], this->viewReferencePoint[1], this->viewReferencePoint[2],
 		look[0], look[1], look[2],
 		this->viewUpVector[0], this->viewUpVector[1], this->viewUpVector[2]);
-	glScalef(this->scale, this->scale, this->scale);
 	//glGetFloatv(GL_MODELVIEW_MATRIX, this->viewMatrix.data());
 	
 	// for Vertex Shader
-	this->viewMatrix = TransformBuilder::buildScale<GLfloat>(this->scale) * rotationMat * translationMat;
+	this->viewMatrix = rotationMat * translationMat;
 }
 
 Camera & Camera::setViewMatrix(const Matrix4f& matrix) {
@@ -148,7 +147,8 @@ Camera & Camera::setOrthographicProjection() {
 	// for OpenGL 1.0 commands
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-width / 2 * aspectRatio, width / 2 * aspectRatio, -height / 2, height / 2, -depth / 2, depth / 2);
+	glOrtho(-width / 2 * aspectRatio, width / 2 * aspectRatio, -height / 2, height / 2, 0, -depth);
+	glScalef(this->scale, this->scale, this->scale);
 	//glGetFloatv(GL_PROJECTION_MATRIX, this->projectionMatrix.data());
 
 	// for Vertex Shader
@@ -156,9 +156,9 @@ Camera & Camera::setOrthographicProjection() {
 		2 / (width * aspectRatio), 0, 0, 0,
 		0, 2 / height, 0, 0,
 		0, 0, -2 / depth, 0,
-		0, 0, 0, 1
+		0, 0, -1, 1
 	});
-	this->projectionMatrix = orthographicMat;
+	this->projectionMatrix = orthographicMat * TransformBuilder::buildScale<GLfloat>(this->scale);
 
 	this->currentProjection = Projection::Orthographic;
 	return *this;
@@ -174,17 +174,18 @@ Camera & Camera::setPerspectiveProjection(float fieldOfView) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(this->fieldOfView, aspectRatio, zNear, zFar);
+	glScalef(this->scale, this->scale, this->scale);
 	//glGetFloatv(GL_PROJECTION_MATRIX, this->projectionMatrix.data());
 
 	// for Vertex Shader
-	float radianFov = this->fieldOfView * (float) M_PI / 180;
+	float radianFov = this->fieldOfView * (float)M_PI / 180;
 	Matrix4f perspectiveMat = Matrix4f({
 		1.0f / (std::tanf(radianFov / 2) * aspectRatio), 0, 0, 0,
 		0, 1.0f / std::tanf(radianFov / 2), 0, 0,
 		0, 0, (zNear + zFar) / (zNear - zFar), -1.f,
 		0, 0, (2 * zNear * zFar) / (zNear - zFar), 0
 	});
-	this->projectionMatrix = perspectiveMat;
+	this->projectionMatrix = perspectiveMat * TransformBuilder::buildScale<GLfloat>(this->scale);
 
 	this->currentProjection = Projection::Perspective;
 	return *this;
