@@ -1,19 +1,25 @@
 #include "Model.h"
+#include "FileHelper.h"
+#include "Shader.h"
 
-Model::Model() {
-	this->color = Vector4f({ 0, 0, 0, 0 });
+const ShaderProgram * Model::getDefaultShaderProgram() {
+	static ShaderProgram defaultShaderProgram(ShaderProgram::Recipe()
+		.addShader(Shader::compile(Shader::VertexShader, FileHelper::loadTextFile("shaders/Transform.glsl")))
+		.addShader(Shader::compile(Shader::VertexShader, FileHelper::loadTextFile("shaders/Null.vert")))
+		.addShader(Shader::compile(Shader::FragmentShader, FileHelper::loadTextFile("shaders/FillColor.frag")))
+	);
+	return &defaultShaderProgram;
 }
 
-const Vector3f Model::getWorldPosition() const {
-	Vector4f pos = this->transformMatrix * Vector4f({ 0, 0, 0, 1 });
-	return Vector3f({ pos[0], pos[1], pos[2] });
+Model::Model() {
+	this->color = { 0, 0, 0, 0 };
 }
 
 const Mesh * Model::getMesh() const {
 	return this->mesh;
 }
 
-Model & Model::setMesh(const Mesh * mesh) {
+Model & Model::bindMesh(const Mesh * mesh) {
 	this->mesh = mesh;
 	return *this;
 }
@@ -27,11 +33,26 @@ Model & Model::setColor(const Vector4f & color) {
 	return *this;
 }
 
-const Matrix4f& Model::getTransformMatrix() const {
-	return this->transformMatrix;
+const ShaderProgram * Model::getShaderProgram() const {
+	return this->shaderProgram;
 }
 
-Model & Model::setTransformMatrix(const Matrix4f& transformMatrix) {
-	this->transformMatrix = transformMatrix;
+Model & Model::bindShaderProgram(const ShaderProgram * shaderProgram) {
+	this->shaderProgram = nullptr == shaderProgram ? Model::getDefaultShaderProgram() : shaderProgram;
 	return *this;
+}
+
+void Model::draw(const ShaderProgram & shaderProgram) const {
+	if (nullptr == this->mesh) {
+		return;
+	}
+
+	GLint objectId;
+	if (0 <= (objectId = glGetUniformLocation(shaderProgram.getProgramId(), "in_color"))) {
+		glUniform4fv(objectId, 1, this->color.data());
+	}
+
+	shaderProgram.initInput();
+
+	this->mesh->draw(shaderProgram);
 }

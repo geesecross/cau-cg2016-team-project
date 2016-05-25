@@ -5,6 +5,7 @@
 
 #include "Vector.h"
 #include "Matrix.h"
+#include "ShaderProgram.h"
 
 #include <fstream>
 #include <iostream>
@@ -15,14 +16,19 @@ class Mesh {
 public:
 	typedef Vector3f Vertex;
 	struct Face {
-		GLushort indices[3];
+		GLuint indices[3];
 	};
 
 private:
 	std::vector<Vertex> vertices;
 	std::vector<Face> faces;
+	std::vector<Vector3f> faceNormals;
+	std::vector<Vector3f> vertexNormals;
+
+	Vector3f calcFaceNormal(const Face & face, size_t cornerIndex) const;
+	float calcCornerAngle(const Face & face, size_t cornerIndex) const;
 
 public:
-	static Mesh * createFromDatFile(const std::string & filename);
-	void draw(GLuint vertexAttribId) const;
+	static Mesh createFromDatFile(const std::string & filename);
+	void draw(const ShaderProgram & shaderProgram) const;
 };

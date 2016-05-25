@@ -1,24 +1,27 @@
 #pragma once
-#pragma once
 #include "Mesh.h"
+#include "ShaderProgram.h"
+#include "SpaceObject.h"
 
-class Model {
+class Model: public SpaceObject {
 private:
+	static const ShaderProgram * getDefaultShaderProgram();
+
 	const Mesh * mesh = nullptr;
+	const ShaderProgram * shaderProgram = getDefaultShaderProgram();
 	Vector4f color;
-	Matrix4f transformMatrix;
 
 public:
 	Model();
 
-	const Vector3f getWorldPosition() const;
-
 	const Mesh * getMesh() const;
-	Model & setMesh(const Mesh * mesh);
+	Model & bindMesh(const Mesh * mesh);
 
 	const Vector4f & getColor() const;
 	Model & setColor(const Vector4f & color);
 
-	const Matrix4f & getTransformMatrix() const;
-	Model & setTransformMatrix(const Matrix4f & transformMatrix);
+	const ShaderProgram * getShaderProgram() const;
+	Model & bindShaderProgram(const ShaderProgram * shaderProgram);
+
+	void draw(const ShaderProgram & shaderProgram) const;
 };

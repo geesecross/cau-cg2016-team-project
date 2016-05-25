@@ -1,30 +1,43 @@
 #pragma once
 #include "Vector.h"
 
-template<typename T, size_t N>
-class _Matrix {
+template<typename ElementT, size_t N>
+class Matrix {
+protected:
+	using ThisType = Matrix<ElementT, N>;
+
 public:
-	typedef T Type;
-	typedef _Vector<T, N> ColumnType;
-	typedef _Matrix<T, N> ThisType;
+	typedef Vector<ElementT, N> ColumnType;
+	typedef typename ColumnType::ElementType ElementType;
+	static const size_t columnSize = N;
 
 private:
 	ColumnType column[N];
 
 public:
-	_Matrix(const T k = 1) {
+	static const ThisType zeroMatrix() {
+		static ThisType mat(0);
+		return *this;
+	}
+
+	static const ThisType identity() {
+		static ThisType mat(1);
+		return *this;
+	}
+
+	Matrix(const ElementType k = 1) {
 		for (size_t i = 0; i < N; ++i) {
 			this->column[i][i] = k;
 		}
 	}
 
-	_Matrix(const ColumnType(&arr)[N]) {
+	Matrix(const ColumnType(&arr)[N]) {
 		for (size_t i = 0; i < N; ++i) {
 			this->column[i] = arr[i];
 		}
 	}
 
-	_Matrix(const T(&arr)[N * N]) {
+	Matrix(const ElementType(&arr)[N * N]) {
 		for (size_t x = 0; x < N; ++x) {
 			for (size_t y = 0; y < N; ++y) {
 				(*this)[x][y] = arr[x * N + y];
@@ -69,7 +82,7 @@ public:
 		return *this;
 	}
 
-	ThisType & operator *=(const T k) {
+	ThisType & operator *=(const ElementType k) {
 		for (size_t x = 0; x < N; ++x) {
 			this->column[x] *= k;
 		}
@@ -90,18 +103,25 @@ public:
 		return result;
 	}
 
-	const T * data() const {
+	const ThisType transposed() const {
+		ThisType result
+		for (size_t x = 0; x < N; ++x) {
+			for (size_t y = 0; y < N; ++y) {
+				result[x][y] = (*this)[y][x];
+			}
+		}
+		return result;
+	}
+
+	const ElementType * data() const {
 		return this->column[0].data();
 	}
 
-	T * data() {
+	ElementType * data() {
 		return this->column[0].data();
 	}
 
 	friend std::ostream & operator <<(std::ostream & os, const ThisType & matrix) {
-		/*for (size_t y = 0; y < N; ++y) {
-			os << matrix.row(y) << std::endl;
-		}*/
 		os << "[";
 		for (size_t y = 0; y < N - 1; ++y) {
 			for (size_t x = 0; x < N - 1; ++x) {
@@ -117,32 +137,5 @@ public:
 	}
 };
 
-template<typename T>
-class Matrix4 : public _Matrix<T, 4> {
-private:
-	static const size_t N = 4;
-
-public:
-	Matrix4(const T k = 1) {
-		*this = ThisType(k);
-	}
-
-	Matrix4(const ColumnType(&arr)[N]) {
-		*this = ThisType(arr);
-	}
-
-	Matrix4(const ColumnType & c0, const ColumnType & c1, const ColumnType & c2, const ColumnType & c3) {
-		*this = ThisType({ x, y, z });
-	}
-
-	Matrix4(const ThisType & matrix) {
-		*static_cast<ThisType *>(this) = matrix;
-	}
-
-	Matrix4(const T(&arr)[N * N]) {
-		*this = ThisType(arr);
-	}
-};
-
-typedef Matrix4<GLfloat> Matrix4f;
-typedef Matrix4<GLdouble> Matrix4d;
+using Matrix4f = Matrix<GLfloat, 4>;
+using Matrix4d = Matrix<GLdouble, 4>;

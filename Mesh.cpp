@@ -1,12 +1,27 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include "Mesh.h"
 
-Mesh * Mesh::createFromDatFile(const std::string & filename) {
-	Mesh * model = new Mesh();
+Vector3f Mesh::calcFaceNormal(const Face & face, size_t cornerIndex) const {
+	const Vector3f & v1 = this->vertices[face.indices[cornerIndex]];
+	const Vector3f & v2 = this->vertices[face.indices[(cornerIndex + 1) % 3]];
+	const Vector3f & v3 = this->vertices[face.indices[(cornerIndex + 2) % 3]];
+	return Vector3f((v2 - v1).normalized()).cross((v3 - v1).normalized());
+}
+
+float Mesh::calcCornerAngle(const Face & face, size_t cornerIndex) const
+{
+	return std::asinf(this->calcFaceNormal(face, cornerIndex).length()) / (float)(M_PI * 2);
+}
+
+Mesh Mesh::createFromDatFile(const std::string & filename) {
+	Mesh mesh;
 
 	std::ifstream is(filename);
 	std::string fieldName;
 
 	while (!is.eof()) {
+		fieldName = "";	// no more bug again
 		is >> fieldName;
 
 		if ("VERTEX" == fieldName) {
@@ -17,7 +32,8 @@ Mesh * Mesh::createFromDatFile(const std::string & filename) {
 			Vertex v;
 			for (size_t i = 0; i < count; ++i) {
 				is >> v[0] >> v[1] >> v[2];
-				model->vertices.push_back(v);
+				mesh.vertices.push_back(v);
+				mesh.vertexNormals.push_back(Vector3f());
 			}
 		}
 		else if ("FACE" == fieldName) {
@@ -28,19 +44,44 @@ Mesh * Mesh::createFromDatFile(const std::string & filename) {
 			Face f;
 			for (size_t i = 0; i < count; ++i) {
 				is >> f.indices[0] >> f.indices[1] >> f.indices[2];
-				model->faces.push_back(f);
+				mesh.faces.push_back(f);
+
+				Vector3f faceNormal = mesh.calcFaceNormal(f, 0).normalized();
+				mesh.faceNormals.push_back(faceNormal);
+				mesh.vertexNormals[f.indices[0]] += faceNormal * mesh.calcCornerAngle(f, 0);
+				mesh.vertexNormals[f.indices[1]] += faceNormal * mesh.calcCornerAngle(f, 1);
+				mesh.vertexNormals[f.indices[2]] += faceNormal * mesh.calcCornerAngle(f, 2);
 			}
 		}
 	}
 	is.close();
 
-	return model;
+	for (Vector3f & normal : mesh.vertexNormals) {
+		normal = normal.normalized();
+	}
+
+	return mesh;
 }
 
-void Mesh::draw(GLuint vertexAttribId) const {
-	glEnableVertexAttribArray(vertexAttribId); {
-		glVertexAttribPointer(vertexAttribId, 3, GL_FLOAT, GL_FALSE, 0, this->vertices.data());
-		glDrawElements(GL_TRIANGLES, this->faces.size() * 3, GL_UNSIGNED_SHORT, this->faces.data());
+void Mesh::draw(const ShaderProgram & shaderProgram) const {
+	GLint vertexPositionId = glGetAttribLocation(shaderProgram.getProgramId(), "in_vertexPosition");
+	GLint vertexNormalId = glGetAttribLocation(shaderProgram.getProgramId(), "in_vertexNormal");
+
+	if (0 <= vertexPositionId) {
+		glEnableVertexAttribArray(vertexPositionId);
+		glVertexAttribPointer(vertexPositionId, 3, GL_FLOAT, GL_FALSE, 0, this->vertices.data());
 	}
-	glDisableVertexAttribArray(vertexAttribId);
+	if (0 <= vertexNormalId) {
+		glEnableVertexAttribArray(vertexNormalId);
+		glVertexAttribPointer(vertexNormalId, 3, GL_FLOAT, GL_FALSE, 0, this->vertexNormals.data());
+	}
+	
+	glDrawElements(GL_TRIANGLES, this->faces.size() * 3, GL_UNSIGNED_INT, this->faces.data());
+
+	if (0 <= vertexPositionId) {
+		glDisableVertexAttribArray(vertexPositionId);
+	}
+	if (0 <= vertexNormalId) {
+		glDisableVertexAttribArray(vertexNormalId);
+	}
 }

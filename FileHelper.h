@@ -4,7 +4,7 @@
 #include <string>
 
 namespace FileHelper {
-	std::string loadTextFile(const std::string & fileName) {
+	static std::string loadTextFile(const std::string & fileName) {
 		std::ifstream is(fileName);
 		if (!is.is_open()) {
 			std::cerr << "** Failed to open text file: " << fileName << std::endl;

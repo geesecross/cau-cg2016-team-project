@@ -1,54 +1,20 @@
 #define _USE_MATH_DEFINES
 
-#include "ShaderProgramBuilder.h"
-#include "TransformBuilder.h"
+#include "Matrix.h"
+#include "TransformFactory.h"
 #include "FileHelper.h"
 
 #include "Camera.h"
 
 #include <cmath>
 
-unsigned int Camera::referenceCount = 0;
-GLuint Camera::transformProgramId = 0;
-GLuint Camera::modelMatrixId = 0;
-GLuint Camera::viewMatrixId = 0;
-GLuint Camera::projectionMatrixId = 0;
-GLuint Camera::fragColorId = 0;
-GLuint Camera::vertexPositionId = 0;
-
-void Camera::initShader() {
-	Camera::transformProgramId = ShaderProgramBuilder()
-		.addShader(ShaderProgramBuilder::VertexShader, FileHelper::loadTextFile("shaders/Transform.vert"))
-		.addShader(ShaderProgramBuilder::FragmentShader, FileHelper::loadTextFile("shaders/Color.frag"))
-		.buildProgram();
-	Camera::modelMatrixId = glGetUniformLocation(transformProgramId, "modelMatrix");
-	Camera::viewMatrixId = glGetUniformLocation(transformProgramId, "viewMatrix");
-	Camera::projectionMatrixId = glGetUniformLocation(transformProgramId, "projectionMatrix");
-	Camera::fragColorId = glGetUniformLocation(transformProgramId, "fragColor");
-	Camera::vertexPositionId = glGetAttribLocation(transformProgramId, "vertexPosition");
-}
-
-void Camera::uninitShader() {
-	glDeleteProgram(Camera::transformProgramId);
-}
-
 Camera::Camera() {
-	if (1 == ++Camera::referenceCount) {
-		Camera::initShader();
-	}
-
 	this->viewPlaneNormal = { 0, 0, 1 };
 	this->viewUpVector = { 0, 1, 0 };
 	this->viewport.width = 300;
 	this->viewport.height = 300;
 	this->setOrthographicProjection();
 	this->updateViewMatrix();
-}
-
-Camera::~Camera() {
-	if (0 == --Camera::referenceCount) {
-		Camera::uninitShader();
-	}
 }
 
 Camera & Camera::setScale(GLfloat scale) {
@@ -67,6 +33,10 @@ Camera & Camera::setViewReferencePoint(const Vector3f & point){
 	return *this;
 }
 
+const Vector3f & Camera::getViewPlaneNormal() const {
+	return this->viewPlaneNormal;
+}
+
 Camera & Camera::setViewPlaneNormal(const Vector3f & viewPlaneNormal) {
 	this->viewPlaneNormal = viewPlaneNormal.normalized();
 	this->updateViewMatrix();
@@ -82,8 +52,8 @@ Camera & Camera::move(const Vector3f & vector) {
 }
 
 Camera & Camera::rotate(const float radian) {
-	Matrix4f mat = TransformBuilder::buildRotation(radian, TransformBuilder::Y);
-	Vector4f n = mat * (Vector4f)this->viewPlaneNormal;
+	Matrix4f mat = TransformFactory::rotation(radian, TransformFactory::Y);
+	Vector4f n = mat * Vector4f(this->viewPlaneNormal, 1);
 	this->viewPlaneNormal = Vector3f({ n[0], n[1], n[2] }).normalized();
 	this->updateViewMatrix();
 
@@ -158,10 +128,14 @@ Camera & Camera::setOrthographicProjection() {
 		0, 0, -2 / depth, 0,
 		0, 0, -1, 1
 	});
-	this->projectionMatrix = orthographicMat * TransformBuilder::buildScale<GLfloat>(this->scale);
+	this->projectionMatrix = orthographicMat * TransformFactory::scale<GLfloat>(this->scale);
 
 	this->currentProjection = Projection::Orthographic;
 	return *this;
+}
+
+Camera & Camera::setPerspectiveProjection() {
+	return this->setPerspectiveProjection(this->fieldOfView);
 }
 
 Camera & Camera::setPerspectiveProjection(float fieldOfView) {
@@ -178,14 +152,14 @@ Camera & Camera::setPerspectiveProjection(float fieldOfView) {
 	//glGetFloatv(GL_PROJECTION_MATRIX, this->projectionMatrix.data());
 
 	// for Vertex Shader
-	float radianFov = this->fieldOfView * (float)M_PI / 180;
+	float radianFov = this->fieldOfView * (float) M_PI / 180;
 	Matrix4f perspectiveMat = Matrix4f({
 		1.0f / (std::tanf(radianFov / 2) * aspectRatio), 0, 0, 0,
 		0, 1.0f / std::tanf(radianFov / 2), 0, 0,
 		0, 0, (zNear + zFar) / (zNear - zFar), -1.f,
 		0, 0, (2 * zNear * zFar) / (zNear - zFar), 0
 	});
-	this->projectionMatrix = perspectiveMat * TransformBuilder::buildScale<GLfloat>(this->scale);
+	this->projectionMatrix = perspectiveMat * TransformFactory::scale<GLfloat>(this->scale);
 
 	this->currentProjection = Projection::Perspective;
 	return *this;
@@ -217,21 +191,28 @@ double Camera::getAspectRatio() const {
 	return this->viewport.width / (double) this->viewport.height;
 }
 
-void Camera::render(const Model & model) {
-	if (nullptr == model.getMesh()) {
+void Camera::render(Model & model) {
+	const ShaderProgram * shaderProgram;
+	if (nullptr == (shaderProgram = model.getShaderProgram())) {
 		return;
 	}
 
-	glUseProgram(Camera::transformProgramId);	// 셰이더 활성화
+	glUseProgram(shaderProgram->getProgramId());	// 셰이더 활성화
 
 	// 셰이더 파라미터 설정
-	glUniformMatrix4fv(Camera::modelMatrixId, 1, GL_FALSE, model.getTransformMatrix().data());
-	glUniformMatrix4fv(Camera::viewMatrixId, 1, GL_FALSE, this->viewMatrix.data());
-	glUniformMatrix4fv(Camera::projectionMatrixId, 1, GL_FALSE, this->projectionMatrix.data());
-	glUniform4fv(Camera::fragColorId, 1, model.getColor().data());
+	GLint objectId;
+	if (0 <= (objectId = glGetUniformLocation(shaderProgram->getProgramId(), "in_modelMatrix"))) {
+		glUniformMatrix4fv(objectId, 1, GL_FALSE, model.getTransformMatrix().data());
+	}
+	if (0 <= (objectId = glGetUniformLocation(shaderProgram->getProgramId(), "in_viewMatrix"))) {
+		glUniformMatrix4fv(objectId, 1, GL_FALSE, this->viewMatrix.data());
+	}
+	if (0 <= (objectId = glGetUniformLocation(shaderProgram->getProgramId(), "in_projectionMatrix"))) {
+		glUniformMatrix4fv(objectId, 1, GL_FALSE, this->projectionMatrix.data());
+	}
 
 	// 그리기
-	model.getMesh()->draw(vertexPositionId);
+	model.draw(*shaderProgram);
 
 	// 셰이더 비활성화
 	glUseProgram(0);
