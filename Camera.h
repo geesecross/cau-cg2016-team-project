@@ -4,7 +4,7 @@
 #include <GL/glut.h>
 
 #include "Vector.h"
-#include "Model.h"
+#include "Actor.h"
 #include "Shader.h"
 
 class Camera {
@@ -51,4 +51,5 @@ public:
 	double getAspectRatio() const;
 
 	void render(Model & model);
+	void render(Actor & actor, bool renderChildren = false);
 };

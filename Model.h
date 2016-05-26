@@ -1,9 +1,9 @@
 #pragma once
 #include "Mesh.h"
 #include "ShaderProgram.h"
-#include "SpaceObject.h"
+#include "Actor.h"
 
-class Model: public SpaceObject {
+class Model: public Actor::Component {
 private:
 	static const ShaderProgram * getDefaultShaderProgram();
 

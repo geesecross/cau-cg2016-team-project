@@ -135,37 +135,51 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="Block.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CommandQueue.cpp" />
     <ClCompile Include="Exception.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="Rotation.cpp" />
+    <ClCompile Include="RubiksCube.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
-    <ClCompile Include="ShaderProgramBuilder.cpp" />
     <ClCompile Include="SimpleIlluminationModelShaderProgram.cpp" />
-    <ClCompile Include="SpaceObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Actor.h" />
+    <ClInclude Include="Block.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CommandQueue.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="FileHelper.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Rotation.h" />
+    <ClInclude Include="RubiksCube.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="SimpleIlluminationModelShaderProgram.h" />
-    <ClInclude Include="SpaceObject.h" />
-    <ClInclude Include="TransformBuilder.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="ShaderProgramBuilder.h" />
     <ClInclude Include="TransformFactory.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\Color.frag" />
-    <None Include="shaders\Transform.vert" />
+    <None Include="shaders\FillColor.frag" />
+    <None Include="shaders\Gouraud.frag" />
+    <None Include="shaders\Gouraud.vert" />
+    <None Include="shaders\Null.vert" />
+    <None Include="shaders\Phong.frag" />
+    <None Include="shaders\Phong.vert" />
+    <None Include="shaders\SimpleIlluminationModel.glsl" />
+    <None Include="shaders\Transform.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

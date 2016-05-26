@@ -3,6 +3,7 @@
 #include "Matrix.h"
 #include "TransformFactory.h"
 #include "FileHelper.h"
+#include "Model.h"
 
 #include "Camera.h"
 
@@ -39,6 +40,7 @@ const Vector3f & Camera::getViewPlaneNormal() const {
 
 Camera & Camera::setViewPlaneNormal(const Vector3f & viewPlaneNormal) {
 	this->viewPlaneNormal = viewPlaneNormal.normalized();
+	this->viewUpVector = (this->viewUpVector - this->viewPlaneNormal * this->viewUpVector.dot(this->viewPlaneNormal)).normalized();
 	this->updateViewMatrix();
 	return *this;
 }
@@ -202,7 +204,7 @@ void Camera::render(Model & model) {
 	// 셰이더 파라미터 설정
 	GLint objectId;
 	if (0 <= (objectId = glGetUniformLocation(shaderProgram->getProgramId(), "in_modelMatrix"))) {
-		glUniformMatrix4fv(objectId, 1, GL_FALSE, model.getTransformMatrix().data());
+		glUniformMatrix4fv(objectId, 1, GL_FALSE, model.getOwner().getWorldMatrix().data());
 	}
 	if (0 <= (objectId = glGetUniformLocation(shaderProgram->getProgramId(), "in_viewMatrix"))) {
 		glUniformMatrix4fv(objectId, 1, GL_FALSE, this->viewMatrix.data());
@@ -216,4 +218,20 @@ void Camera::render(Model & model) {
 
 	// 셰이더 비활성화
 	glUseProgram(0);
+}
+
+void Camera::render(Actor & actor, bool renderChildren) {
+	// render all model within actor
+	std::vector<std::shared_ptr<Model>> models;
+	if (!(models = actor.getComponents<Model>()).empty()) {
+		for (std::shared_ptr<Model> & model : models) {
+			this->render(*model);
+		}
+	}
+
+	if (renderChildren) {
+		for (std::shared_ptr<Actor> & child : actor) {
+			this->render(*child, renderChildren);
+		}
+	}
 }

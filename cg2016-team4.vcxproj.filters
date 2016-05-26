@@ -15,14 +15,11 @@
     </Filter>
     <Filter Include="shaders">
       <UniqueIdentifier>{e5fd42e8-ac1c-4260-b1bf-b553b3a264ed}</UniqueIdentifier>
-      <Extensions>vert;frag;</Extensions>
+      <Extensions>vert;frag;glsl;</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderProgramBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
@@ -46,7 +43,22 @@
     <ClCompile Include="SimpleIlluminationModelShaderProgram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SpaceObject.cpp">
+    <ClCompile Include="CommandQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Block.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RubiksCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -64,12 +76,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderProgramBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TransformBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Vector.h">
@@ -90,18 +96,54 @@
     <ClInclude Include="SimpleIlluminationModelShaderProgram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SpaceObject.h">
+    <ClInclude Include="TransformFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TransformFactory.h">
+    <ClInclude Include="CommandQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Block.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Actor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RubiksCube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\Transform.vert">
+    <None Include="shaders\Color.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="shaders\Color.frag">
+    <None Include="shaders\FillColor.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\Gouraud.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\Gouraud.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\Null.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\Phong.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\Phong.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\SimpleIlluminationModel.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\Transform.glsl">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

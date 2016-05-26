@@ -12,7 +12,7 @@ const ShaderProgram * Model::getDefaultShaderProgram() {
 }
 
 Model::Model() {
-	this->color = { 0, 0, 0, 0 };
+	this->color = { 1, 1, 1, 1 };
 }
 
 const Mesh * Model::getMesh() const {

@@ -26,6 +26,15 @@ namespace TransformFactory {
 		return mat;
 	}
 
+	template<typename T> Matrix<T, 4> scale(const Vector<T, 3> xyz) {
+		Matrix<T, 4> mat;
+		mat[0][0] = xyz[0];
+		mat[1][1] = xyz[1];
+		mat[2][2] = xyz[2];
+
+		return mat;
+	}
+
 	template<typename T> Matrix<T, 4> rotation(const T radian, const Axis axis) {
 		Matrix<T, 4> mat;
 		switch (axis) {
