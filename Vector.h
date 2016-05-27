@@ -96,6 +96,15 @@ public:
 		return *this;
 	}
 
+	// elementwise multiplication
+	ThisType & operator *=(const ThisType & rhs) {
+		for (size_t i = 0; i < N; ++i) {
+			this->e[i] *= rhs.e[i];
+		}
+
+		return *this;
+	}
+
 	ThisType & operator /=(const ElementT k) {
 		for (size_t i = 0; i < N; ++i) {
 			this->e[i] /= k;
@@ -128,6 +137,13 @@ public:
 		return result;
 	}
 
+	// elementwise multiplication
+	const ThisType & operator *(const ThisType & rhs) const {
+		ThisType result = *this;
+		result *= rhs;
+		return result;
+	}
+
 	const ThisType operator /(const ElementT k) const {
 		ThisType result = *this;
 		result /= k;
@@ -152,6 +168,15 @@ public:
 
 	const ThisType normalized() const {
 		return *this / this->length();
+	}
+
+	const ThisType absolute() const {
+		ThisType result;
+		for (size_t i = 0; i < N; ++i) {
+			result.e[i] = this->e[i] * (this->e[i] >= 0 ? 1 : -1);
+		}
+
+		return result;
 	}
 
 	const ElementT * data() const {

@@ -1,7 +1,7 @@
 #define _USE_MATH_DEFINES
 
 #include "Matrix.h"
-#include "TransformFactory.h"
+#include "MatrixFactory.h"
 #include "FileHelper.h"
 #include "Model.h"
 
@@ -54,7 +54,7 @@ Camera & Camera::move(const Vector3f & vector) {
 }
 
 Camera & Camera::rotate(const float radian) {
-	Matrix4f mat = TransformFactory::rotation(radian, TransformFactory::Y);
+	Matrix4f mat = MatrixFactory::rotation(radian, MatrixFactory::Y);
 	Vector4f n = mat * Vector4f(this->viewPlaneNormal, 1);
 	this->viewPlaneNormal = Vector3f({ n[0], n[1], n[2] }).normalized();
 	this->updateViewMatrix();
@@ -130,7 +130,7 @@ Camera & Camera::setOrthographicProjection() {
 		0, 0, -2 / depth, 0,
 		0, 0, -1, 1
 	});
-	this->projectionMatrix = orthographicMat * TransformFactory::scale<GLfloat>(this->scale);
+	this->projectionMatrix = orthographicMat * MatrixFactory::scale<GLfloat>(this->scale);
 
 	this->currentProjection = Projection::Orthographic;
 	return *this;
@@ -161,7 +161,7 @@ Camera & Camera::setPerspectiveProjection(float fieldOfView) {
 		0, 0, (zNear + zFar) / (zNear - zFar), -1.f,
 		0, 0, (2 * zNear * zFar) / (zNear - zFar), 0
 	});
-	this->projectionMatrix = perspectiveMat * TransformFactory::scale<GLfloat>(this->scale);
+	this->projectionMatrix = perspectiveMat * MatrixFactory::scale<GLfloat>(this->scale);
 
 	this->currentProjection = Projection::Perspective;
 	return *this;

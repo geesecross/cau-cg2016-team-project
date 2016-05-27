@@ -1,7 +1,7 @@
 #pragma once
 #include "Matrix.h"
 
-namespace TransformFactory {
+namespace MatrixFactory {
 	enum Axis {
 		X,
 		Y,

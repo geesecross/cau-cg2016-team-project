@@ -1,6 +1,5 @@
 #pragma once
-#include "Matrix.h"
-#include "Rotation.h"
+#include "Transform.h"
 #include <vector>
 #include <list>
 #include <memory>
@@ -22,8 +21,7 @@ private:
 	Actor * parent = nullptr;
 	TChildren children;
 	std::list<std::shared_ptr<Component>> components;
-	
-	Matrix4f transformMatrix;
+	Transform transform;
 
 public:
 	// parent operation
@@ -40,22 +38,15 @@ public:
 	ConstIterator end() const;
 
 	// transform modifying operation
-	Actor & moveOrigin(const Vector3f & delta);
-	Actor & rotate(const Rotation & rotation);
-	Actor & scale(const Vector3f & scale);
-	Actor & resetTransform();
+	Actor & setTransform(const Transform & transform);
+	Transform & getTransform();
+	const Transform & getTransform() const;
 
 	// world transform operations
 	const Matrix4f getWorldMatrix() const;
 	const Vector3f transformPointToWorld(const Vector3f & point) const;
 	const Vector3f transformDirectionToWorld(const Vector3f & direction) const;
 	const Vector3f getWorldPosition() const;
-
-	// local transform operations
-	const Matrix4f & getTransformMatrix() const;
-	Actor & setTransformMatrix(const Matrix4f & matrix);
-	const Vector3f transformPoint(const Vector3f & point) const;
-	const Vector3f transformDirection(const Vector3f & direction) const;
 
 	// component operations
 	template<typename TComponent, typename... TArgs>

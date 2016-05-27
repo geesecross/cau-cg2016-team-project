@@ -1,6 +1,6 @@
 #include "Actor.h"
 
-#include "TransformFactory.h"
+#include "MatrixFactory.h"
 
 Actor & Actor::getParent() {
 	if (this->isRoot()) {
@@ -37,32 +37,25 @@ Actor::ConstIterator Actor::end() const {
 	return this->children.end();
 }
 
-Actor & Actor::moveOrigin(const Vector3f & delta) {
-	this->transformMatrix = TransformFactory::translation(delta) * this->transformMatrix;
+Actor & Actor::setTransform(const Transform & transform) {
+	this->transform = transform;
 	return *this;
 }
 
-Actor & Actor::rotate(const Rotation & rotation) {
-	this->transformMatrix = rotation.getRotationMatrix() * this->transformMatrix;
-	return *this;
+Transform & Actor::getTransform() {
+	return this->transform;
 }
 
-Actor & Actor::scale(const Vector3f & scale) {
-	this->transformMatrix = TransformFactory::scale(scale) * this->transformMatrix;
-	return *this;
-}
-
-Actor & Actor::resetTransform() {
-	this->transformMatrix = Matrix4f::identity();
-	return *this;
+const Transform & Actor::getTransform() const {
+	return this->transform;
 }
 
 const Matrix4f Actor::getWorldMatrix() const {
 	if (this->isRoot()) {
-		return this->getTransformMatrix();
+		return this->transform.getMatrix();
 	}
 
-	return this->parent->getWorldMatrix() * this->getTransformMatrix();
+	return this->parent->getWorldMatrix() * this->transform.getMatrix();
 }
 
 const Vector3f Actor::transformPointToWorld(const Vector3f & point) const {
@@ -75,23 +68,6 @@ const Vector3f Actor::transformDirectionToWorld(const Vector3f & direction) cons
 
 const Vector3f Actor::getWorldPosition() const {
 	return this->transformPointToWorld(Vector3f::zeroVector());
-}
-
-const Matrix4f& Actor::getTransformMatrix() const {
-	return this->transformMatrix;
-}
-
-Actor & Actor::setTransformMatrix(const Matrix4f & matrix) {
-	this->transformMatrix = matrix;
-	return *this;
-}
-
-const Vector3f Actor::transformPoint(const Vector3f & point) const {
-	return (this->transformMatrix * Vector4f(point, 1)).xyz();
-}
-
-const Vector3f Actor::transformDirection(const Vector3f & direction) const {
-	return (this->transformMatrix * Vector4f(direction, 0)).xyz();
 }
 
 Actor::Component::~Component() {

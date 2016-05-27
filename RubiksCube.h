@@ -24,7 +24,8 @@ public:
 		Cursor & move(const Vector2f & vector);
 		Vector3f getSelected();
 		Axis getAxis();
-		void twist(bool clockWise = false);
+		void twist(bool clockwise);
+		void rotateAxis(bool clockwise);
 	};
 private:
 	const size_t size;
@@ -33,13 +34,15 @@ private:
 	CommandQueue commandQueue;
 
 public:
-	std::vector<std::vector<std::vector<std::weak_ptr<Block>>>> blocks;
+	typedef std::vector<std::vector<std::vector<std::weak_ptr<Block>>>> BlockArray;
+	BlockArray blocks;
 
 	RubiksCube(const size_t size, std::weak_ptr<AnimationManager> animationManager);
 
 	std::shared_ptr<Cursor> getCursor();
 
-	void twist(const size_t index, const Axis axis);
+	void twist(const size_t index, const Rotation & rotation);
+	size_t getSize() const;
 };
 
 class TwistAnimation : public Animation {
@@ -47,10 +50,10 @@ private:
 	int count = 0;
 	RubiksCube & cube;
 	size_t index;
-	RubiksCube::Axis axis;
+	Rotation rotation;
 
 public:
-	TwistAnimation(RubiksCube & cube, size_t index, RubiksCube::Axis axis);
+	TwistAnimation(RubiksCube & cube, size_t index, const Rotation & rotation);
 	virtual bool stepFrame(const double timeElpased, const double timeDelta);
 	virtual void onFinished();
 };

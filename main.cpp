@@ -8,7 +8,7 @@
 #include "FileHelper.h"
 #include "ShaderProgram.h"
 #include "SimpleIlluminationModelShaderProgram.h"
-#include "TransformFactory.h"
+#include "MatrixFactory.h"
 #include "Model.h"
 #include "Camera.h"
 #include "RubiksCube.h"
@@ -29,7 +29,7 @@ float degree2radian(float degree) {
 }
 
 void initCameraVectors() {
-	camera->setViewReferencePoint({ 0, 0, 5 })
+	camera->setViewReferencePoint({ 0, 0, 10 })
 		.setViewPlaneNormal({ 0, 0, 1 });
 }
 
@@ -49,7 +49,7 @@ bool init() {
 	camera->setPerspectiveProjection(50);
 	initCameraVectors();
 
-	rubiksCube.reset(new RubiksCube(3, animationManager));
+	rubiksCube.reset(new RubiksCube(4, animationManager));
 
 	return true;
 }
@@ -177,9 +177,13 @@ void onKeyboard(unsigned char ascii, int x, int y) {
 		std::cout << rubiksCube->getCursor()->getSelected() << std::endl;
 		break;
 	case 'z':
-		//rubiksCube->twist();
+		rubiksCube->getCursor()->twist(true);
 		break;
 	case 'x':
+		rubiksCube->getCursor()->twist(false);
+		break;
+	case 'c':
+		rubiksCube->getCursor()->rotateAxis(true);
 		break;
 
 	case 13:
