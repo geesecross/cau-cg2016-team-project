@@ -283,6 +283,8 @@ public:
 	}
 };
 
+using Vector2f = Vector<GLfloat, 2>;
+using Vector2d = Vector<GLdouble, 2>;
 using Vector3f = Vector<GLfloat, 3>;
 using Vector3d = Vector<GLdouble, 3>;
 using Vector4f = Vector<GLfloat, 4>;

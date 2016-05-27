@@ -52,6 +52,11 @@ Actor & Actor::scale(const Vector3f & scale) {
 	return *this;
 }
 
+Actor & Actor::resetTransform() {
+	this->transformMatrix = Matrix4f::identity();
+	return *this;
+}
+
 const Matrix4f Actor::getWorldMatrix() const {
 	if (this->isRoot()) {
 		return this->getTransformMatrix();

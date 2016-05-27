@@ -1,24 +1,17 @@
 #pragma once
 #include <deque>
+#include <memory>
 #include <functional>
 
-class Command {
-private:
-	std::function<void()> func;
-public:
-	Command(std::function<void()> & func) {
-		this->func = func;
-	}
-public:
-	void execute() const;
-};
-
 class CommandQueue {
+public:
+	typedef std::function<bool()> Command;
 private:
-	std::deque<Command> queue;
+	typedef std::deque<Command> Queue;
+	Queue queue;
 
 public:
-	CommandQueue & push(Command & command);
-	CommandQueue & step();
-	CommandQueue & executeAll();
+	bool empty() const;
+	CommandQueue & push(Command && command);
+	CommandQueue & execute();
 };

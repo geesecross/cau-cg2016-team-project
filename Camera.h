@@ -51,5 +51,5 @@ public:
 	double getAspectRatio() const;
 
 	void render(Model & model);
-	void render(Actor & actor, bool renderChildren = false);
+	void render(Actor & actor, bool recursive = true);
 };

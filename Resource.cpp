@@ -12,6 +12,7 @@ namespace Resource {
 			.enableLightVectorAsPosition(true)
 		);
 		meshes[Plane] = new Mesh(Mesh::createFromDatFile("models/plane.dat"));
+		meshes[Arrow] = new Mesh(Mesh::createFromDatFile("models/arrow.dat"));
 	}
 
 	void uninit() {

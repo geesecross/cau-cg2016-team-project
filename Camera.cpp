@@ -220,7 +220,7 @@ void Camera::render(Model & model) {
 	glUseProgram(0);
 }
 
-void Camera::render(Actor & actor, bool renderChildren) {
+void Camera::render(Actor & actor, bool recursive) {
 	// render all model within actor
 	std::vector<std::shared_ptr<Model>> models;
 	if (!(models = actor.getComponents<Model>()).empty()) {
@@ -229,9 +229,9 @@ void Camera::render(Actor & actor, bool renderChildren) {
 		}
 	}
 
-	if (renderChildren) {
+	if (recursive) {
 		for (std::shared_ptr<Actor> & child : actor) {
-			this->render(*child, renderChildren);
+			this->render(*child, recursive);
 		}
 	}
 }

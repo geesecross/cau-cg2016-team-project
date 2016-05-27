@@ -43,6 +43,7 @@ public:
 	Actor & moveOrigin(const Vector3f & delta);
 	Actor & rotate(const Rotation & rotation);
 	Actor & scale(const Vector3f & scale);
+	Actor & resetTransform();
 
 	// world transform operations
 	const Matrix4f getWorldMatrix() const;

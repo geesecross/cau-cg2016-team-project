@@ -12,6 +12,7 @@
 #include "Model.h"
 #include "Camera.h"
 #include "RubiksCube.h"
+#include "Animation.h"
 
 #include "Resource.h"
 
@@ -20,6 +21,7 @@ size_t modelIndex = 0;
 size_t lightMode = 0;
 std::shared_ptr<Camera> camera;
 std::shared_ptr<RubiksCube> rubiksCube;
+std::shared_ptr<AnimationManager> animationManager;
 bool debugMode = false;
 
 float degree2radian(float degree) {
@@ -27,8 +29,8 @@ float degree2radian(float degree) {
 }
 
 void initCameraVectors() {
-	camera->setViewReferencePoint({ 10, 10, 10 })
-		.setViewPlaneNormal({ 1, 1, 1 });
+	camera->setViewReferencePoint({ 0, 0, 5 })
+		.setViewPlaneNormal({ 0, 0, 1 });
 }
 
 bool init() {
@@ -42,12 +44,12 @@ bool init() {
 	glCullFace(GL_BACK);
 
 	Resource::init();
-
+	animationManager.reset(new AnimationManager());
 	camera.reset(new Camera());
 	camera->setPerspectiveProjection(50);
 	initCameraVectors();
 
-	rubiksCube.reset(new RubiksCube(3));
+	rubiksCube.reset(new RubiksCube(3, animationManager));
 
 	return true;
 }
@@ -63,6 +65,7 @@ void render() {
 	phase += timeDelta;
 
 	try {
+		animationManager->step(timeDelta);
 		/*Actor actor;
 		actor.createComponent<Model>()->bindMesh(Resource::meshes[Resource::Plane])
 			.setColor({ 1, 1, 1, 1 });
@@ -158,17 +161,25 @@ void onKeyboard(unsigned char ascii, int x, int y) {
 		std::cout << "VPN: " << camera->getViewPlaneNormal() << std::endl;
 		break;
 
-	case 'j':
-		rubiksCube->twist(0, axis);
+	case 'i':
+		rubiksCube->getCursor()->move(Vector2f({ 0, 1 }) * 1);
 		break;
 	case 'k':
-		rubiksCube->twist(1, axis);
+		rubiksCube->getCursor()->move(Vector2f({ 0, 1 }) * -1);
+		break;
+	case 'j':
+		rubiksCube->getCursor()->move(Vector2f({ 1, 0 }) * -1);
 		break;
 	case 'l':
-		rubiksCube->twist(2, axis);
+		rubiksCube->getCursor()->move(Vector2f({ 1, 0 }) * 1);
 		break;
 	case ';':
-		axis = (RubiksCube::Axis)((((int)axis) + 1) % 3);
+		std::cout << rubiksCube->getCursor()->getSelected() << std::endl;
+		break;
+	case 'z':
+		//rubiksCube->twist();
+		break;
+	case 'x':
 		break;
 
 	case 13:

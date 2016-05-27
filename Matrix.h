@@ -17,12 +17,12 @@ private:
 public:
 	static const ThisType zeroMatrix() {
 		static ThisType mat(0);
-		return *this;
+		return mat;
 	}
 
 	static const ThisType identity() {
 		static ThisType mat(1);
-		return *this;
+		return mat;
 	}
 
 	Matrix(const ElementType k = 1) {
