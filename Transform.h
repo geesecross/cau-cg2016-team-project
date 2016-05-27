@@ -7,11 +7,17 @@ private:
 
 public:
 	Transform & reset();
-	Transform & translate(const Vector3f & direction);
-	Transform & rotate(const Rotation & rotation);
-	Transform & scale(const Vector3f & coefficient);
+
+	Transform & translatePost(const Vector3f & direction);
+	Transform & rotatePost(const Rotation & rotation);
+	Transform & scalePost(const Vector3f & coefficient);
+
+	Transform & translatePre(const Vector3f & direction);
+	Transform & rotatePre(const Rotation & rotation);
+	Transform & scalePre(const Vector3f & coefficient);
+
 	const Matrix4f getMatrix() const;
 
-	const Vector3f transformPoint(const Vector3f & point);
-	const Vector3f transformDirection(const Vector3f & direction);
+	const Vector3f transformPoint(const Vector3f & point) const;
+	const Vector3f transformDirection(const Vector3f & direction) const;
 };

@@ -51,9 +51,11 @@ private:
 	RubiksCube & cube;
 	size_t index;
 	Rotation rotation;
+	std::vector<Transform> initialTransforms;
 
 public:
 	TwistAnimation(RubiksCube & cube, size_t index, const Rotation & rotation);
+	virtual void onStart();
 	virtual bool stepFrame(const double timeElpased, const double timeDelta);
 	virtual void onFinished();
 };

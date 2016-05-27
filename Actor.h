@@ -37,7 +37,7 @@ public:
 	ConstIterator begin() const;
 	ConstIterator end() const;
 
-	// transform modifying operation
+	// transform operation
 	Actor & setTransform(const Transform & transform);
 	Transform & getTransform();
 	const Transform & getTransform() const;

@@ -13,8 +13,8 @@ RubiksCube::RubiksCube(const size_t size, std::weak_ptr<AnimationManager> animat
 			for (size_t z = 0; z < size; ++z) {
 				this->blocks[x][y][z] = this->createChild<Block>();
 				this->blocks[x][y][z].lock()->getTransform()
-					.scale(Vector3f(0.9f))
-					.translate(Vector3f((float)x - center, (float)y - center, (float)z - center));
+					.scalePost(Vector3f(0.9f))
+					.translatePost(Vector3f((float)x - center, (float)y - center, (float)z - center));
 			}
 		}
 	}
@@ -48,15 +48,29 @@ size_t RubiksCube::getSize() const {
 }
 
 TwistAnimation::TwistAnimation(RubiksCube & cube, size_t index, const Rotation & rotation) : cube(cube), index(index), rotation(rotation) {
+	this->initialTransforms.resize(cube.size * cube.size);
+}
+
+void TwistAnimation::onStart() {
+	const size_t size = this->cube.getSize();
+	Vector3f axis = this->rotation.transform(Vector3f::yVector());
+	Vector3f center = Vector3f((size - 1) / 2.0f);
+	for (size_t x = 0; x < size; ++x) {
+		for (size_t y = 0; y < size; ++y) {
+			Vector3f indexVector = this->rotation.transform(Vector3f({ (float)x, (float)this->index, (float)y }) - center) + center + Vector3f(0.5f);
+			size_t i = (size_t)indexVector[0], j = (size_t)indexVector[1], k = (size_t)indexVector[2];
+			this->initialTransforms[x * size + y] = this->cube.blocks[i][j][k].lock()->getTransform();
+		}
+	}
 }
 
 bool TwistAnimation::stepFrame(const double timeElpased, const double timeDelta) {
-	static const double degreesPerSec = 180;
+	static const double degreesPerSec = 270;
 
 	const size_t size = this->cube.getSize();
-	double angle = timeDelta * degreesPerSec;
-	if ((timeElpased * degreesPerSec) > 90)
-		angle = 90 - (timeElpased - timeDelta) * degreesPerSec;
+	double angle = timeElpased * degreesPerSec;
+	if (angle > 90)
+		angle = 90;
 
 	Vector3f axis = this->rotation.transform(Vector3f::yVector());
 	Vector3f center = Vector3f((size - 1) / 2.0f);
@@ -64,11 +78,12 @@ bool TwistAnimation::stepFrame(const double timeElpased, const double timeDelta)
 		for (size_t y = 0; y < size; ++y) {
 			Vector3f indexVector = this->rotation.transform(Vector3f({ (float)x, (float)this->index, (float)y }) - center) + center + Vector3f(0.5f);
 			size_t i = (size_t)indexVector[0], j = (size_t)indexVector[1], k = (size_t)indexVector[2];
-			this->cube.blocks[i][j][k].lock()->getTransform().rotate(Rotation().rotateByEuler(axis * (float)angle));
+			this->cube.blocks[i][j][k].lock()->setTransform(this->initialTransforms[x * size + y])
+				.getTransform().rotatePost(Rotation().rotateByEuler(axis * (float)angle));
 		}
 	}
 
-	return (timeElpased * degreesPerSec) >= 90;
+	return angle >= 90;
 }
 
 void TwistAnimation::onFinished() {
@@ -112,9 +127,9 @@ void TwistAnimation::onFinished() {
 
 void RubiksCube::Cursor::updateTransform() {
 	this->getTransform().reset()
-		.scale(Vector3f(0.5f))
-		.translate(this->position - Vector3f((this->cube.size - 1) / 2.0f))
-		.rotate(this->rotation);
+		.scalePost(Vector3f(0.5f))
+		.translatePost(this->position - Vector3f((this->cube.size - 1) / 2.0f))
+		.rotatePost(this->rotation);
 }
 
 RubiksCube::Cursor::Cursor(RubiksCube & cube) : cube(cube) {
