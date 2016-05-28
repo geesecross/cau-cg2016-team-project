@@ -20,6 +20,7 @@ public:
 		Vector3f getSelected();
 		void twist(bool clockwise);
 		void rotateAxis(bool clockwise);
+		void reset();
 	};
 private:
 	const size_t size;
@@ -37,6 +38,7 @@ public:
 
 	void twist(const size_t index, const Rotation & rotation);
 	size_t getSize() const;
+	void reset();
 };
 
 class TwistAnimation : public Animation {

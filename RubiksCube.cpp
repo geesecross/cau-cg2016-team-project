@@ -47,6 +47,25 @@ size_t RubiksCube::getSize() const {
 	return this->size;
 }
 
+void RubiksCube::reset()
+{
+	size_t size = this->size;
+	float center = (size - 1) / 2.0f;
+	this->blocks.resize(size);
+	for (size_t x = 0; x < size; ++x) {
+		for (size_t y = 0; y < size; ++y) {
+			for (size_t z = 0; z < size; ++z) {
+				this->blocks[x][y][z].lock()->getTransform()
+					.reset()
+					.scalePost(Vector3f(0.9f))
+					.translatePost(Vector3f((float)x - center, (float)y - center, (float)z - center));
+			}
+		}
+	}
+
+	this->cursor.lock()->reset();
+}
+
 TwistAnimation::TwistAnimation(RubiksCube & cube, size_t index, const Rotation & rotation) : cube(cube), index(index), rotation(rotation) {
 	this->initialTransforms.resize(cube.size * cube.size);
 }
@@ -194,5 +213,12 @@ void RubiksCube::Cursor::rotateAxis(bool clockwise) {
 		this->position[0] = this->position[1];
 		this->position[1] = this->cube.getSize() - 1 - temp;
 	}
+	this->updateTransform();
+}
+
+void RubiksCube::Cursor::reset()
+{
+	this->position = { (float)(cube.size / 2), (float)(cube.size / 2), (float)(cube.size - 1) };
+	this->rotation = Rotation();
 	this->updateTransform();
 }

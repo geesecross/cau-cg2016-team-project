@@ -15,8 +15,10 @@
 #include "Animation.h"
 
 #include "Resource.h"
+#include "GameRule.h"
 
 float timeDelta = 0;
+const size_t cube_size = 3;
 std::shared_ptr<Camera> camera;
 std::shared_ptr<RubiksCube> rubiksCube;
 std::shared_ptr<AnimationManager> animationManager;
@@ -47,7 +49,7 @@ bool init() {
 	camera->setPerspectiveProjection(50);
 	initCameraVectors();
 
-	rubiksCube.reset(new RubiksCube(3, animationManager));
+	rubiksCube.reset(new RubiksCube(cube_size, animationManager));
 
 	return true;
 }
@@ -103,6 +105,7 @@ void onResize(int width, int height) {
 
 void onKeyboard(unsigned char ascii, int x, int y) {
 	float movingStep = 1, rotatingStep = 1;
+	GameRule game_rule(*rubiksCube);
 
 	switch (ascii) {
 	case 'O':
@@ -198,6 +201,11 @@ void onKeyboard(unsigned char ascii, int x, int y) {
 	case '`':
 		debugMode = !debugMode;
 		break;
+	case 't':
+		game_rule.reset();
+		break;
+	case 'y':
+		game_rule.scramble();
 	}
 }
 
