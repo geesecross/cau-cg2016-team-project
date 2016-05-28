@@ -19,3 +19,8 @@ CommandQueue & CommandQueue::execute() {
 	}
 	return *this;
 }
+
+CommandQueue & CommandQueue::clear() {
+	this->queue.clear();
+	return *this;
+}

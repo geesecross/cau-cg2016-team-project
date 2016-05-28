@@ -14,4 +14,5 @@ public:
 	bool empty() const;
 	CommandQueue & push(Command && command);
 	CommandQueue & execute();
+	CommandQueue & clear();
 };
