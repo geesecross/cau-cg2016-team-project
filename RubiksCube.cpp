@@ -171,15 +171,6 @@ Vector3f RubiksCube::Cursor::getSelected() {
 	return this->getTransform().transformPoint(Vector3f()) + Vector3f(1);
 }
 
-RubiksCube::Axis RubiksCube::Cursor::getAxis() {
-	Vector3f up = this->getTransform().transformDirection(Vector3f::yVector());
-	if (0 != up[0])
-		return Axis::X;
-	if (0 != up[1])
-		return Axis::Y;
-	return Axis::Z;
-}
-
 void RubiksCube::Cursor::twist(bool clockwise) {
 	Rotation rot = this->rotation;
 	size_t index = (size_t)this->position[1];

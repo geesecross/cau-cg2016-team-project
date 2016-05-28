@@ -7,6 +7,7 @@ namespace Resource {
 	enum MeshId {
 		Plane,
 		Arrow,
+		Cube,
 	};
 	enum ShaderProgramId {
 		Phong,

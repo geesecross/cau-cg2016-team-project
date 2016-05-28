@@ -141,6 +141,7 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CommandQueue.cpp" />
     <ClCompile Include="Exception.cpp" />
+    <ClCompile Include="GameRule.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -161,6 +162,7 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <ClInclude Include="Event.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="FileHelper.h" />
+    <ClInclude Include="GameRule.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Rotation.h" />

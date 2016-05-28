@@ -8,11 +8,12 @@ namespace Resource {
 	void init() {
 		shaderPrograms[Phong] = new SimpleIlluminationModelShaderProgram(
 			SimpleIlluminationModelShaderProgram::createPhong()
-			.setLightVector({ 100, 100, 100 })
+			.setLightVector({ 1000, 1000, 1000 })
 			.enableLightVectorAsPosition(true)
 		);
 		meshes[Plane] = new Mesh(Mesh::createFromDatFile("models/plane.dat"));
 		meshes[Arrow] = new Mesh(Mesh::createFromDatFile("models/arrow.dat"));
+		meshes[Cube] = new Mesh(Mesh::createFromDatFile("models/cube.dat"));
 	}
 
 	void uninit() {

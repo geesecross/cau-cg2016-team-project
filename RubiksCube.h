@@ -8,11 +8,6 @@
 class RubiksCube : public Actor {
 	friend class TwistAnimation;
 public:
-	enum Axis {
-		X,
-		Y,
-		Z
-	};
 	class Cursor : public Actor {
 	private:
 		RubiksCube & cube;
@@ -23,7 +18,6 @@ public:
 		Cursor(RubiksCube & cube);
 		Cursor & move(const Vector2f & vector);
 		Vector3f getSelected();
-		Axis getAxis();
 		void twist(bool clockwise);
 		void rotateAxis(bool clockwise);
 	};

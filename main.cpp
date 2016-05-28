@@ -17,8 +17,6 @@
 #include "Resource.h"
 
 float timeDelta = 0;
-size_t modelIndex = 0;
-size_t lightMode = 0;
 std::shared_ptr<Camera> camera;
 std::shared_ptr<RubiksCube> rubiksCube;
 std::shared_ptr<AnimationManager> animationManager;
@@ -49,7 +47,7 @@ bool init() {
 	camera->setPerspectiveProjection(50);
 	initCameraVectors();
 
-	rubiksCube.reset(new RubiksCube(4, animationManager));
+	rubiksCube.reset(new RubiksCube(3, animationManager));
 
 	return true;
 }
@@ -66,10 +64,18 @@ void render() {
 
 	try {
 		animationManager->step(timeDelta);
-		/*Actor actor;
+		/*
+		Actor actor;
 		actor.createComponent<Model>()->bindMesh(Resource::meshes[Resource::Plane])
+			.bindShaderProgram(Resource::shaderPrograms[Resource::Phong])
 			.setColor({ 1, 1, 1, 1 });
-		camera->render(actor);*/
+		auto child = actor.createChild<Actor>();
+		child->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Plane])
+			.bindShaderProgram(Resource::shaderPrograms[Resource::Phong])
+			.setColor({ 1, 0, 0, 1 });
+		child->getTransform().rotatePost(Rotation().rotateByEuler({}));
+		camera->render(actor);
+		*/
 		camera->render(*rubiksCube, true);
 	}
 	catch (Exception & e) {
@@ -97,7 +103,6 @@ void onResize(int width, int height) {
 
 void onKeyboard(unsigned char ascii, int x, int y) {
 	float movingStep = 1, rotatingStep = 1;
-	static RubiksCube::Axis axis = RubiksCube::X;
 
 	switch (ascii) {
 	case 'O':
