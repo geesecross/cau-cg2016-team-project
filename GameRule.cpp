@@ -1,15 +1,19 @@
 #include "GameRule.h"
 #include <ctime>
 const int max_scramble = 20; // 스크램블 최대 횟수
-GameRule::GameRule(RubiksCube & cube) : cube(cube) {
+GameRule::GameRule(RubiksCube & cube, std::weak_ptr<AnimationManager> animationManager) : cube(cube), animationManager(animationManager){
 	this->game_started = false;
+	print("press 'y' to start game");
 }
 
 void GameRule::reset()
 {
-	this->game_started = false;
-	std::cout << "game end" << std::endl;
-	cube.reset();
+	if(this->game_started)
+	{
+		this->game_started = false;
+		print("reset\npress 'y' to start game");
+		cube.reset();
+	}
 }
 
 void GameRule::scramble()
@@ -38,7 +42,7 @@ void GameRule::scramble()
 	}
 
 	// game start
-	std::cout << "game start" << std::endl;
+	print("game start");
 	this->game_started = true;
 }
 
@@ -71,6 +75,24 @@ bool GameRule::isAllBlockAligned(Vector3f std_vector) const
 	return true;
 }
 
+void GameRule::print(char* msg)
+{
+	auto ani = std::make_shared<PrintStrAnimation>(*this, msg);
+	bool empty = this->commandQueue.empty();
+
+	this->commandQueue.push([=] {
+		if (!ani->isStarted()) {
+			this->animationManager.lock()->push(ani);
+		}
+		return ani->isFinished();
+	});
+
+	if (empty) {
+		// first entry
+		this->commandQueue.execute();
+	}
+}
+
 bool GameRule::judge()
 {
 	if (this->game_started)
@@ -88,11 +110,36 @@ bool GameRule::judge()
 
 void GameRule::win()
 {
-	std::cout << "win" << std::endl;
+	print("win");
 	this->game_started = false;
 }
 
 bool GameRule::isStart() const
 {
 	return this->game_started;
+}
+
+PrintStrAnimation::PrintStrAnimation(GameRule & gameRule, char* msg) : gameRule(gameRule), msg(msg)
+{
+}
+
+void PrintStrAnimation::onStart()
+{
+}
+
+bool PrintStrAnimation::stepFrame(const double timeElpased, const double timeDelta)
+{
+	glColor3f(1.f, 1.f, 1.f);
+	glRasterPos3d(0.f, 0.f, 2.f);
+	int len = strlen(this->msg);
+	for(int i = 0; i < len; i++)
+	{
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, this->msg[i]);
+	}
+	return timeElpased > 5;
+}
+
+void PrintStrAnimation::onFinished()
+{
+	gameRule.commandQueue.execute();
 }
