@@ -2,6 +2,9 @@
 #include "Model.h"
 #include "Resource.h"
 #include <cmath>
+#include "GameRule.h"
+
+extern std::shared_ptr<GameRule> gameRule;
 
 RubiksCube::RubiksCube(const size_t size, std::weak_ptr<AnimationManager> animationManager) : animationManager(animationManager), size(size) {
 	float center = (size - 1) / 2.0f;
@@ -143,7 +146,12 @@ void TwistAnimation::onFinished() {
 			}
 		}
 	}
-	this->cube.commandQueue.execute();
+	if(gameRule->judge())
+	{
+		this->cube.commandQueue.clear();
+	} else {
+		this->cube.commandQueue.execute();
+	}
 }
 
 void RubiksCube::Cursor::updateTransform() {

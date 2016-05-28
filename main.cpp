@@ -22,6 +22,7 @@ const size_t cube_size = 3; // 큐브의 한 열의 블럭 개수
 std::shared_ptr<Camera> camera;
 std::shared_ptr<RubiksCube> rubiksCube;
 std::shared_ptr<AnimationManager> animationManager;
+std::shared_ptr<GameRule> gameRule;
 bool debugMode = false;
 
 float degree2radian(float degree) {
@@ -50,6 +51,7 @@ bool init() {
 	initCameraVectors();
 
 	rubiksCube.reset(new RubiksCube(cube_size, animationManager));
+	gameRule.reset(new GameRule(*rubiksCube));
 
 	return true;
 }
@@ -204,15 +206,13 @@ void onKeyboard(unsigned char ascii, int x, int y) {
 }
 
 void onKeyboardUp(unsigned char ascii, int x, int y) {
-	GameRule game_rule(*rubiksCube);
-
 	switch(ascii)
 	{
 		case 't':
-			game_rule.reset();
+			gameRule->reset();
 			break;
 		case 'y':
-			game_rule.scramble();
+			gameRule->scramble();
 			break;
 	}
 }

@@ -6,7 +6,7 @@ class GameRule {
 private:
 	RubiksCube & cube;
 	bool game_started;
-	bool isAllBlockAligned(Vector3f std_vector);
+	bool isAllBlockAligned(Vector3f std_vector) const;
 public:
 	GameRule(RubiksCube & cube);
 	void reset();
