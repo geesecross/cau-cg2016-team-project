@@ -11,21 +11,22 @@ varying vec3 fragNormalVector;
 varying vec3 fragEyeVector;
 varying vec3 fragLightVector;
 
-vec4 transform(mat4 transformMatrix, vec3 vertexPosition);
+vec4 transformPoint4(in mat4 transformMatrix, in vec3 point);
+vec3 transformPoint3(in mat4 transformMatrix, in vec3 point);
+vec3 transformDirection3(in mat4 transformMatrix, in vec3 vector);
 
 void main() {
 	mat4 modelViewMatrix = in_viewMatrix * in_modelMatrix;
-	vec4 vertexViewPosition = transform(modelViewMatrix, in_vertexPosition);
-	vec3 modelOriginPosition = transform(modelViewMatrix, vec3(0, 0, 0)).xyz;
+	vec3 vertexViewPosition = transformPoint3(modelViewMatrix, in_vertexPosition).xyz;
 
-	fragNormalVector = transform(modelViewMatrix, in_vertexNormal).xyz - modelOriginPosition;
+	fragNormalVector = transformDirection3(modelViewMatrix, in_vertexNormal);
 	if(in_lightVectorAsPosition) {
-		fragLightVector = normalize(transform(in_viewMatrix, in_lightVector).xyz - vertexViewPosition.xyz);
+		fragLightVector = normalize(transformPoint3(in_viewMatrix, in_lightVector) - vertexViewPosition);
 	}
 	else {
-		fragLightVector = normalize(transform(in_viewMatrix, in_lightVector).xyz - transform(in_viewMatrix, vec3(0, 0, 0)).xyz);
+		fragLightVector = normalize(transformDirection3(in_viewMatrix, in_lightVector));
 	}
-	fragEyeVector = -normalize(vertexViewPosition.xyz);
+	fragEyeVector = -normalize(vertexViewPosition);
 
-	gl_Position = in_projectionMatrix * vertexViewPosition;
+	gl_Position = transformPoint4(in_projectionMatrix, vertexViewPosition);
 }

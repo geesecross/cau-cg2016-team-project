@@ -4,7 +4,7 @@
 
 class SimpleIlluminationModelShaderProgram : public ShaderProgram {
 private:
-	GLfloat ambientRatio = 0.2f, diffusionRatio = 0.5f, specularRatio = 0.3f, shiness = 16;
+	GLfloat ambientRatio = 0.2f, diffusionRatio = 0.3f, specularRatio = 0.5f, shiness = 128;
 	Vector3f lightVector;
 	bool enabledLightVectorAsPosition = false;
 

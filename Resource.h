@@ -8,9 +8,11 @@ namespace Resource {
 		Plane,
 		Arrow,
 		Cube,
+		Teapot,
 	};
 	enum ShaderProgramId {
 		Phong,
+		Phong2,
 	};
 
 	extern std::map<MeshId, Mesh *> meshes;
