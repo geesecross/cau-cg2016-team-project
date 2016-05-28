@@ -158,6 +158,19 @@ public:
 		return result;
 	}
 
+	bool operator ==(const ThisType & rhs) const {
+		if (
+			this->e[0] != rhs.e[0]
+			|| this->e[1] != rhs.e[1]
+			|| this->e[2] != rhs.e[2]
+			) return false;
+		else return true;
+	}
+
+	bool operator != (const ThisType & rhs) const {
+		return !((*this) == rhs);
+	}
+
 	const ElementT length() const {
 		ElementT result = 0;
 		for (size_t i = 0; i < N; ++i) {
