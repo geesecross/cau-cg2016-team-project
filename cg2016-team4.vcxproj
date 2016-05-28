@@ -70,6 +70,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(ProjectDir)include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(ProjectDir)include\;$(IncludePath)</IncludePath>
@@ -80,11 +81,16 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freeglut.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freeglut.lib;glew32.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /i /y /e "$(ProjectDir)bin" "$(OutDir)"
@@ -153,6 +159,7 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="SimpleIlluminationModelShaderProgram.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureShaderProgram.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +183,7 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureShaderProgram.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="MatrixFactory.h" />
     <ClInclude Include="Vector.h" />
@@ -190,6 +198,8 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <None Include="shaders\Phong.frag" />
     <None Include="shaders\Phong.vert" />
     <None Include="shaders\SimpleIlluminationModel.glsl" />
+    <None Include="shaders\Texture.frag" />
+    <None Include="shaders\Texture.vert" />
     <None Include="shaders\Transform.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

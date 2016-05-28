@@ -13,6 +13,7 @@ namespace Resource {
 	enum ShaderProgramId {
 		Phong,
 		Phong2,
+		SimpleTexture,
 	};
 
 	extern std::map<MeshId, Mesh *> meshes;
