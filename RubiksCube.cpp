@@ -49,6 +49,7 @@ size_t RubiksCube::getSize() const {
 
 void RubiksCube::reset()
 {
+	// 블럭 초기화 (RubiksCube 생성자에서 가져와서 수정함)
 	size_t size = this->size;
 	float center = (size - 1) / 2.0f;
 	this->blocks.resize(size);
@@ -63,6 +64,7 @@ void RubiksCube::reset()
 		}
 	}
 
+	// 커서 초기화
 	this->cursor.lock()->reset();
 }
 

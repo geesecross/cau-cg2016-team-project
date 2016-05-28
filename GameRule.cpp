@@ -1,6 +1,6 @@
 #include "GameRule.h"
 #include <ctime>
-const int max_scramble = 15;
+const int max_scramble = 20; // 스크램블 최대 횟수
 GameRule::GameRule(RubiksCube & cube) : cube(cube) {
 }
 
@@ -20,7 +20,7 @@ void GameRule::scramble()
 
 	for(int i = 0; i < max_scramble; i++)
 	{
-		cube.twist(indices[rand() % 3], rot.rotateByEuler(rot.transform(axis_vectors[rand()]) * rot_degrees[rand() % 3]));
+		cube.twist(indices[rand() % 3], rot.rotateByEuler(axis_vectors[rand() % 3] * rot_degrees[rand() % 3]));
 	}
 }
 

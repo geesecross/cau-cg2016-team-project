@@ -18,7 +18,7 @@
 #include "GameRule.h"
 
 float timeDelta = 0;
-const size_t cube_size = 3;
+const size_t cube_size = 3; // 큐브의 한 열의 블럭 개수
 std::shared_ptr<Camera> camera;
 std::shared_ptr<RubiksCube> rubiksCube;
 std::shared_ptr<AnimationManager> animationManager;
@@ -105,7 +105,6 @@ void onResize(int width, int height) {
 
 void onKeyboard(unsigned char ascii, int x, int y) {
 	float movingStep = 1, rotatingStep = 1;
-	GameRule game_rule(*rubiksCube);
 
 	switch (ascii) {
 	case 'O':
@@ -201,11 +200,20 @@ void onKeyboard(unsigned char ascii, int x, int y) {
 	case '`':
 		debugMode = !debugMode;
 		break;
-	case 't':
-		game_rule.reset();
-		break;
-	case 'y':
-		game_rule.scramble();
+	}
+}
+
+void onKeyboardUp(unsigned char ascii, int x, int y) {
+	GameRule game_rule(*rubiksCube);
+
+	switch(ascii)
+	{
+		case 't':
+			game_rule.reset();
+			break;
+		case 'y':
+			game_rule.scramble();
+			break;
 	}
 }
 
@@ -217,6 +225,7 @@ int main(int argc, char ** argv) {
 	glutDisplayFunc(render);
 	glutIdleFunc(onIdle);
 	glutKeyboardFunc(onKeyboard);
+	glutKeyboardUpFunc(onKeyboardUp);
 	glutReshapeFunc(onResize);
 
 	if (init()) {
