@@ -8,7 +8,7 @@ namespace Resource {
 	void init() {
 		shaderPrograms[Phong] = new SimpleIlluminationModelShaderProgram(
 			SimpleIlluminationModelShaderProgram::createPhong()
-			.setLightVector({ 1000, 1000, 1000 })
+			.setLightVector({ 0, 0, 50 })
 			.enableLightVectorAsPosition(true)
 		);
 		shaderPrograms[Phong2] = new SimpleIlluminationModelShaderProgram(
