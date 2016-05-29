@@ -1,6 +1,6 @@
 #include "Resource.h"
 #include "SimpleIlluminationModelShaderProgram.h"
-
+//#include "TextureShaderProgram.h"
 namespace Resource {
 	std::map<MeshId, Mesh *> meshes;
 	std::map<ShaderProgramId, ShaderProgram *> shaderPrograms;
@@ -16,6 +16,8 @@ namespace Resource {
 			.setLightVector({ -1000, -1000, -1000 })
 			.enableLightVectorAsPosition(true)
 		);
+		//shaderPrograms[SimpleTexture] = new TextureShaderProgram(
+			//TextureShaderProgram::create());
 		meshes[Plane] = new Mesh(Mesh::createFromDatFile("models/plane.dat"));
 		meshes[Arrow] = new Mesh(Mesh::createFromDatFile("models/arrow.dat"));
 		meshes[Cube] = new Mesh(Mesh::createFromDatFile("models/cube.dat"));

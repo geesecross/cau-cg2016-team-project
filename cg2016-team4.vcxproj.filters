@@ -76,6 +76,9 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TextureShaderProgram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileHelper.h">
@@ -147,6 +150,9 @@
     <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextureShaderProgram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\Color.frag">
@@ -177,6 +183,12 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="shaders\foo.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\Texture.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\Texture.frag">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

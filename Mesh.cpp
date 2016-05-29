@@ -64,8 +64,11 @@ Mesh Mesh::createFromDatFile(const std::string & filename) {
 }
 
 void Mesh::draw(const ShaderProgram & shaderProgram) const {
+
+	//TODO: glBindTexture(GL_TEXTURE_2D, texture);
 	GLint vertexPositionId = glGetAttribLocation(shaderProgram.getProgramId(), "in_vertexPosition");
 	GLint vertexNormalId = glGetAttribLocation(shaderProgram.getProgramId(), "in_vertexNormal");
+
 
 	if (0 <= vertexPositionId) {
 		glEnableVertexAttribArray(vertexPositionId);
