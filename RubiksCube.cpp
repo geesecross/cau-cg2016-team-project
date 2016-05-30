@@ -33,10 +33,14 @@ void RubiksCube::twist(const size_t index, const Rotation & rotation) {
 	auto ani = std::make_shared<TwistAnimation>(*this, index, rotation);
 	bool empty = this->commandQueue.empty();
 
-	this->commandQueue.push([=] {
+	this->commandQueue.push([=](bool interrupted) {
 		if (!ani->isStarted()) {
 			this->animationManager.lock()->push(ani);
 		}
+		if (interrupted) {
+			ani->interrupt();
+		}
+
 		return ani->isFinished();
 	});
 
@@ -52,10 +56,11 @@ size_t RubiksCube::getSize() const {
 
 void RubiksCube::reset()
 {
+	this->commandQueue.clear();
+
 	// 블럭 초기화 (RubiksCube 생성자에서 가져와서 수정함)
 	size_t size = this->size;
 	float center = (size - 1) / 2.0f;
-	this->blocks.resize(size);
 	for (size_t x = 0; x < size; ++x) {
 		for (size_t y = 0; y < size; ++y) {
 			for (size_t z = 0; z < size; ++z) {
@@ -91,21 +96,11 @@ void TwistAnimation::onStart() {
 bool TwistAnimation::stepFrame(const double timeElpased, const double timeDelta) {
 	static const double degreesPerSec = 270;
 
-	const size_t size = this->cube.getSize();
 	double angle = timeElpased * degreesPerSec;
 	if (angle > 90)
 		angle = 90;
 
-	Vector3f axis = this->rotation.transform(Vector3f::yVector());
-	Vector3f center = Vector3f((size - 1) / 2.0f);
-	for (size_t x = 0; x < size; ++x) {
-		for (size_t y = 0; y < size; ++y) {
-			Vector3f indexVector = this->rotation.transform(Vector3f({ (float)x, (float)this->index, (float)y }) - center) + center + Vector3f(0.5f);
-			size_t i = (size_t)indexVector[0], j = (size_t)indexVector[1], k = (size_t)indexVector[2];
-			this->cube.blocks[i][j][k].lock()->setTransform(this->initialTransforms[x * size + y])
-				.getTransform().rotatePost(Rotation().rotateByEuler(axis * (float)angle));
-		}
-	}
+	this->twist((float)angle);
 
 	return angle >= 90;
 }
@@ -146,11 +141,27 @@ void TwistAnimation::onFinished() {
 			}
 		}
 	}
-	if(gameRule->judge())
-	{
-		this->cube.commandQueue.clear();
-	} else {
+
+	if (!this->isInterrupted()) {
 		this->cube.commandQueue.execute();
+	}
+}
+
+void TwistAnimation::onInterruted() {
+	this->twist(90);
+}
+
+void TwistAnimation::twist(const float angle) {
+	const size_t size = this->cube.getSize();
+	Vector3f axis = this->rotation.transform(Vector3f::yVector());
+	Vector3f center = Vector3f((size - 1) / 2.0f);
+	for (size_t x = 0; x < size; ++x) {
+		for (size_t y = 0; y < size; ++y) {
+			Vector3f indexVector = this->rotation.transform(Vector3f({ (float)x, (float)this->index, (float)y }) - center) + center + Vector3f(0.5f);
+			size_t i = (size_t)indexVector[0], j = (size_t)indexVector[1], k = (size_t)indexVector[2];
+			this->cube.blocks[i][j][k].lock()->setTransform(this->initialTransforms[x * size + y])
+				.getTransform().rotatePost(Rotation().rotateByEuler(axis * angle));
+		}
 	}
 }
 

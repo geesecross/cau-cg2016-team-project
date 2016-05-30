@@ -54,4 +54,7 @@ public:
 	virtual void onStart();
 	virtual bool stepFrame(const double timeElpased, const double timeDelta);
 	virtual void onFinished();
+	virtual void onInterruted();
+
+	void twist(const float angle);
 };

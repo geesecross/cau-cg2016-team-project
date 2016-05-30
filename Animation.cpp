@@ -8,9 +8,14 @@ bool Animation::operator()(const double timeDelta) {
 
 	this->timeElapsed += timeDelta;
 
-	if (this->stepFrame(this->timeElapsed, timeDelta)) {
-		this->finished = true;
-		this->onFinished();
+	if (this->interrupted || this->stepFrame(this->timeElapsed, timeDelta)) {		// if interrupted, don't step
+		if (!this->finished) {
+			if (this->interrupted) {
+				this->onInterrupted();
+			}
+			this->finished = true;
+			this->onFinished();
+		}
 	}
 
 	return this->finished;
@@ -24,12 +29,25 @@ void Animation::onFinished() {
 	// empty default
 }
 
+void Animation::onInterrupted() {
+	// empty default
+}
+
 bool Animation::isStarted() const {
 	return this->started;
 }
 
 bool Animation::isFinished() const {
 	return this->finished;
+}
+
+bool Animation::isInterrupted() const {
+	return this->interrupted;
+}
+
+void Animation::interrupt() {
+	this->interrupted = true;
+	(*this)(0);
 }
 
 AnimationManager::Queue & AnimationManager::getFrontQueue() {
@@ -50,15 +68,26 @@ AnimationManager & AnimationManager::push(std::shared_ptr<Animation> animation) 
 	return *this;
 }
 
-void AnimationManager::step(const double timeDelta) {
+void AnimationManager::step(const double timeDelta, const bool interrupted) {
 	this->swapQueue();
 
 	while (!this->getBackQueue().empty()) {
 		std::shared_ptr<Animation> ani = this->getBackQueue().front();
 		this->getBackQueue().pop_front();
 
-		if (!(*ani)(timeDelta)) {
-			this->getFrontQueue().push_back(ani);
+		if (interrupted) {
+			ani->interrupt();
+		}
+		else {
+			if (!(*ani)(timeDelta)) {
+				this->getFrontQueue().push_back(ani);
+			}
 		}
 	}
+}
+
+void AnimationManager::clear() {
+	this->step(0, true);
+	this->getFrontQueue().clear();
+	this->getBackQueue().clear();
 }

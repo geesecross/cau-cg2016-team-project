@@ -85,9 +85,12 @@ void GameRule::print(char* msg)
 	auto ani = std::make_shared<PrintStrAnimation>(*this, msg);
 	bool empty = this->commandQueue.empty();
 
-	this->commandQueue.push([=] {
+	this->commandQueue.push([=](bool interrupted) {
 		if (!ani->isStarted()) {
 			this->animationManager.lock()->push(ani);
+		}
+		if (interrupted) {
+			ani->interrupt();
 		}
 		return ani->isFinished();
 	});

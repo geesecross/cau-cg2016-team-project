@@ -8,6 +8,7 @@ class Animation {
 private:
 	bool started = false;
 	bool finished = false;
+	bool interrupted = false;
 	double timeElapsed = 0;
 	bool operator ()(const double timeDelta);
 public:
@@ -15,8 +16,11 @@ public:
 	// return true if finished
 	virtual bool stepFrame(const double timeElapsed, const double timeDelta) = 0;
 	virtual void onFinished();
+	virtual void onInterrupted();
 	bool isStarted() const;
 	bool isFinished() const;
+	bool isInterrupted() const;
+	void interrupt();
 };
 
 class AnimationManager {
@@ -31,5 +35,6 @@ private:
 
 public:
 	AnimationManager & push(std::shared_ptr<Animation> animation);
-	void step(const double timeDelta);
+	void step(const double timeDelta, const bool interrupted = false);
+	void clear();
 };

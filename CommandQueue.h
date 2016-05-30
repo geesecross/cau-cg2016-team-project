@@ -5,7 +5,7 @@
 
 class CommandQueue {
 public:
-	typedef std::function<bool()> Command;
+	typedef std::function<bool(const bool)> Command;	//	bool func(const bool interrupted)
 private:
 	typedef std::deque<Command> Queue;
 	Queue queue;
@@ -13,6 +13,6 @@ private:
 public:
 	bool empty() const;
 	CommandQueue & push(Command && command);
-	CommandQueue & execute();
+	CommandQueue & execute(const bool interrupted = false);
 	CommandQueue & clear();
 };
