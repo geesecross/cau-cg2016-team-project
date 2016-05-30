@@ -5,6 +5,11 @@
 #include <iostream>
 #include <array>
 
+template<typename T>
+bool epsilonEqual(const T a, const T b) {
+	return abs(a - b) <= std::numeric_limits<T>::epsilon() * abs(a + b) * 2;
+}
+
 template<typename VectorT, typename ElementT, size_t N>
 class VectorSpecific {
 	/* empty ;) */
@@ -159,16 +164,16 @@ public:
 	}
 
 	bool operator ==(const ThisType & rhs) const {
-		if (
-			this->e[0] != rhs.e[0]
-			|| this->e[1] != rhs.e[1]
-			|| this->e[2] != rhs.e[2]
-			) return false;
-		else return true;
+		for (size_t i = 0; i < N; ++i) {
+			if (!epsilonEqual(this->e[i], rhs.e[i])) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	bool operator != (const ThisType & rhs) const {
-		return !((*this) == rhs);
+		return !(*this == rhs);
 	}
 
 	const ElementT length() const {
