@@ -11,12 +11,12 @@ CommandQueue & CommandQueue::push(Command && command) {
 
 CommandQueue & CommandQueue::execute(const bool interrupted) {
 	while (!this->queue.empty()) {
-		if (!this->queue.front()(interrupted)) {
+		Queue::value_type command = this->queue.front();
+		this->queue.pop_front();
+		if (!command(interrupted)) {
 			// not finished yet
+			this->queue.push_front(command);
 			return *this;
-		}
-		if (!this->queue.empty()) {
-			this->queue.pop_front();
 		}
 	}
 	return *this;

@@ -3,6 +3,7 @@
 #include "Block.h"
 #include "Animation.h"
 #include "CommandQueue.h"
+#include "Event.h"
 #include <vector>
 
 class RubiksCube : public Actor {
@@ -26,11 +27,12 @@ private:
 	const size_t size;
 	std::weak_ptr<AnimationManager> animationManager;
 	std::weak_ptr<Cursor> cursor;
-	CommandQueue commandQueue;
+	CommandQueue twistQueue;
 
 public:
 	typedef std::vector<std::vector<std::vector<std::weak_ptr<Block>>>> BlockArray;
 	BlockArray blocks;
+	Event<void()> onFinishedTwist;
 
 	RubiksCube(const size_t size, std::weak_ptr<AnimationManager> animationManager);
 

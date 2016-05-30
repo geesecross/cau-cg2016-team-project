@@ -31,9 +31,9 @@ std::shared_ptr<RubiksCube::Cursor> RubiksCube::getCursor() {
 
 void RubiksCube::twist(const size_t index, const Rotation & rotation) {
 	auto ani = std::make_shared<TwistAnimation>(*this, index, rotation);
-	bool empty = this->commandQueue.isEmpty();
+	bool empty = this->twistQueue.isEmpty();
 
-	this->commandQueue.push([=](bool interrupted) {
+	this->twistQueue.push([=](bool interrupted) {
 		if (!ani->isStarted()) {
 			this->animationManager.lock()->push(ani);
 		}
@@ -46,7 +46,7 @@ void RubiksCube::twist(const size_t index, const Rotation & rotation) {
 
 	if (empty) {
 		// first entry
-		this->commandQueue.execute();
+		this->twistQueue.execute();
 	}
 }
 
@@ -56,7 +56,7 @@ size_t RubiksCube::getSize() const {
 
 void RubiksCube::reset()
 {
-	this->commandQueue.clear();
+	this->twistQueue.clear();
 
 	// 블럭 초기화 (RubiksCube 생성자에서 가져와서 수정함)
 	size_t size = this->size;
@@ -77,7 +77,7 @@ void RubiksCube::reset()
 }
 
 bool RubiksCube::isTwistFinished() const {
-	return this->commandQueue.isEmpty();
+	return this->twistQueue.isEmpty();
 }
 
 TwistAnimation::TwistAnimation(RubiksCube & cube, size_t index, const Rotation & rotation) : cube(cube), index(index), rotation(rotation) {
@@ -147,7 +147,10 @@ void TwistAnimation::onFinished() {
 	}
 
 	if (!this->isInterrupted()) {
-		this->cube.commandQueue.execute();
+		this->cube.twistQueue.execute();
+		if (this->cube.isTwistFinished()) {
+			this->cube.onFinishedTwist.raise();
+		}
 	}
 }
 
