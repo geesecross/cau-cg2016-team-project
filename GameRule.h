@@ -4,6 +4,7 @@
 #include "Camera.h"
 
 class PrintStringAnimaiton;
+class ParticleAnimation;
 
 class GameRule {
 	friend class PrintStringAnimation;
@@ -37,3 +38,13 @@ public:
 	bool stepFrame(const double timeElapsed, const double timeDelta) override;
 };
 
+class Particle : public Actor
+{
+	
+};
+
+class ParticleAnimation : public Animation
+{
+public:
+	bool stepFrame(const double timeElapsed, const double timeDelta) override;
+};

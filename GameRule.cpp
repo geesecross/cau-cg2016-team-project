@@ -140,3 +140,16 @@ bool PrintStringAnimation::stepFrame(const double timeElapsed, const double time
 
 	return timeElapsed > 3;
 }
+
+/*
+Actor actor;
+actor.createComponent<Model>()->bindMesh(Resource::meshes[Resource::Plane])
+.bindShaderProgram(Resource::shaderPrograms[Resource::Phong])
+.setColor({ 1, 1, 1, 1 });
+auto child = actor.createChild<Actor>();
+child->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Plane])
+.bindShaderProgram(Resource::shaderPrograms[Resource::Phong])
+.setColor({ 1, 0, 0, 1 });
+child->getTransform().rotatePost(Rotation().rotateByEuler({}));
+camera->render(actor);
+*/
