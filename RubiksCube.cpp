@@ -4,8 +4,6 @@
 #include <cmath>
 #include "GameRule.h"
 
-extern std::shared_ptr<GameRule> gameRule;
-
 RubiksCube::RubiksCube(const size_t size, std::weak_ptr<AnimationManager> animationManager) : animationManager(animationManager), size(size) {
 	this->blocks.resize(size);
 	for (size_t x = 0; x < size; ++x) {
