@@ -14,14 +14,14 @@ GameRule::GameRule(std::weak_ptr<RubiksCube> rubiksCube, std::weak_ptr<Animation
 	print("press 'y' to start game");
 }
 
-void GameRule::reset() {
-	rubiksCube.reset();
+void GameRule::resetGame() {
+	rubiksCube.lock()->resetBlocksAndCursor();
 	print("reset");
 	this->gameStarted = false;
 }
 
 void GameRule::scramble() {
-	rubiksCube.reset();
+	rubiksCube.lock()->resetBlocksAndCursor();
 	srand((unsigned)time(NULL));
 	const int indices[3] = { 0, 1, 2 };
 	const Vector3f axis_vectors[3] = { Vector3f::xVector(), Vector3f::yVector(), Vector3f::zVector() };
@@ -48,6 +48,9 @@ void GameRule::scramble() {
 		previous_index = current_index;
 		previous_rotation_degree = current_rotation_degree;
 	}
+	// game start
+	print("game start");
+	this->gameStarted = true;
 }
 
 bool GameRule::isAllBlockAligned(Vector3f std_vector) const {
@@ -95,11 +98,6 @@ void GameRule::onFinishedTwist() {
 		if (this->judge()) {
 			win();
 		}
-	}
-	else {
-		// game start
-		print("game start");
-		this->gameStarted = true;
 	}
 }
 

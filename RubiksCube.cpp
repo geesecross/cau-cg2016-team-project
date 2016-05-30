@@ -18,7 +18,7 @@ RubiksCube::RubiksCube(const size_t size, std::weak_ptr<AnimationManager> animat
 
 	this->cursor = this->createChild<Cursor>(std::ref(*this));
 
-	this->reset();
+	this->resetBlocksAndCursor();
 }
 
 std::shared_ptr<RubiksCube::Cursor> RubiksCube::getCursor() {
@@ -50,7 +50,7 @@ size_t RubiksCube::getSize() const {
 	return this->size;
 }
 
-void RubiksCube::reset() {
+void RubiksCube::resetBlocksAndCursor() {
 	this->twistQueue.clear();
 
 	// reset block transforms
@@ -68,7 +68,7 @@ void RubiksCube::reset() {
 	}
 
 	// reset cursor
-	this->cursor.lock()->reset();
+	this->cursor.lock()->resetPositionAndRotation();
 }
 
 bool RubiksCube::isTwistFinished() const {
@@ -239,7 +239,7 @@ void RubiksCube::Cursor::rotateAxis(bool clockwise) {
 	this->updateTransform();
 }
 
-void RubiksCube::Cursor::reset()
+void RubiksCube::Cursor::resetPositionAndRotation()
 {
 	this->position = { (float)(cube.size / 2), (float)(cube.size / 2), (float)(cube.size - 1) };
 	this->rotation = Rotation();

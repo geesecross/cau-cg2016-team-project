@@ -21,7 +21,7 @@ public:
 		Vector3f getSelected();
 		void twist(bool clockwise);
 		void rotateAxis(bool clockwise);
-		void reset();
+		void resetPositionAndRotation();
 	};
 private:
 	const size_t size;
@@ -40,7 +40,7 @@ public:
 
 	void twist(const size_t index, const Rotation & rotation);
 	size_t getSize() const;
-	void reset();
+	void resetBlocksAndCursor();
 	bool isTwistFinished() const;
 };
 

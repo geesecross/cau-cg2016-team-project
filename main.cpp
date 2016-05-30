@@ -209,7 +209,7 @@ void onKeyboardUp(unsigned char ascii, int x, int y) {
 	switch(ascii)
 	{
 		case 't':
-			gameRule->reset();
+			gameRule->resetGame();
 			break;
 		case 'y':
 			gameRule->scramble();

@@ -21,7 +21,7 @@ private:
 	void onFinishedTwist();
 public:
 	GameRule(std::weak_ptr<RubiksCube> cube, std::weak_ptr<AnimationManager> animationManager, std::weak_ptr<Camera> camera);
-	void reset();
+	void resetGame();
 	void scramble();
 	bool judge();
 	void win();
