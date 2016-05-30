@@ -51,7 +51,7 @@ bool init() {
 	initCameraVectors();
 
 	rubiksCube.reset(new RubiksCube(cube_size, animationManager));
-	gameRule.reset(new GameRule(*rubiksCube, animationManager));
+	gameRule.reset(new GameRule(rubiksCube, animationManager, camera));
 
 	return true;
 }
