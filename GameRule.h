@@ -10,7 +10,7 @@ private:
 	std::weak_ptr<AnimationManager> animationManager;
 	CommandQueue commandQueue;
 	bool isAllBlockAligned(Vector3f std_vector) const;
-	void print(char * msg);
+	void print(const std::string & message);
 public:
 	GameRule(RubiksCube & cube, std::weak_ptr<AnimationManager> animationManager);
 	void reset();
@@ -24,9 +24,9 @@ class PrintStrAnimation : public Animation
 {
 private:
 	GameRule & gameRule;
-	char* msg;
+	std::string message;
 public:
-	PrintStrAnimation(GameRule & gameRule, char* msg);
+	PrintStrAnimation(GameRule & gameRule, const std::string & message);
 	void onStart() override;
 	bool stepFrame(const double timeElpased, const double timeDelta) override;
 	void onFinished() override;

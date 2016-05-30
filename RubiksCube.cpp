@@ -31,7 +31,7 @@ std::shared_ptr<RubiksCube::Cursor> RubiksCube::getCursor() {
 
 void RubiksCube::twist(const size_t index, const Rotation & rotation) {
 	auto ani = std::make_shared<TwistAnimation>(*this, index, rotation);
-	bool empty = this->commandQueue.empty();
+	bool empty = this->commandQueue.isEmpty();
 
 	this->commandQueue.push([=](bool interrupted) {
 		if (!ani->isStarted()) {
@@ -74,6 +74,10 @@ void RubiksCube::reset()
 
 	// 커서 초기화
 	this->cursor.lock()->reset();
+}
+
+bool RubiksCube::isTwistFinished() const {
+	return this->commandQueue.isEmpty();
 }
 
 TwistAnimation::TwistAnimation(RubiksCube & cube, size_t index, const Rotation & rotation) : cube(cube), index(index), rotation(rotation) {

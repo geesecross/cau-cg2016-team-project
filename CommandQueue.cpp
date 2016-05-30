@@ -1,6 +1,6 @@
 #include "CommandQueue.h"
 
-bool CommandQueue::empty() const {
+bool CommandQueue::isEmpty() const {
 	return this->queue.empty();
 }
 

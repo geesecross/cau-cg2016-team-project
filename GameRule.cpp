@@ -80,10 +80,10 @@ bool GameRule::isAllBlockAligned(Vector3f std_vector) const
 	return true;
 }
 
-void GameRule::print(char* msg)
+void GameRule::print(const std::string & message)
 {
-	auto ani = std::make_shared<PrintStrAnimation>(*this, msg);
-	bool empty = this->commandQueue.empty();
+	auto ani = std::make_shared<PrintStrAnimation>(*this, message);
+	bool empty = this->commandQueue.isEmpty();
 
 	this->commandQueue.push([=](bool interrupted) {
 		if (!ani->isStarted()) {
@@ -127,7 +127,7 @@ bool GameRule::isStart() const
 	return this->game_started;
 }
 
-PrintStrAnimation::PrintStrAnimation(GameRule & gameRule, char* msg) : gameRule(gameRule), msg(msg)
+PrintStrAnimation::PrintStrAnimation(GameRule & gameRule, const std::string & message) : gameRule(gameRule), message(message)
 {
 }
 
@@ -142,10 +142,9 @@ bool PrintStrAnimation::stepFrame(const double timeElpased, const double timeDel
 	const Vector3f & vrp = camera->getViewReferencePoint();
 	const Vector3f & vpn = camera->getViewPlaneNormal();
 	glRasterPos3f(vrp[0]-(vpn[0]*2.f), vrp[1]-(vpn[1]*2.f), vrp[2]-(vpn[2]*2.f));
-	int len = strlen(this->msg);
-	for(int i = 0; i < len; i++)
+	for(int i = 0; i < this->message.size(); i++)
 	{
-		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, this->msg[i]);
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, this->message[i]);
 	}
 	return timeElpased > 3;
 }

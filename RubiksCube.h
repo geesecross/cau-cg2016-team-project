@@ -39,6 +39,7 @@ public:
 	void twist(const size_t index, const Rotation & rotation);
 	size_t getSize() const;
 	void reset();
+	bool isTwistFinished() const;
 };
 
 class TwistAnimation : public Animation {

@@ -11,7 +11,7 @@ private:
 	Queue queue;
 
 public:
-	bool empty() const;
+	bool isEmpty() const;
 	CommandQueue & push(Command && command);
 	CommandQueue & execute(const bool interrupted = false);
 	CommandQueue & clear();
