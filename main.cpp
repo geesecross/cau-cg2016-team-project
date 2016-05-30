@@ -201,6 +201,7 @@ void onKeyboard(unsigned char ascii, int x, int y) {
 		break;
 	case '`':
 		debugMode = !debugMode;
+		gameRule->toggleDebugMode();
 		break;
 	}
 }

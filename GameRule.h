@@ -17,7 +17,8 @@ private:
 	std::shared_ptr<PrintStringAnimation> messageAnimation;
 	std::shared_ptr<ParticleAnimation> particleAnimation;
 	bool gameStarted;
-	static const int maxScramble;
+	static int maxScramble;
+	bool debugMode;
 
 	bool isAllBlockAligned(Vector3f std_vector) const;
 	void print(const std::string & message);
@@ -29,6 +30,7 @@ public:
 	bool judge();
 	void win();
 	bool isStarted() const;
+	bool toggleDebugMode();
 };
 
 class PrintStringAnimation : public Animation {

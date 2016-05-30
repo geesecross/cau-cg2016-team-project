@@ -1,13 +1,14 @@
 #include "GameRule.h"
 #include <ctime>
 #include "Resource.h"
-const int GameRule::maxScramble = 1; // 스크램블 최대 횟수
+int GameRule::maxScramble = 20; // 스크램블 최대 횟수
 const GLfloat Particle::gravity = 0.4f;
 
 GameRule::GameRule(std::weak_ptr<RubiksCube> rubiksCube, std::weak_ptr<AnimationManager> animationManager, std::weak_ptr<Camera> camera)
 	: rubiksCube(rubiksCube),
 	animationManager(animationManager),
 	camera(camera),
+	debugMode(false),
 	onFinishedTwistListener(this, &GameRule::onFinishedTwist) {
 
 	this->rubiksCube.lock()->onFinishedTwist.addListener(this->onFinishedTwistListener);
@@ -124,6 +125,18 @@ void GameRule::win() {
 
 bool GameRule::isStarted() const {
 	return this->gameStarted;
+}
+
+bool GameRule::toggleDebugMode()
+{
+	this->debugMode = !(this->debugMode);
+	if(this->debugMode)
+	{
+		maxScramble = 1;
+	} else {
+		maxScramble = 20;
+	}
+	return this->debugMode;
 }
 
 PrintStringAnimation::PrintStringAnimation(std::weak_ptr<Camera> camera, const std::string & message) 
