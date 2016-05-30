@@ -9,6 +9,7 @@ namespace Resource {
 		Arrow,
 		Cube,
 		Teapot,
+		Particle
 	};
 	enum ShaderProgramId {
 		Phong,

@@ -22,6 +22,7 @@ namespace Resource {
 		meshes[Arrow] = new Mesh(Mesh::createFromDatFile("models/arrow.dat"));
 		meshes[Cube] = new Mesh(Mesh::createFromDatFile("models/cube.dat"));
 		meshes[Teapot] = new Mesh(Mesh::createFromDatFile("models/Teapot.dat"));
+		meshes[Particle] = new Mesh(Mesh::createFromDatFile("models/particle.dat"));
 	}
 
 	void uninit() {
