@@ -2,6 +2,7 @@
 #include <map>
 #include "Mesh.h"
 #include "ShaderProgram.h"
+#include "Texture.h"
 
 namespace Resource {
 	enum MeshId {
@@ -16,9 +17,13 @@ namespace Resource {
 		Phong2,
 		SimpleTexture,
 	};
+	enum TextureId {
+		TexturePng
+	};
 
 	extern std::map<MeshId, Mesh *> meshes;
 	extern std::map<ShaderProgramId, ShaderProgram *> shaderPrograms;
+	extern std::map<TextureId, Texture *> textures;
 
 	void init();
 	void uninit();

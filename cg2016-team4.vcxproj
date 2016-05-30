@@ -87,14 +87,14 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freeglut.lib;glew32.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freeglut.lib;glew32.lib;SOIL_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /i /y /e "$(ProjectDir)bin" "$(OutDir)"
-xcopy /i /y /e "$(ProjectDir)models" "$(OutDir)models"
+xcopy /i /y /e "$(ProjectDir)resources" "$(OutDir)resources"
 xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -118,12 +118,12 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(ProjectDir)lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freeglut.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freeglut.lib;glew32.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /i /y /e "$(ProjectDir)bin" "$(OutDir)"
-xcopy /i /y /e "$(ProjectDir)models" "$(OutDir)models"
+xcopy /i /y /e "$(ProjectDir)resources" "$(OutDir)resources"
 xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

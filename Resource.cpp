@@ -1,11 +1,26 @@
 #include "Resource.h"
 #include "SimpleIlluminationModelShaderProgram.h"
-//#include "TextureShaderProgram.h"
+#include <GL/SOIL.h>
+
 namespace Resource {
 	std::map<MeshId, Mesh *> meshes;
 	std::map<ShaderProgramId, ShaderProgram *> shaderPrograms;
+	std::map<TextureId, Texture *> textures;
 
 	void init() {
+		meshes[Plane] = new Mesh(Mesh::createFromDatFile("resources/plane.dat"));
+		meshes[Arrow] = new Mesh(Mesh::createFromDatFile("resources/arrow.dat"));
+		meshes[Cube] = new Mesh(Mesh::createFromDatFile("resources/cube.dat"));
+		meshes[Teapot] = new Mesh(Mesh::createFromDatFile("resources/Teapot.dat"));
+		meshes[Particle] = new Mesh(Mesh::createFromDatFile("resources/particle.dat"));
+
+		textures[TexturePng] = new Texture(SOIL_load_OGL_texture(
+			"resources/texture.png",
+			SOIL_LOAD_AUTO,
+			SOIL_CREATE_NEW_ID,
+			SOIL_FLAG_MIPMAPS
+		));
+
 		shaderPrograms[Phong] = new SimpleIlluminationModelShaderProgram(
 			SimpleIlluminationModelShaderProgram::createPhong()
 			.setLightVector({ 0, 0, 50 })
@@ -18,11 +33,6 @@ namespace Resource {
 		);
 		//shaderPrograms[SimpleTexture] = new TextureShaderProgram(
 			//TextureShaderProgram::create());
-		meshes[Plane] = new Mesh(Mesh::createFromDatFile("models/plane.dat"));
-		meshes[Arrow] = new Mesh(Mesh::createFromDatFile("models/arrow.dat"));
-		meshes[Cube] = new Mesh(Mesh::createFromDatFile("models/cube.dat"));
-		meshes[Teapot] = new Mesh(Mesh::createFromDatFile("models/Teapot.dat"));
-		meshes[Particle] = new Mesh(Mesh::createFromDatFile("models/particle.dat"));
 	}
 
 	void uninit() {

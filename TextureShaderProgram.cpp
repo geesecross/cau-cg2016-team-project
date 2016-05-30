@@ -1,15 +1,10 @@
 #include "TextureShaderProgram.h"
 #include "FileHelper.h"
-//#include <GL/SOIL.h>
+#include "Resource.h"
+
 TextureShaderProgram::TextureShaderProgram(Recipe & recipe):
 	ShaderProgram(recipe),
-	texture(/*SOIL_load_OGL_texture
-		(
-			"shaders/texture.png",
-			SOIL_LOAD_AUTO,
-			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_MIPMAPS
-		)*/0)
+	texture(Resource::textures[Resource::TexturePng])
 {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -27,12 +22,15 @@ TextureShaderProgram TextureShaderProgram::create()
 		);
 }
 
-void TextureShaderProgram::initInput() const
-{
+GLuint TextureShaderProgram::getTextureId() const {
+	return texture->getTextureId();
+}
+
+void TextureShaderProgram::initInput() const {
 	GLint objectId;
 	if (0 <= (objectId = glGetUniformLocation(this->getProgramId(), "tex0"))) {
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture.getTextureId());
+		glBindTexture(GL_TEXTURE_2D, texture->getTextureId());
 
 		glUniform1i(objectId, 0);
 	}
