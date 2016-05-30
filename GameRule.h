@@ -7,7 +7,7 @@ class GameRule {
 private:
 	Event<void()>::MemberFunctionListener<GameRule> onFinishedTwistListener;
 	RubiksCube & cube;
-	bool game_started;
+	bool gameStarted;
 	std::weak_ptr<AnimationManager> animationManager;
 	CommandQueue commandQueue;
 	bool isAllBlockAligned(Vector3f std_vector) const;
@@ -19,7 +19,7 @@ public:
 	void scramble();
 	bool judge();
 	void win();
-	bool isStart() const;
+	bool isStarted() const;
 };
 
 class PrintStrAnimation : public Animation {

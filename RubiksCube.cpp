@@ -7,7 +7,6 @@
 extern std::shared_ptr<GameRule> gameRule;
 
 RubiksCube::RubiksCube(const size_t size, std::weak_ptr<AnimationManager> animationManager) : animationManager(animationManager), size(size) {
-	float center = (size - 1) / 2.0f;
 	this->blocks.resize(size);
 	for (size_t x = 0; x < size; ++x) {
 		this->blocks[x].resize(size);
@@ -15,14 +14,13 @@ RubiksCube::RubiksCube(const size_t size, std::weak_ptr<AnimationManager> animat
 			this->blocks[x][y].resize(size);
 			for (size_t z = 0; z < size; ++z) {
 				this->blocks[x][y][z] = this->createChild<Block>();
-				this->blocks[x][y][z].lock()->getTransform()
-					.scalePost(Vector3f(0.9f))
-					.translatePost(Vector3f((float)x - center, (float)y - center, (float)z - center));
 			}
 		}
 	}
 
 	this->cursor = this->createChild<Cursor>(std::ref(*this));
+
+	this->reset();
 }
 
 std::shared_ptr<RubiksCube::Cursor> RubiksCube::getCursor() {
@@ -54,12 +52,11 @@ size_t RubiksCube::getSize() const {
 	return this->size;
 }
 
-void RubiksCube::reset()
-{
+void RubiksCube::reset() {
 	this->twistQueue.clear();
 
-	// 블럭 초기화 (RubiksCube 생성자에서 가져와서 수정함)
-	size_t size = this->size;
+	// reset block transforms
+	const size_t size = this->size;
 	float center = (size - 1) / 2.0f;
 	for (size_t x = 0; x < size; ++x) {
 		for (size_t y = 0; y < size; ++y) {
@@ -67,12 +64,12 @@ void RubiksCube::reset()
 				this->blocks[x][y][z].lock()->getTransform()
 					.reset()
 					.scalePost(Vector3f(0.9f))
-					.translatePost(Vector3f((float)x - center, (float)y - center, (float)z - center));
+					.translatePost({ (float)x - center, (float)y - center, (float)z - center });
 			}
 		}
 	}
 
-	// 커서 초기화
+	// reset cursor
 	this->cursor.lock()->reset();
 }
 

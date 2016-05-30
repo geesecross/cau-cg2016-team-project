@@ -10,7 +10,7 @@ GameRule::GameRule(RubiksCube & cube, std::weak_ptr<AnimationManager> animationM
 	onFinishedTwistListener(this, &GameRule::onFinishedTwist)
 {
 	this->cube.onFinishedTwist.addListener(this->onFinishedTwistListener);
-	this->game_started = false;
+	this->gameStarted = false;
 	print("press 'y' to start game");
 }
 
@@ -18,7 +18,7 @@ void GameRule::reset()
 {
 	cube.reset();
 	print("reset");
-	this->game_started = false;
+	this->gameStarted = false;
 }
 
 void GameRule::scramble()
@@ -81,8 +81,7 @@ bool GameRule::isAllBlockAligned(Vector3f std_vector) const
 	return true;
 }
 
-void GameRule::print(const std::string & message)
-{
+void GameRule::print(const std::string & message) {
 	auto ani = std::make_shared<PrintStrAnimation>(*this, message);
 	bool empty = this->commandQueue.isEmpty();
 
@@ -103,19 +102,21 @@ void GameRule::print(const std::string & message)
 }
 
 void GameRule::onFinishedTwist() {
-	// game start
-	print("game start");
-	this->game_started = true;
+	if (this->gameStarted) {
+		if (this->judge()) {
+			win();
+		}
+	}
+	else {
+		// game start
+		print("game start");
+		this->gameStarted = true;
+	}
 }
 
-bool GameRule::judge()
-{
-	if (this->game_started)
-	{
-		if(isAllBlockAligned(Vector3f::zVector()) 
-			&& isAllBlockAligned(Vector3f::yVector()))
-		{
-			win();
+bool GameRule::judge() {
+	if (this->gameStarted) {
+		if(isAllBlockAligned(Vector3f::zVector()) && isAllBlockAligned(Vector3f::yVector())) {
 			return true;
 		}
 		
@@ -123,15 +124,13 @@ bool GameRule::judge()
 	return false;
 }
 
-void GameRule::win()
-{
+void GameRule::win() {
 	print("win");
-	this->game_started = false;
+	this->gameStarted = false;
 }
 
-bool GameRule::isStart() const
-{
-	return this->game_started;
+bool GameRule::isStarted() const {
+	return this->gameStarted;
 }
 
 PrintStrAnimation::PrintStrAnimation(GameRule & gameRule, const std::string & message) : gameRule(gameRule), message(message) {
@@ -141,16 +140,17 @@ void PrintStrAnimation::onStart() {
 
 }
 
-bool PrintStrAnimation::stepFrame(const double timeElapsed, const double timeDelta)
-{
+bool PrintStrAnimation::stepFrame(const double timeElapsed, const double timeDelta) {
 	glColor3f(1.f, 1.f, 1.f);
+	
 	const Vector3f & vrp = camera->getViewReferencePoint();
 	const Vector3f & vpn = camera->getViewPlaneNormal();
 	glRasterPos3f(vrp[0] - (vpn[0] * 2.f), vrp[1] - (vpn[1] * 2.f), vrp[2] - (vpn[2] * 2.f));
-	for (int i = 0; i < this->message.size(); i++)
-	{
+
+	for (size_t i = 0; i < this->message.size(); i++) {
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, this->message[i]);
 	}
+
 	return timeElapsed > 3;
 }
 

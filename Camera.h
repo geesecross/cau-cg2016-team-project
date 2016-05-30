@@ -5,7 +5,6 @@
 
 #include "Vector.h"
 #include "Actor.h"
-#include "Shader.h"
 #include "Model.h"
 
 class Camera {
