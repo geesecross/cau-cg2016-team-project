@@ -1,7 +1,8 @@
 #include "GameRule.h"
 #include <ctime>
-#include "Camera.h"
-const int max_scramble = 20; // 스크램블 최대 횟수
+#include "Resource.h"
+const int GameRule::maxScramble = 1; // 스크램블 최대 횟수
+const GLfloat Particle::gravity = 0.4f;
 
 GameRule::GameRule(std::weak_ptr<RubiksCube> rubiksCube, std::weak_ptr<AnimationManager> animationManager, std::weak_ptr<Camera> camera)
 	: rubiksCube(rubiksCube),
@@ -30,11 +31,11 @@ void GameRule::scramble() {
 	int previous_axis_vector = 0;
 	int previous_index = 0;
 	int previous_rotation_degree = 0;
-	for(int i = 0; i < max_scramble; i++)
+	for(int i = 0; i < maxScramble; i++)
 	{
-		int current_axis_vector = rand() % 3;
-		int current_index = rand() % 3;
-		int current_rotation_degree = rand() % 3;
+		int current_axis_vector = (int)((double)rand() / RAND_MAX * 3);
+		int current_index = (int)((double)rand() / RAND_MAX * 3);
+		int current_rotation_degree = (int)((double)rand() / RAND_MAX * 3);
 		// 만약 이전에 수행한 twist와 비슷한 조건이면 다른 조건을 뽑게 다시 실행
 		if(previous_axis_vector == current_axis_vector 
 			|| previous_index == current_index
@@ -89,7 +90,7 @@ void GameRule::print(const std::string & message) {
 		this->messageAnimation->interrupt();
 
 	}
-	this->messageAnimation = std::make_shared<PrintStringAnimation>(*this, camera, message);
+	this->messageAnimation = std::make_shared<PrintStringAnimation>(camera, message);
 	this->animationManager.lock()->push(this->messageAnimation);
 }
 
@@ -113,6 +114,11 @@ bool GameRule::judge() {
 
 void GameRule::win() {
 	print("win");
+	if (this->particleAnimation) {
+		this->particleAnimation->interrupt();
+	}
+	this->particleAnimation = std::make_shared<ParticleAnimation>(camera);
+	this->animationManager.lock()->push(this->particleAnimation);
 	this->gameStarted = false;
 }
 
@@ -120,8 +126,8 @@ bool GameRule::isStarted() const {
 	return this->gameStarted;
 }
 
-PrintStringAnimation::PrintStringAnimation(GameRule & gameRule, std::weak_ptr<Camera> camera, const std::string & message) 
-	: gameRule(gameRule), camera(camera), message(message) {
+PrintStringAnimation::PrintStringAnimation(std::weak_ptr<Camera> camera, const std::string & message) 
+	: camera(camera), message(message) {
 
 }
 
@@ -139,15 +145,48 @@ bool PrintStringAnimation::stepFrame(const double timeElapsed, const double time
 	return timeElapsed > 3;
 }
 
-/*
-Actor actor;
-actor.createComponent<Model>()->bindMesh(Resource::meshes[Resource::Plane])
-.bindShaderProgram(Resource::shaderPrograms[Resource::Phong])
-.setColor({ 1, 1, 1, 1 });
-auto child = actor.createChild<Actor>();
-child->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Plane])
-.bindShaderProgram(Resource::shaderPrograms[Resource::Phong])
-.setColor({ 1, 0, 0, 1 });
-child->getTransform().rotatePost(Rotation().rotateByEuler({}));
-camera->render(actor);
-*/
+Particle::Particle() {
+	srand((unsigned)time(NULL));
+	this->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Particle])
+		.bindShaderProgram(Resource::shaderPrograms[Resource::Phong])
+		.setColor({
+		1.f,
+		1.f,
+		1.f,
+		1.f
+	});
+
+}
+
+ParticleAnimation::ParticleAnimation(std::weak_ptr<Camera> camera) 
+	: camera(camera) {
+}
+
+void ParticleAnimation::onStart() {
+	// particle들의 초기 위치 설정
+	const Vector3f & vrp = camera.lock()->getViewReferencePoint();
+	const Vector3f & vpn = camera.lock()->getViewPlaneNormal();
+	for(int i = 0; i < MAX_PARTICLES; i++)
+	{
+		particles[i].getTransform().translatePost({
+			vrp[0] - (vpn[0] * 2.f) - ((float)rand() / RAND_MAX * 10.f - 5.f),
+			vrp[1] - (vpn[1] * 2.f) - ((float)rand() / RAND_MAX * 10.f - 5.f),
+			vrp[2] - (vpn[2] * 2.f) - ((float)rand() / RAND_MAX * 10.f - 5.f)
+		});
+	}
+}
+
+bool ParticleAnimation::stepFrame(const double timeElapsed, const double timeDelta) {
+	// particle들이 각자 x, z는 랜덤으로 y는 정해진 떨어지는 속도에 따라 움직임
+	for (int i = 0; i < MAX_PARTICLES; i++)
+	{
+		particles[i].getTransform().translatePost({
+			(float)timeDelta * ((float)rand() / RAND_MAX - 0.5f),
+			- ((float)timeDelta * Particle::gravity),
+			(float)timeDelta * ((float)rand() / RAND_MAX - 0.5f)
+		});
+		camera.lock()->render(particles[i], true);
+	}
+
+	return timeElapsed > 5;
+}

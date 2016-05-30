@@ -2,6 +2,7 @@
 
 #include "RubiksCube.h"
 #include "Camera.h"
+#define MAX_PARTICLES 500 // 최대 Particle 개수
 
 class PrintStringAnimaiton;
 class ParticleAnimation;
@@ -14,7 +15,9 @@ private:
 	std::weak_ptr<AnimationManager> animationManager;
 	std::weak_ptr<Camera> camera;
 	std::shared_ptr<PrintStringAnimation> messageAnimation;
+	std::shared_ptr<ParticleAnimation> particleAnimation;
 	bool gameStarted;
+	static const int maxScramble;
 
 	bool isAllBlockAligned(Vector3f std_vector) const;
 	void print(const std::string & message);
@@ -30,21 +33,30 @@ public:
 
 class PrintStringAnimation : public Animation {
 private:
-	GameRule & gameRule;
 	std::weak_ptr<Camera> camera;
 	std::string message;
 public:
-	PrintStringAnimation(GameRule & gameRule, std::weak_ptr<Camera> camera, const std::string & message);
+	PrintStringAnimation(std::weak_ptr<Camera> camera, const std::string & message);
 	bool stepFrame(const double timeElapsed, const double timeDelta) override;
 };
 
 class Particle : public Actor
 {
-	
+	friend class ParticleAnimation;
+private:
+	Vector4f color;
+	static const GLfloat gravity;
+public:
+	Particle();
 };
 
 class ParticleAnimation : public Animation
 {
+private:
+	Particle particles[MAX_PARTICLES];
+	std::weak_ptr<Camera> camera;
 public:
+	ParticleAnimation(std::weak_ptr<Camera> camera);
+	void onStart() override;
 	bool stepFrame(const double timeElapsed, const double timeDelta) override;
 };
