@@ -2,8 +2,10 @@
 
 #include "RubiksCube.h"
 
+class PrintStringAnimaiton;
+
 class GameRule {
-	friend class PrintStrAnimation;
+	friend class PrintStringAnimation;
 private:
 	Event<void()>::MemberFunctionListener<GameRule> onFinishedTwistListener;
 	RubiksCube & cube;
@@ -23,12 +25,12 @@ public:
 	bool isStarted() const;
 };
 
-class PrintStrAnimation : public Animation {
+class PrintStringAnimation : public Animation {
 private:
 	GameRule & gameRule;
 	std::string message;
 public:
-	PrintStrAnimation(GameRule & gameRule, const std::string & message);
+	PrintStringAnimation(GameRule & gameRule, const std::string & message);
 	bool stepFrame(const double timeElapsed, const double timeDelta) override;
 };
 

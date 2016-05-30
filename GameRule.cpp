@@ -86,7 +86,7 @@ void GameRule::print(const std::string & message) {
 		this->messageAnimation->interrupt();
 
 	}
-	this->messageAnimation = std::make_shared<PrintStrAnimation>(*this, message);
+	this->messageAnimation = std::make_shared<PrintStringAnimation>(*this, message);
 	this->animationManager.lock()->push(this->messageAnimation);
 }
 
@@ -122,10 +122,10 @@ bool GameRule::isStarted() const {
 	return this->gameStarted;
 }
 
-PrintStrAnimation::PrintStrAnimation(GameRule & gameRule, const std::string & message) : gameRule(gameRule), message(message) {
+PrintStringAnimation::PrintStringAnimation(GameRule & gameRule, const std::string & message) : gameRule(gameRule), message(message) {
 }
 
-bool PrintStrAnimation::stepFrame(const double timeElapsed, const double timeDelta) {
+bool PrintStringAnimation::stepFrame(const double timeElapsed, const double timeDelta) {
 	glColor3f(1.f, 1.f, 1.f);
 	
 	const Vector3f & vrp = camera->getViewReferencePoint();
