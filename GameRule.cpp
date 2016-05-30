@@ -3,72 +3,72 @@
 #include "Camera.h"
 const int max_scramble = 20; // 스크램블 최대 횟수
 
-extern std::shared_ptr<Camera> camera;
-GameRule::GameRule(RubiksCube & cube, std::weak_ptr<AnimationManager> animationManager)
-	: cube(cube),
+GameRule::GameRule(std::weak_ptr<RubiksCube> rubiksCube, std::weak_ptr<AnimationManager> animationManager, std::weak_ptr<Camera> camera)
+	: rubiksCube(rubiksCube),
 	animationManager(animationManager),
-	onFinishedTwistListener(this, &GameRule::onFinishedTwist)
-{
-	this->cube.onFinishedTwist.addListener(this->onFinishedTwistListener);
+	camera(camera),
+	onFinishedTwistListener(this, &GameRule::onFinishedTwist) {
+
+	this->rubiksCube.lock()->onFinishedTwist.addListener(this->onFinishedTwistListener);
 	this->gameStarted = false;
 	print("press 'y' to start game");
 }
 
-void GameRule::reset()
-{
-	cube.reset();
+void GameRule::reset() {
+	rubiksCube.reset();
 	print("reset");
 	this->gameStarted = false;
 }
 
-void GameRule::scramble()
-{
-	cube.reset();
+void GameRule::scramble() {
+	rubiksCube.reset();
 	srand((unsigned)time(NULL));
 	const int indices[3] = { 0, 1, 2 };
 	const Vector3f axis_vectors[3] = { Vector3f::xVector(), Vector3f::yVector(), Vector3f::zVector() };
 	Rotation rot = Rotation();
 	const GLfloat rot_degrees[3] = { 90.f, 180.f, 270.f };
-	int prev_axis_vec = 0;
-	int prev_indices = 0;
-	int prev_rot_degree = 0;
+	int previous_axis_vector = 0;
+	int previous_index = 0;
+	int previous_rotation_degree = 0;
 	for(int i = 0; i < max_scramble; i++)
 	{
-		int cur_axis_vec = rand() % 3;
-		int cur_indices = rand() % 3;
-		int cur_rot_degree = rand() % 3;
+		int current_axis_vector = rand() % 3;
+		int current_index = rand() % 3;
+		int current_rotation_degree = rand() % 3;
 		// 만약 이전에 수행한 twist와 비슷한 조건이면 다른 조건을 뽑게 다시 실행
-		if(prev_axis_vec == cur_axis_vec 
-			|| prev_indices == cur_indices
-			|| prev_rot_degree == cur_rot_degree)
-		{
+		if(previous_axis_vector == current_axis_vector 
+			|| previous_index == current_index
+			|| previous_rotation_degree == current_rotation_degree) {
+
 			i--;
 			continue;
 		}
-		cube.twist(indices[cur_indices], rot.rotateByEuler(axis_vectors[cur_axis_vec] * rot_degrees[cur_rot_degree]));
-		prev_axis_vec = cur_axis_vec;
-		prev_indices = cur_indices;
-		prev_rot_degree = cur_rot_degree;
+		rubiksCube.lock()->twist(indices[current_index], rot.rotateByEuler(axis_vectors[current_axis_vector] * rot_degrees[current_rotation_degree]));
+		previous_axis_vector = current_axis_vector;
+		previous_index = current_index;
+		previous_rotation_degree = current_rotation_degree;
 	}
 }
 
-bool GameRule::isAllBlockAligned(Vector3f std_vector) const
-{
-	size_t size = cube.getSize();
-	Vector3f comparison_vector_f = cube.blocks[0][0][0].lock()->getTransform().transformDirection(std_vector);
+bool GameRule::isAllBlockAligned(Vector3f std_vector) const {
+	size_t size = rubiksCube.lock()->getSize();
+	// 첫번째 블럭이 transform 한 대로, 기준 벡터를 transform 해서 다른 블럭들의 비교 대상으로 삼을 벡터를 만든다.
+	Vector3f comparison_vector_f = rubiksCube.lock()->blocks[0][0][0].lock()->getTransform().transformDirection(std_vector);
 	Vector<GLint, 3> comparison_vector_i = {
 		(int)(comparison_vector_f[0] + 0.5f),
 		(int)(comparison_vector_f[1] + 0.5f),
 		(int)(comparison_vector_f[2] + 0.5f)
 	};
 
+	// 각각의 블럭에 대해 위와 같이 수행해서, 위에서 만든 비교 대상 벡터와 같은지 확인한다.
+	// 모든 블럭이 같다면, 기준 벡터에 대해 모든 블럭이 같은 방향으로 transform 한 것.
 	for (size_t x = 0; x < size; x++)
 	{
 		for (size_t y = 0; y < size; y++)
 		{
 			for (size_t z = 0; z < size; z++)
 			{
-				Vector3f vector_f = cube.blocks[x][y][z].lock()->getTransform().transformDirection(std_vector);
+				Vector3f vector_f = rubiksCube.lock()->blocks[x][y][z].lock()->getTransform().transformDirection(std_vector);
 				Vector<GLint, 3> vector_i = {
 					(int)(vector_f[0] + 0.5f),
 					(int)(vector_f[1] + 0.5f),
@@ -86,7 +86,7 @@ void GameRule::print(const std::string & message) {
 		this->messageAnimation->interrupt();
 
 	}
-	this->messageAnimation = std::make_shared<PrintStringAnimation>(*this, message);
+	this->messageAnimation = std::make_shared<PrintStringAnimation>(*this, camera, message);
 	this->animationManager.lock()->push(this->messageAnimation);
 }
 
@@ -105,10 +105,10 @@ void GameRule::onFinishedTwist() {
 
 bool GameRule::judge() {
 	if (this->gameStarted) {
+		// z vector와 y vector를 기준으로 모든 블럭이 같은 방향을 보고 있는지 확인한다.
 		if(isAllBlockAligned(Vector3f::zVector()) && isAllBlockAligned(Vector3f::yVector())) {
 			return true;
 		}
-		
 	}
 	return false;
 }
@@ -122,14 +122,16 @@ bool GameRule::isStarted() const {
 	return this->gameStarted;
 }
 
-PrintStringAnimation::PrintStringAnimation(GameRule & gameRule, const std::string & message) : gameRule(gameRule), message(message) {
+PrintStringAnimation::PrintStringAnimation(GameRule & gameRule, std::weak_ptr<Camera> camera, const std::string & message) 
+	: gameRule(gameRule), camera(camera), message(message) {
+
 }
 
 bool PrintStringAnimation::stepFrame(const double timeElapsed, const double timeDelta) {
 	glColor3f(1.f, 1.f, 1.f);
 	
-	const Vector3f & vrp = camera->getViewReferencePoint();
-	const Vector3f & vpn = camera->getViewPlaneNormal();
+	const Vector3f & vrp = camera.lock()->getViewReferencePoint();
+	const Vector3f & vpn = camera.lock()->getViewPlaneNormal();
 	glRasterPos3f(vrp[0] - (vpn[0] * 2.f), vrp[1] - (vpn[1] * 2.f), vrp[2] - (vpn[2] * 2.f));
 
 	for (size_t i = 0; i < this->message.size(); i++) {
