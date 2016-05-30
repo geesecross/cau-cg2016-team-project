@@ -82,23 +82,12 @@ bool GameRule::isAllBlockAligned(Vector3f std_vector) const
 }
 
 void GameRule::print(const std::string & message) {
-	auto ani = std::make_shared<PrintStrAnimation>(*this, message);
-	bool empty = this->commandQueue.isEmpty();
+	if (this->messageAnimation) {
+		this->messageAnimation->interrupt();
 
-	this->commandQueue.push([=](bool interrupted) {
-		if (!ani->isStarted()) {
-			this->animationManager.lock()->push(ani);
-		}
-		if (interrupted) {
-			ani->interrupt();
-		}
-		return ani->isFinished();
-	});
-
-	if (empty) {
-		// first entry
-		this->commandQueue.execute();
 	}
+	this->messageAnimation = std::make_shared<PrintStrAnimation>(*this, message);
+	this->animationManager.lock()->push(this->messageAnimation);
 }
 
 void GameRule::onFinishedTwist() {
@@ -136,10 +125,6 @@ bool GameRule::isStarted() const {
 PrintStrAnimation::PrintStrAnimation(GameRule & gameRule, const std::string & message) : gameRule(gameRule), message(message) {
 }
 
-void PrintStrAnimation::onStart() {
-
-}
-
 bool PrintStrAnimation::stepFrame(const double timeElapsed, const double timeDelta) {
 	glColor3f(1.f, 1.f, 1.f);
 	
@@ -152,9 +137,4 @@ bool PrintStrAnimation::stepFrame(const double timeElapsed, const double timeDel
 	}
 
 	return timeElapsed > 3;
-}
-
-void PrintStrAnimation::onFinished()
-{
-	gameRule.commandQueue.execute();
 }

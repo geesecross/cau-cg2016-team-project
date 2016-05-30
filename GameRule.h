@@ -9,7 +9,8 @@ private:
 	RubiksCube & cube;
 	bool gameStarted;
 	std::weak_ptr<AnimationManager> animationManager;
-	CommandQueue commandQueue;
+	std::shared_ptr<Animation> messageAnimation;
+
 	bool isAllBlockAligned(Vector3f std_vector) const;
 	void print(const std::string & message);
 	void onFinishedTwist();
@@ -28,8 +29,6 @@ private:
 	std::string message;
 public:
 	PrintStrAnimation(GameRule & gameRule, const std::string & message);
-	void onStart() override;
 	bool stepFrame(const double timeElapsed, const double timeDelta) override;
-	void onFinished() override;
 };
 
