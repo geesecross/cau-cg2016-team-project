@@ -7,6 +7,8 @@
 #include "Shader.h"
 #include "Exception.h"
 
+class Model;
+
 class ShaderProgram {
 public:
 	class Exception : public ::Exception {
@@ -44,5 +46,6 @@ public:
 	virtual ~ShaderProgram();
 
 	GLuint getProgramId() const;
-	virtual void initInput() const;
+	virtual void onPreDraw(const Model & model) const;
+	virtual void onPostDraw(const Model & model) const;
 };

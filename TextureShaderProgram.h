@@ -11,5 +11,5 @@ public:
 	static TextureShaderProgram create();
 	GLuint getTextureId() const;
 
-	virtual void initInput() const override;
+	virtual void onPreDraw(const Model & model) const override;
 };

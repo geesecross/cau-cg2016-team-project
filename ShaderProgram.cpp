@@ -19,8 +19,12 @@ GLuint ShaderProgram::getProgramId() const {
 	return this->programIdHolder->programId;
 }
 
-void ShaderProgram::initInput() const {
+void ShaderProgram::onPreDraw(const Model & model) const {
 	// do nothing - this function is just for inherited classes
+}
+
+void ShaderProgram::onPostDraw(const Model & model) const {
+	// empty
 }
 
 ShaderProgram::ShaderProgramIdHolder::ShaderProgramIdHolder(GLuint programId) {

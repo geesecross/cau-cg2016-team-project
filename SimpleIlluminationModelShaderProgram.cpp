@@ -70,7 +70,7 @@ SimpleIlluminationModelShaderProgram & SimpleIlluminationModelShaderProgram::ena
 	return *this;
 }
 
-void SimpleIlluminationModelShaderProgram::initInput() const {
+void SimpleIlluminationModelShaderProgram::onPreDraw(const Model & model) const {
 	GLint objectId;
 	if (0 <= (objectId = glGetUniformLocation(this->getProgramId(), "in_ambientRatio"))) {
 		glUniform1f(objectId, this->ambientRatio);

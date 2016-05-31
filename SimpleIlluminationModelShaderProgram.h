@@ -25,5 +25,5 @@ public:
 	SimpleIlluminationModelShaderProgram & setLightVector(const Vector3f & vector);
 	SimpleIlluminationModelShaderProgram & enableLightVectorAsPosition(bool enabled);
 	
-	virtual void initInput() const;
+	virtual void onPreDraw(const Model & model) const;
 };

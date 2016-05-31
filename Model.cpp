@@ -52,7 +52,7 @@ void Model::draw(const ShaderProgram & shaderProgram) const {
 		glUniform4fv(objectId, 1, this->color.data());
 	}
 
-	shaderProgram.initInput();
+	shaderProgram.onPreDraw(*this);
 
 	this->mesh->draw(shaderProgram);
 }

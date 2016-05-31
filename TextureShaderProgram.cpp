@@ -26,7 +26,7 @@ GLuint TextureShaderProgram::getTextureId() const {
 	return texture->getTextureId();
 }
 
-void TextureShaderProgram::initInput() const {
+void TextureShaderProgram::onPreDraw(const Model & model) const {
 	GLint objectId;
 	if (0 <= (objectId = glGetUniformLocation(this->getProgramId(), "tex0"))) {
 		glActiveTexture(GL_TEXTURE0);
