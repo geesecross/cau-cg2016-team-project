@@ -1,15 +1,14 @@
 #pragma once
-#include "ShaderProgram.h"
-#include "Texture.h"
+#include "SimpleIlluminationModelShaderProgram.h"
+#include "Model.h"
 
-class TextureShaderProgram : public ShaderProgram {
+class TextureShaderProgram : public SimpleIlluminationModelShaderProgram {
 private:
-	std::shared_ptr<Texture> texture;
+	TextureShaderProgram(Recipe & recipe);
 
 public:
-	TextureShaderProgram(Recipe & recipe);
 	static TextureShaderProgram create();
-	GLuint getTextureId() const;
 
-	virtual void onPreDraw(const Model & model) const override;
+	virtual void onPreDraw(const Model & model) const;
+	virtual void onPostDraw(const Model & model) const;
 };

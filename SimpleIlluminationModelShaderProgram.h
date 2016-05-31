@@ -8,6 +8,7 @@ private:
 	Vector3f lightVector;
 	bool enabledLightVectorAsPosition = false;
 
+protected:
 	SimpleIlluminationModelShaderProgram(Recipe & recipe);
 public:
 	static SimpleIlluminationModelShaderProgram createPhong();

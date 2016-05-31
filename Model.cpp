@@ -33,6 +33,15 @@ Model & Model::setColor(const Vector4f & color) {
 	return *this;
 }
 
+const Texture * Model::getTexture() const{
+	return this->texture;
+}
+
+Model & Model::bindTexture(const Texture * texture) {
+	this->texture = texture;
+	return *this;
+}
+
 const ShaderProgram * Model::getShaderProgram() const {
 	return this->shaderProgram;
 }
@@ -53,6 +62,6 @@ void Model::draw(const ShaderProgram & shaderProgram) const {
 	}
 
 	shaderProgram.onPreDraw(*this);
-
 	this->mesh->draw(shaderProgram);
+	shaderProgram.onPostDraw(*this);
 }

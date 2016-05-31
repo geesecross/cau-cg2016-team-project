@@ -24,11 +24,16 @@ private:
 	std::vector<Face> faces;
 	std::vector<Vector3f> faceNormals;
 	std::vector<Vector3f> vertexNormals;
+	std::vector<Vector2f> texCoords;
 
 	Vector3f calcFaceNormal(const Face & face, size_t cornerIndex) const;
 	float calcCornerAngle(const Face & face, size_t cornerIndex) const;
 
 public:
 	static Mesh createFromDatFile(const std::string & filename);
+
+	const std::vector<Vertex> & getVertices() const;
+	const std::vector<Vector2f> & getTexCoords() const;
+
 	void draw(const ShaderProgram & shaderProgram) const;
 };

@@ -1,11 +1,16 @@
-#version 330 core
+#version 110
 
-in vec2 texcoord0;
-varying vec4 fragColor;
-uniform sampler2D tex0;
+uniform vec4 in_color;
+uniform float in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness;
+uniform sampler2D in_tex0;
 
-layout (location=0) out vec4 out_color;
+varying vec3 fragNormalVector;
+varying vec3 fragEyeVector;
+varying vec3 fragLightVector;
+varying vec2 fragTexCoord;
+vec4 simpleIlluminationModel(vec4 faceColor, vec3 eyeVector, vec3 lightVector, vec3 normalVector, float ambientRatio, float diffusionRatio, float specularRatio, float shiness);
 
 void main() {
-	out_color = texture(tex0, texcoord0);
+	vec4 texColor = texture2D(in_tex0, fragTexCoord);
+	gl_FragColor = simpleIlluminationModel(in_color, fragEyeVector, fragLightVector, fragNormalVector, in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness) * texColor;
 }

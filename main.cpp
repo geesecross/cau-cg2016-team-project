@@ -35,23 +35,30 @@ void initCameraVectors() {
 }
 
 bool init() {
-	if (GLEW_OK != glewInit()) {
-		std::cerr << "Error: glewInit()" << std::endl;
-		return false;
+	try {
+		if (GLEW_OK != glewInit()) {
+			std::cerr << "Error: glewInit()" << std::endl;
+			return false;
+		}
+
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+
+		Resource::init();
+		animationManager.reset(new AnimationManager());
+		camera.reset(new Camera());
+		camera->setPerspectiveProjection(50);
+		initCameraVectors();
+
+		rubiksCube.reset(new RubiksCube(cube_size, animationManager));
+		gameRule.reset(new GameRule(rubiksCube, animationManager, camera));
 	}
-
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-
-	Resource::init();
-	animationManager.reset(new AnimationManager());
-	camera.reset(new Camera());
-	camera->setPerspectiveProjection(50);
-	initCameraVectors();
-
-	rubiksCube.reset(new RubiksCube(cube_size, animationManager));
-	gameRule.reset(new GameRule(rubiksCube, animationManager, camera));
+	catch (Exception & e) {
+		std::cout << e.what() << std::endl;
+		std::cin >> std::string();
+		return true;
+	}
 
 	return true;
 }

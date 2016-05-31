@@ -53,6 +53,18 @@ Mesh Mesh::createFromDatFile(const std::string & filename) {
 				mesh.vertexNormals[f.indices[2]] += faceNormal * mesh.calcCornerAngle(f, 2);
 			}
 		}
+		else if ("TEXCOORD" == fieldName) {
+			std::string skip;
+			size_t count;
+			is >> skip >> count;
+
+			Vector2f v;
+			for (size_t i = 0; i < count; ++i) {
+				is >> v[0] >> v[1];
+				mesh.texCoords.push_back(v);
+			}
+		}
+
 	}
 	is.close();
 
@@ -61,6 +73,14 @@ Mesh Mesh::createFromDatFile(const std::string & filename) {
 	}
 
 	return mesh;
+}
+
+const std::vector<Mesh::Vertex>& Mesh::getVertices() const {
+	return this->vertices;
+}
+
+const std::vector<Vector2f>& Mesh::getTexCoords() const {
+	return this->texCoords;
 }
 
 void Mesh::draw(const ShaderProgram & shaderProgram) const {

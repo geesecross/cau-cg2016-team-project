@@ -28,8 +28,9 @@ Block::Block() {
 			.rotatePost(Rotation().rotateByEuler(position.second))
 			.translatePost(position.first);
 		child->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Plane])
-			.bindShaderProgram(Resource::shaderPrograms[Resource::Phong]);
-		//.bindShaderProgram(Resource::shaderPrograms[Resource::SimpleTexture]);
+		//	.bindShaderProgram(Resource::shaderPrograms[Resource::Phong]);
+			.bindTexture(Resource::textures[Resource::TexturePng])
+			.bindShaderProgram(Resource::shaderPrograms[Resource::SimpleTexture]);
 	}
 
 	for (size_t i = 0; i < 6; ++i) {

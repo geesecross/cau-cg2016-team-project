@@ -16,6 +16,8 @@ private:
 
 public:
 	Texture(GLuint textureId);
+	
+	static GLuint loadTextureFromFile(const char* fileName, GLenum minificationFilter = GL_NEAREST, GLenum magnificationFilter = GL_NEAREST);
 
 	GLuint getTextureId() const;
 };

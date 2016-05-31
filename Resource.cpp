@@ -1,5 +1,6 @@
 #include "Resource.h"
 #include "SimpleIlluminationModelShaderProgram.h"
+#include "TextureShaderProgram.h"
 #include <GL/SOIL.h>
 
 namespace Resource {
@@ -20,6 +21,7 @@ namespace Resource {
 			SOIL_CREATE_NEW_ID,
 			SOIL_FLAG_MIPMAPS
 		));
+		//textures[TexturePng] = new Texture(Texture::loadTextureFromFile("resources/texture.png"));
 
 		shaderPrograms[Phong] = new SimpleIlluminationModelShaderProgram(
 			SimpleIlluminationModelShaderProgram::createPhong()
@@ -31,8 +33,13 @@ namespace Resource {
 			.setLightVector({ -1000, -1000, -1000 })
 			.enableLightVectorAsPosition(true)
 		);
-		//shaderPrograms[SimpleTexture] = new TextureShaderProgram(
-			//TextureShaderProgram::create());
+		shaderPrograms[SimpleTexture] = new TextureShaderProgram(
+			static_cast<TextureShaderProgram &>(
+				TextureShaderProgram::create()
+				.setLightVector({ 0, 0, 50 })
+				.enableLightVectorAsPosition(true)
+			)
+		);
 	}
 
 	void uninit() {
