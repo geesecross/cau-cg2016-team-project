@@ -72,6 +72,10 @@ Mesh Mesh::createFromDatFile(const std::string & filename) {
 		normal = normal.normalized();
 	}
 
+	//TODO : hard coded tangent value
+	for (int i = 0; i < 4; i++) {
+		mesh.vertexTangents.push_back(Vector3f({0.5, 0, 0}));
+	}
 	return mesh;
 }
 

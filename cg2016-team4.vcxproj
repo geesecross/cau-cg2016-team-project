@@ -152,6 +152,7 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="NormalMappingProgram.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="Rotation.cpp" />
     <ClCompile Include="RubiksCube.cpp" />
@@ -174,6 +175,7 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <ClInclude Include="FooShader.h" />
     <ClInclude Include="GameRule.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="NormalMappingProgram.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Rotation.h" />
     <ClInclude Include="RubiksCube.h" />
@@ -196,6 +198,8 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <None Include="shaders\Gouraud.vert" />
     <None Include="shaders\MovingTexture.frag" />
     <None Include="shaders\MovingTexture.vert" />
+    <None Include="shaders\NormalMap.frag" />
+    <None Include="shaders\NormalMap.vert" />
     <None Include="shaders\Null.vert" />
     <None Include="shaders\Phong.frag" />
     <None Include="shaders\Phong.vert" />

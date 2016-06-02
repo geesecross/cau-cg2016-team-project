@@ -26,6 +26,7 @@ void TextureShaderProgram::onPreDraw(const Model & model) const {
 			&& 0 <= (texCoordId = glGetAttribLocation(this->getProgramId(), "in_texCoord"))
 		) {
 
+			//for moving textures
 			static long previousTime = glutGet(GLUT_ELAPSED_TIME);
 
 			long currentTime = glutGet(GLUT_ELAPSED_TIME);

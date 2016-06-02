@@ -16,6 +16,7 @@ namespace Resource {
 		Phong,
 		Phong2,
 		SimpleTexture,
+		NormalMap,
 	};
 	enum TextureId {
 		TexturePng,

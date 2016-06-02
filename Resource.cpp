@@ -1,6 +1,7 @@
 #include "Resource.h"
 #include "SimpleIlluminationModelShaderProgram.h"
 #include "TextureShaderProgram.h"
+#include "NormalMappingProgram.h"
 #include <GL/SOIL.h>
 
 namespace Resource {
@@ -48,8 +49,15 @@ namespace Resource {
 				TextureShaderProgram::create()
 				.setLightVector({ 0, 1, 10 })
 				.enableLightVectorAsPosition(true)
-.setSpecularRatio(10)
+				.setSpecularRatio(10)
 			)
+		);
+		shaderPrograms[NormalMap] = new NormalMappingProgram(
+			static_cast<NormalMappingProgram&>(
+			NormalMappingProgram::create()
+			.setLightVector({ 0, 0, 50 })
+			.enableLightVectorAsPosition(true)
+				)
 		);
 	}
 

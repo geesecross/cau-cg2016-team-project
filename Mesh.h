@@ -25,6 +25,7 @@ private:
 	std::vector<Vector3f> faceNormals;
 	std::vector<Vector3f> vertexNormals;
 	std::vector<Vector2f> texCoords;
+	std::vector<Vector3f> vertexTangents;
 
 	Vector3f calcFaceNormal(const Face & face, size_t cornerIndex) const;
 	float calcCornerAngle(const Face & face, size_t cornerIndex) const;
@@ -34,6 +35,7 @@ public:
 
 	const std::vector<Vertex> & getVertices() const;
 	const std::vector<Vector2f> & getTexCoords() const;
-
+	inline const std::vector<Vector3f> & getVertexNormals() const{ return vertexNormals; }
+	inline const std::vector<Vector3f> & getVertexTangents() const { return vertexTangents; }
 	void draw(const ShaderProgram & shaderProgram) const;
 };

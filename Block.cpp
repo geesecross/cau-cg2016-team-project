@@ -31,7 +31,9 @@ Block::Block() {
 		//	.bindShaderProgram(Resource::shaderPrograms[Resource::Phong]);
 			.bindDiffuseTexture(Resource::textures[Resource::TexturePng])
 			.bindSpecularTexture(Resource::textures[Resource::TextureSpecular])
-			.bindShaderProgram(Resource::shaderPrograms[Resource::SimpleTexture]);
+			.bindNormalTexture(Resource::textures[Resource::TextureNormal])
+			//.bindShaderProgram(Resource::shaderPrograms[Resource::SimpleTexture]);
+			.bindShaderProgram(Resource::shaderPrograms[Resource::NormalMap]);
 	}
 
 	for (size_t i = 0; i < 6; ++i) {

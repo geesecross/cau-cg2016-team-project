@@ -212,6 +212,9 @@ void Camera::render(Model & model) {
 	if (0 <= (objectId = glGetUniformLocation(shaderProgram->getProgramId(), "in_projectionMatrix"))) {
 		glUniformMatrix4fv(objectId, 1, GL_FALSE, this->projectionMatrix.data());
 	}
+	if (0 <= (objectId = glGetUniformLocation(shaderProgram->getProgramId(), "in_cameraPos"))) {
+		glUniform3fv(objectId, 1, this->getViewReferencePoint().data());
+	}
 
 	// ±×¸®±â
 	model.draw(*shaderProgram);

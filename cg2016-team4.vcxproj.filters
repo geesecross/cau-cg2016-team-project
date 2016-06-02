@@ -79,6 +79,9 @@
     <ClCompile Include="TextureShaderProgram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NormalMappingProgram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileHelper.h">
@@ -153,6 +156,9 @@
     <ClInclude Include="TextureShaderProgram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NormalMappingProgram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\Color.frag">
@@ -195,6 +201,12 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="shaders\MovingTexture.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\NormalMap.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\NormalMap.frag">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>
