@@ -191,5 +191,11 @@
     <None Include="shaders\Texture.frag">
       <Filter>shaders</Filter>
     </None>
+    <None Include="shaders\MovingTexture.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\MovingTexture.frag">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

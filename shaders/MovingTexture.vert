@@ -30,5 +30,12 @@ void main() {
 	}
 	fragEyeVector = -normalize(vertexViewPosition);
 	fragTexCoord = in_texCoord;
+	vertexViewPosition.x += cos(in_time)*0.1;
+	vertexViewPosition.y += cos(in_time)*0.1;
+	gl_Position = transformPoint4(in_projectionMatrix, vertexViewPosition);
+
+
+	fragLightVector = normalize(transformPoint3(in_viewMatrix, in_lightVector) - vertexViewPosition);
+	fragNormalVector = transformDirection3(modelViewMatrix, in_vertexNormal);
 	gl_Position = transformPoint4(in_projectionMatrix, vertexViewPosition);
 }

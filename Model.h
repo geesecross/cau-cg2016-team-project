@@ -9,7 +9,9 @@ private:
 	static const ShaderProgram * getDefaultShaderProgram();
 
 	const Mesh * mesh = nullptr;
-	const Texture * texture = nullptr;
+	const Texture * diffuseTexture = nullptr;
+	const Texture * specularTexture = nullptr;
+	const Texture * normalTexture = nullptr;
 	const ShaderProgram * shaderProgram = getDefaultShaderProgram();
 	Vector4f color;
 
@@ -22,8 +24,13 @@ public:
 	const Vector4f & getColor() const;
 	Model & setColor(const Vector4f & color);
 
-	const Texture * getTexture() const;
-	Model & bindTexture(const Texture * texture);
+	const Texture * getDiffuseTexture() const;
+	const Texture * getSpecularTexture() const;
+	const Texture * getNormalTexture() const;
+
+	Model & bindDiffuseTexture(const Texture * texture);
+	Model & bindSpecularTexture(const Texture * texture);
+	Model & bindNormalTexture(const Texture * texture);
 
 	const ShaderProgram * getShaderProgram() const;
 	Model & bindShaderProgram(const ShaderProgram * shaderProgram);

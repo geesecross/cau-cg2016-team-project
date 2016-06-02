@@ -20,14 +20,34 @@ void TextureShaderProgram::onPreDraw(const Model & model) const {
 	SimpleIlluminationModelShaderProgram::onPreDraw(model);
 
 	GLint objectId;
-	if (nullptr != model.getTexture() && nullptr != model.getMesh() && model.getMesh()->getVertices().size() == model.getMesh()->getTexCoords().size()) {
+	if (nullptr != model.getDiffuseTexture() && nullptr != model.getMesh() && model.getMesh()->getVertices().size() == model.getMesh()->getTexCoords().size()) {
 		GLint texCoordId;
 		if (0 <= (objectId = glGetUniformLocation(this->getProgramId(), "in_tex0"))
 			&& 0 <= (texCoordId = glGetAttribLocation(this->getProgramId(), "in_texCoord"))
 		) {
+
+			static long previousTime = glutGet(GLUT_ELAPSED_TIME);
+
+			long currentTime = glutGet(GLUT_ELAPSED_TIME);
+			static float timeDelta = 0.f;
+			timeDelta += 0.00001f;//(currentTime - previousTime) / 10000.0f;
+
+			if (0 < timeDelta) {
+				previousTime = currentTime;
+			}
+			if(objectId = glGetUniformLocation(this->getProgramId(), "in_time")) {
+				glUniform1f(objectId, timeDelta);
+			}
+
 			glEnable(GL_TEXTURE_2D);
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, model.getTexture()->getTextureId());
+			if (0 <= (objectId = glGetUniformLocation(this->getProgramId(), "in_texSpecular")))
+			{
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, model.getSpecularTexture()->getTextureId());
+			}
+
+			glBindTexture(GL_TEXTURE_2D, model.getDiffuseTexture()->getTextureId());
 			glUniform1i(objectId, 0);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -43,7 +63,7 @@ void TextureShaderProgram::onPreDraw(const Model & model) const {
 
 void TextureShaderProgram::onPostDraw(const Model & model) const {
 	GLint objectId;
-	if (nullptr != model.getTexture() && nullptr != model.getMesh() && model.getMesh()->getVertices().size() == model.getMesh()->getTexCoords().size()) {
+	if (nullptr != model.getDiffuseTexture() && nullptr != model.getMesh() && model.getMesh()->getVertices().size() == model.getMesh()->getTexCoords().size()) {
 		GLint texCoordId;
 		if (0 <= (objectId = glGetUniformLocation(this->getProgramId(), "in_tex0"))
 			&& 0 <= (texCoordId = glGetAttribLocation(this->getProgramId(), "in_texCoord"))

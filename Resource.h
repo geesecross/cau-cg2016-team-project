@@ -18,7 +18,9 @@ namespace Resource {
 		SimpleTexture,
 	};
 	enum TextureId {
-		TexturePng
+		TexturePng,
+		TextureSpecular,
+		TextureNormal,
 	};
 
 	extern std::map<MeshId, Mesh *> meshes;

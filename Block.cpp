@@ -14,7 +14,7 @@ Block::Block() {
 	};
 
 	static Vector4f colors[] = {
-		{ 1, 0, 0, 1 },
+		{ 1, 1, 1, 1 },
 		{ 0, 1, 0, 1 },
 		{ 0, 0, 1, 1 },
 		{ 1, 1, 0, 1 },
@@ -29,7 +29,8 @@ Block::Block() {
 			.translatePost(position.first);
 		child->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Plane])
 		//	.bindShaderProgram(Resource::shaderPrograms[Resource::Phong]);
-			.bindTexture(Resource::textures[Resource::TexturePng])
+			.bindDiffuseTexture(Resource::textures[Resource::TexturePng])
+			.bindSpecularTexture(Resource::textures[Resource::TextureSpecular])
 			.bindShaderProgram(Resource::shaderPrograms[Resource::SimpleTexture]);
 	}
 

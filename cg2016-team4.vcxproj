@@ -194,6 +194,8 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <None Include="shaders\foo.vert" />
     <None Include="shaders\Gouraud.frag" />
     <None Include="shaders\Gouraud.vert" />
+    <None Include="shaders\MovingTexture.frag" />
+    <None Include="shaders\MovingTexture.vert" />
     <None Include="shaders\Null.vert" />
     <None Include="shaders\Phong.frag" />
     <None Include="shaders\Phong.vert" />

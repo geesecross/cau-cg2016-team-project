@@ -33,12 +33,12 @@ Model & Model::setColor(const Vector4f & color) {
 	return *this;
 }
 
-const Texture * Model::getTexture() const{
-	return this->texture;
+const Texture * Model::getDiffuseTexture() const{
+	return this->diffuseTexture;
 }
 
-Model & Model::bindTexture(const Texture * texture) {
-	this->texture = texture;
+Model & Model::bindDiffuseTexture(const Texture * texture) {
+	this->diffuseTexture = texture;
 	return *this;
 }
 
@@ -64,4 +64,26 @@ void Model::draw(const ShaderProgram & shaderProgram) const {
 	shaderProgram.onPreDraw(*this);
 	this->mesh->draw(shaderProgram);
 	shaderProgram.onPostDraw(*this);
+}
+
+const Texture * Model::getSpecularTexture() const
+{
+	return specularTexture;
+}
+
+Model& Model::bindSpecularTexture(const Texture * texture)
+{
+	specularTexture = texture;
+	return *this;
+}
+
+const Texture * Model::getNormalTexture() const
+{
+	return normalTexture;
+}
+
+Model& Model::bindNormalTexture(const Texture * texture)
+{
+	normalTexture = texture;
+	return *this;
 }

@@ -5,7 +5,7 @@
 class TextureShaderProgram : public SimpleIlluminationModelShaderProgram {
 private:
 	TextureShaderProgram(Recipe & recipe);
-
+	
 public:
 	static TextureShaderProgram create();
 
