@@ -153,6 +153,7 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="NormalMappingProgram.cpp" />
+    <ClCompile Include="ParallaxOcclusionProgram.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="Rotation.cpp" />
     <ClCompile Include="RubiksCube.cpp" />
@@ -176,6 +177,7 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <ClInclude Include="GameRule.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="NormalMappingProgram.h" />
+    <ClInclude Include="ParallaxOcclusionProgram.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Rotation.h" />
     <ClInclude Include="RubiksCube.h" />
@@ -201,6 +203,8 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <None Include="shaders\NormalMap.frag" />
     <None Include="shaders\NormalMap.vert" />
     <None Include="shaders\Null.vert" />
+    <None Include="shaders\Parallax.frag" />
+    <None Include="shaders\Parallax.vert" />
     <None Include="shaders\Phong.frag" />
     <None Include="shaders\Phong.vert" />
     <None Include="shaders\SimpleIlluminationModel.glsl" />

@@ -17,11 +17,13 @@ namespace Resource {
 		Phong2,
 		SimpleTexture,
 		NormalMap,
+		Parallax,
 	};
 	enum TextureId {
 		TexturePng,
 		TextureSpecular,
 		TextureNormal,
+		TextureHeight,
 	};
 
 	extern std::map<MeshId, Mesh *> meshes;

@@ -2,6 +2,7 @@
 #include "SimpleIlluminationModelShaderProgram.h"
 #include "TextureShaderProgram.h"
 #include "NormalMappingProgram.h"
+#include "ParallaxOcclusionProgram.h"
 #include <GL/SOIL.h>
 
 namespace Resource {
@@ -17,7 +18,7 @@ namespace Resource {
 		meshes[Particle] = new Mesh(Mesh::createFromDatFile("resources/particle.dat"));
 
 		textures[TexturePng] = new Texture(SOIL_load_OGL_texture(
-			"resources/Fieldstone_DM.png",
+			"resources/metalDif.jpg",
 			SOIL_LOAD_AUTO,
 			SOIL_CREATE_NEW_ID,
 			SOIL_FLAG_MIPMAPS
@@ -29,11 +30,17 @@ namespace Resource {
 			SOIL_FLAG_MIPMAPS
 			));
 		textures[TextureNormal] = new Texture(SOIL_load_OGL_texture(
-			"resources/fieldstone_NM.png",
+			"resources/metalNorm.jpg",
 			SOIL_LOAD_AUTO,
 			SOIL_CREATE_NEW_ID,
 			SOIL_FLAG_MIPMAPS
 			));
+		textures[TextureHeight] = new Texture(SOIL_load_OGL_texture(
+			"resources/metalHeight.jpg",
+			SOIL_LOAD_AUTO,
+			SOIL_CREATE_NEW_ID,
+			SOIL_FLAG_MIPMAPS
+		));
 		shaderPrograms[Phong] = new SimpleIlluminationModelShaderProgram(
 			SimpleIlluminationModelShaderProgram::createPhong()
 			.setLightVector({ 0, 0, 50 })
@@ -55,8 +62,15 @@ namespace Resource {
 		shaderPrograms[NormalMap] = new NormalMappingProgram(
 			static_cast<NormalMappingProgram&>(
 			NormalMappingProgram::create()
-			.setLightVector({ 0, 0, 50 })
+			.setLightVector({ 0, 50, 50 })
 			.enableLightVectorAsPosition(true)
+				)
+		);
+		shaderPrograms[Parallax] = new ParallaxOcclusionProgram(
+			static_cast<ParallaxOcclusionProgram&>(
+				ParallaxOcclusionProgram::create()
+				.setLightVector({0, 50, -50})
+				.enableLightVectorAsPosition(true)
 				)
 		);
 	}

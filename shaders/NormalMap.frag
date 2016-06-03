@@ -23,7 +23,7 @@ void main()
 
 	vec3 color = texture2D(in_tex0, fragTexCoord).xyz;
 
-	vec3 ambient = 0.8 * color;
+	vec3 ambient = 0.1 * color;
 
 	vec3 lightDir = normalize(TlightPos - TfragPos);
 
@@ -41,9 +41,9 @@ void main()
 	float spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
 	
 	//specular is zero
-	vec3 specular = vec3(0.4) * spec ;
+	vec3 specular = vec3(0.2) * spec ;
 
-	gl_FragColor = vec4(ambient + diffuse + specular + specular, 1.0);
+	gl_FragColor = vec4(ambient + diffuse + specular, 0.0);
 
 
 }

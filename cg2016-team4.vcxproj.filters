@@ -82,6 +82,9 @@
     <ClCompile Include="NormalMappingProgram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ParallaxOcclusionProgram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileHelper.h">
@@ -159,6 +162,9 @@
     <ClInclude Include="NormalMappingProgram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ParallaxOcclusionProgram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\Color.frag">
@@ -207,6 +213,12 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="shaders\NormalMap.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\Parallax.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\Parallax.frag">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

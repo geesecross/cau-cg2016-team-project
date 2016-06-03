@@ -87,3 +87,14 @@ Model& Model::bindNormalTexture(const Texture * texture)
 	normalTexture = texture;
 	return *this;
 }
+
+Model& Model::bindHeightTexture(const Texture * texture)
+{
+	heightTexture = texture;
+	return *this;
+}
+
+const Texture * Model::getHeightTexture() const
+{
+	return heightTexture;
+}

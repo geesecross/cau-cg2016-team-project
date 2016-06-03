@@ -7,7 +7,7 @@ uniform float in_time;
 
 attribute vec2 in_texCoord;
 attribute vec3 in_vertexPosition;
-attribute vec3 in_vertexTangent;
+
 attribute vec3 in_vertexNormal;
 
 varying vec3 fragNormalVector;
@@ -16,6 +16,7 @@ varying vec3 fragLightVector;
 varying vec2 fragTexCoord;
 varying vec3 fragPos;
 
+//http://www.learnopengl.com/#!Advanced-Lighting/Normal-Mapping
 varying vec3 TlightPos, TcamPos, TfragPos;
 
 vec4 transformPoint4(in mat4 transformMatrix, in vec3 point);
@@ -25,8 +26,18 @@ void main() {
 	mat4 modelViewMatrix = in_viewMatrix * in_modelMatrix;
 	vec3 vertexViewPosition = transformPoint3(modelViewMatrix, in_vertexPosition).xyz;
 
-	vec3 vertexBitangent = cross(in_vertexTangent, in_vertexNormal);
+	vec3 c1 = cross(in_vertexNormal, vec3(0.0, 0.0, 1.0));
+	vec3 c2 = cross(in_vertexNormal, vec3(0.0, 1.0, 0.0));
+	vec3 in_vertexTangent;
+	if(length(c1) > length(c2)){
+		in_vertexTangent = c1;
 
+	}
+	else
+		in_vertexTangent= c2;
+	in_vertexTangent = normalize(in_vertexTangent);
+
+	vec3 vertexBitangent = cross(in_vertexTangent, in_vertexNormal);
 	mat3 normalMatrix = transpose(inverse(mat3(in_modelMatrix)));
 
 	vec3 T = normalize(normalMatrix * in_vertexTangent);

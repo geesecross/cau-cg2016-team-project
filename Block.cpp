@@ -28,12 +28,11 @@ Block::Block() {
 			.rotatePost(Rotation().rotateByEuler(position.second))
 			.translatePost(position.first);
 		child->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Plane])
-		//	.bindShaderProgram(Resource::shaderPrograms[Resource::Phong]);
 			.bindDiffuseTexture(Resource::textures[Resource::TexturePng])
 			.bindSpecularTexture(Resource::textures[Resource::TextureSpecular])
 			.bindNormalTexture(Resource::textures[Resource::TextureNormal])
-			//.bindShaderProgram(Resource::shaderPrograms[Resource::SimpleTexture]);
-			.bindShaderProgram(Resource::shaderPrograms[Resource::NormalMap]);
+			.bindHeightTexture(Resource::textures[Resource::TextureHeight])
+			.bindShaderProgram(Resource::shaderPrograms[Resource::Parallax]);
 	}
 
 	for (size_t i = 0; i < 6; ++i) {

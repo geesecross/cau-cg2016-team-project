@@ -92,7 +92,7 @@ void Mesh::draw(const ShaderProgram & shaderProgram) const {
 	//TODO: glBindTexture(GL_TEXTURE_2D, texture);
 	GLint vertexPositionId = glGetAttribLocation(shaderProgram.getProgramId(), "in_vertexPosition");
 	GLint vertexNormalId = glGetAttribLocation(shaderProgram.getProgramId(), "in_vertexNormal");
-
+	GLint vertexTangentId = glGetAttribLocation(shaderProgram.getProgramId(), "in_vertexTangent");
 
 	if (0 <= vertexPositionId) {
 		glEnableVertexAttribArray(vertexPositionId);
@@ -101,6 +101,10 @@ void Mesh::draw(const ShaderProgram & shaderProgram) const {
 	if (0 <= vertexNormalId) {
 		glEnableVertexAttribArray(vertexNormalId);
 		glVertexAttribPointer(vertexNormalId, 3, GL_FLOAT, GL_FALSE, 0, this->vertexNormals.data());
+	}
+	if (0 <= vertexTangentId) {
+		glEnableVertexAttribArray(vertexTangentId);
+		glVertexAttribPointer(vertexTangentId, 3, GL_FLOAT, GL_TRUE, 0, vertexTangents.data());
 	}
 	
 	glDrawElements(GL_TRIANGLES, this->faces.size() * 3, GL_UNSIGNED_INT, this->faces.data());
