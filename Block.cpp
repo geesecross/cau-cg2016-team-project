@@ -41,10 +41,16 @@ Block::Block() {
 		.bindNormalTexture(Resource::textures[Resource::TextureNormal])
 		.bindHeightTexture(Resource::textures[Resource::TextureHeight])
 		.bindShaderProgram(Resource::shaderPrograms[Resource::Parallax]);
-	(*this)[0]->getComponent<Model>()->
+	(*this)[5]->getComponent<Model>()->
 		bindDiffuseTexture(Resource::textures[Resource::TexturePng])
 		.bindSpecularTexture(Resource::textures[Resource::TextureSpecular])
 		.bindNormalTexture(Resource::textures[Resource::TextureNormal])
 		.bindHeightTexture(Resource::textures[Resource::TextureHeight])
 		.bindShaderProgram(Resource::shaderPrograms[Resource::NormalMap]);
+	(*this)[0]->getComponent<Model>()->
+		bindDiffuseTexture(Resource::textures[Resource::TexturePng])
+		.bindSpecularTexture(Resource::textures[Resource::TextureSpecular])
+		.bindNormalTexture(Resource::textures[Resource::TextureNormal])
+		.bindHeightTexture(Resource::textures[Resource::TextureHeight])
+		.bindShaderProgram(Resource::shaderPrograms[Resource::MovingTexture]);
 }

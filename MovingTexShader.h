@@ -1,6 +1,7 @@
 #pragma once
 #include "TextureShaderProgram.h"
 #include "Model.h"
+#include "Animation.h"
 
 class MovingTexShader : public TextureShaderProgram {
 public:
@@ -13,4 +14,12 @@ public:
 	const inline void setTexMoveValue(const float& value){ texMoveValue = value; }
 private:
 	float texMoveValue;
+};
+
+class MovingTextureAnimation : public Animation {
+private:
+	MovingTexShader & shader;
+public:
+	MovingTextureAnimation(MovingTexShader & shader);
+	virtual bool stepFrame(const double timeElapsed, const double timeDelta);
 };

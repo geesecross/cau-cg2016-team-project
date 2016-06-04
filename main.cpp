@@ -13,6 +13,7 @@
 #include "Camera.h"
 #include "RubiksCube.h"
 #include "Animation.h"
+#include "MovingTexShader.h"
 
 #include "Resource.h"
 #include "GameRule.h"
@@ -50,6 +51,8 @@ bool init() {
 		camera.reset(new Camera());
 		camera->setPerspectiveProjection(50);
 		initCameraVectors();
+
+		animationManager->push(std::make_shared<MovingTextureAnimation>(*static_cast<MovingTexShader *>(Resource::shaderPrograms[Resource::MovingTexture])));
 
 		rubiksCube.reset(new RubiksCube(cube_size, animationManager));
 		gameRule.reset(new GameRule(rubiksCube, animationManager, camera));

@@ -7,8 +7,8 @@ MovingTexShader::MovingTexShader(Recipe& recipe) :TextureShaderProgram(recipe), 
 MovingTexShader MovingTexShader::create(){
 	return MovingTexShader(Recipe()
 		.addShader(Shader::compile(Shader::VertexShader, FileHelper::loadTextFile("shaders/Transform.glsl")))
-		.addShader(Shader::compile(Shader::VertexShader, FileHelper::loadTextFile("shaders/Texture.vert")))
-		.addShader(Shader::compile(Shader::FragmentShader, FileHelper::loadTextFile("shaders/Texture.frag")))
+		.addShader(Shader::compile(Shader::VertexShader, FileHelper::loadTextFile("shaders/MovingTexture.vert")))
+		.addShader(Shader::compile(Shader::FragmentShader, FileHelper::loadTextFile("shaders/MovingTexture.frag")))
 		.addShader(Shader::compile(Shader::FragmentShader, FileHelper::loadTextFile("shaders/SimpleIlluminationModel.glsl")))
 		);
 }
@@ -26,4 +26,13 @@ void MovingTexShader::onPreDraw(const Model & model)const{
 }
 void MovingTexShader::onPostDraw(const Model & model)const{
 	TextureShaderProgram::onPostDraw(model);
+}
+
+MovingTextureAnimation::MovingTextureAnimation(MovingTexShader & shader) : shader(shader) {
+
+}
+
+bool MovingTextureAnimation::stepFrame(const double timeElapsed, const double timeDelta) {
+	shader.setTexMoveValue(timeElapsed * 0.1f);
+	return false;
 }
