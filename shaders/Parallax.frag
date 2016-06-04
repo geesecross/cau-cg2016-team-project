@@ -137,5 +137,5 @@ void main(){
 	float shadowMult = parallaxSoftShadowMult(L, T, parallaxHeight - 0.05);
 
 	//gl_FragColor = normalMapLighting(T,L,V, shadowMult);
-	resultingColor = in_color * normalMapLighting(T,L,V, shadowMult);
+	resultingColor = in_color * clamp(normalMapLighting(T,L,V, shadowMult), 0, 1);
 }

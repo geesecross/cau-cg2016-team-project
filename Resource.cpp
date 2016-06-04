@@ -65,7 +65,7 @@ namespace Resource {
 		shaderPrograms[NormalMap] = new NormalMappingProgram(
 			static_cast<NormalMappingProgram&>(
 			NormalMappingProgram::create()
-			.setLightVector({ 0, 50, 50 })
+			.setLightVector({ 50, 50, 50 })
 			.enableLightVectorAsPosition(true)
 				)
 		);
