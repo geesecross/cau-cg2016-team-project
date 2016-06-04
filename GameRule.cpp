@@ -3,6 +3,18 @@
 #include "Resource.h"
 int GameRule::maxScramble = 20; // 스크램블 최대 횟수
 const GLfloat Particle::gravity = 0.3f;
+const Vector4f Particle::colors[10] = {
+	{1.f, 1.f, 1.f, 1.f},
+	{0.34f, 0.34f, 0.34f, 1.f},
+	{1.f, 0.f, 0.f, 1.f},
+	{0.f, 0.f, 1.f, 1.f},
+	{0.f, 1.f, 0.f, 1.f},
+	{1.f, 0.f, 1.f, 1.f},
+	{0.f, 1.f, 1.f, 1.f},
+	{1.f, 1.f, 0.f, 1.f},
+	{1.f, 0.57f, 0.2f, 1.f},
+	{0.5f, 0.29f, 0.1f, 1.f}
+};
 
 GameRule::GameRule(std::weak_ptr<RubiksCube> rubiksCube, std::weak_ptr<AnimationManager> animationManager, std::weak_ptr<Camera> camera)
 	: rubiksCube(rubiksCube),
@@ -161,12 +173,7 @@ bool PrintStringAnimation::stepFrame(const double timeElapsed, const double time
 Particle::Particle() {
 	this->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Particle])
 		.bindShaderProgram(Resource::shaderPrograms[Resource::Phong])
-		.setColor({
-		((float)rand() / RAND_MAX * 0.4f + 0.6f),
-		((float)rand() / RAND_MAX * 0.4f + 0.6f),
-		((float)rand() / RAND_MAX * 0.4f + 0.6f),
-		1.f
-	});
+		.setColor(colors[(int)((float)rand() / RAND_MAX * 10)]);
 	xSpeed = ((float)rand() / RAND_MAX * 0.1f - 0.2f);
 	zSpeed = ((float)rand() / RAND_MAX * 0.1f - 0.2f);
 }
