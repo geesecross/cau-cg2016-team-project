@@ -42,12 +42,19 @@ public:
 	bool stepFrame(const double timeElapsed, const double timeDelta) override;
 };
 
+enum ParticleColor
+{
+	WHITE, GRAY, RED, BLUE, GREEN, MAGENTA, CYAN, YELLOW, ORANGE, BROWN
+};
+
 class Particle : public Actor
 {
 	friend class ParticleAnimation;
 private:
-	Vector4f color;
+	static const Vector4f colors[10];
 	static const GLfloat gravity;
+	GLfloat xSpeed;
+	GLfloat zSpeed;
 public:
 	Particle();
 };

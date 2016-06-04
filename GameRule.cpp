@@ -2,7 +2,19 @@
 #include <ctime>
 #include "Resource.h"
 int GameRule::maxScramble = 20; // 스크램블 최대 횟수
-const GLfloat Particle::gravity = 0.4f;
+const GLfloat Particle::gravity = 0.3f;
+const Vector4f Particle::colors[10] = {
+	{1.f, 1.f, 1.f, 1.f},
+	{0.34f, 0.34f, 0.34f, 1.f},
+	{1.f, 0.f, 0.f, 1.f},
+	{0.f, 0.f, 1.f, 1.f},
+	{0.f, 1.f, 0.f, 1.f},
+	{1.f, 0.f, 1.f, 1.f},
+	{0.f, 1.f, 1.f, 1.f},
+	{1.f, 1.f, 0.f, 1.f},
+	{1.f, 0.57f, 0.2f, 1.f},
+	{0.5f, 0.29f, 0.1f, 1.f}
+};
 
 GameRule::GameRule(std::weak_ptr<RubiksCube> rubiksCube, std::weak_ptr<AnimationManager> animationManager, std::weak_ptr<Camera> camera)
 	: rubiksCube(rubiksCube),
@@ -159,16 +171,11 @@ bool PrintStringAnimation::stepFrame(const double timeElapsed, const double time
 }
 
 Particle::Particle() {
-	srand((unsigned)time(NULL));
 	this->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Particle])
 		.bindShaderProgram(Resource::shaderPrograms[Resource::Phong])
-		.setColor({
-		1.f,
-		1.f,
-		1.f,
-		1.f
-	});
-
+		.setColor(colors[(int)((float)rand() / RAND_MAX * 10)]);
+	xSpeed = ((float)rand() / RAND_MAX * 0.1f - 0.2f);
+	zSpeed = ((float)rand() / RAND_MAX * 0.1f - 0.2f);
 }
 
 ParticleAnimation::ParticleAnimation(std::weak_ptr<Camera> camera) 
@@ -192,14 +199,16 @@ void ParticleAnimation::onStart() {
 bool ParticleAnimation::stepFrame(const double timeElapsed, const double timeDelta) {
 	// particle들이 각자 x, z는 랜덤으로 y는 정해진 떨어지는 속도에 따라 움직임
 	for (int i = 0; i < MAX_PARTICLES; i++)
-	{
+	{	
+		particles[i].xSpeed += ((float)rand() / RAND_MAX - 0.5f) * (float)timeDelta;
+		particles[i].zSpeed += ((float)rand() / RAND_MAX - 0.5f) * (float)timeDelta;
 		particles[i].getTransform().translatePost({
-			(float)timeDelta * ((float)rand() / RAND_MAX - 0.5f),
+			(float)timeDelta * particles[i].xSpeed,
 			- ((float)timeDelta * Particle::gravity),
-			(float)timeDelta * ((float)rand() / RAND_MAX - 0.5f)
+			(float)timeDelta * particles[i].zSpeed
 		});
 		camera.lock()->render(particles[i], true);
 	}
 
-	return timeElapsed > 5;
+	return timeElapsed > 10;
 }
