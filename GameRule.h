@@ -48,6 +48,8 @@ class Particle : public Actor
 private:
 	Vector4f color;
 	static const GLfloat gravity;
+	GLfloat xSpeed;
+	GLfloat zSpeed;
 public:
 	Particle();
 };
