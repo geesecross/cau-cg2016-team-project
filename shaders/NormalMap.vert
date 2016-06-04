@@ -4,6 +4,7 @@ uniform vec3 in_lightVector;
 uniform vec3 in_cameraPos;
 uniform bool in_lightVectorAsPosition;
 uniform float in_time;
+uniform vec3 in_surfaceNormal, in_tangentVector, in_bitangentVector;
 
 attribute vec2 in_texCoord;
 attribute vec3 in_vertexPosition;
@@ -14,7 +15,8 @@ varying vec3 fragNormalVector;
 varying vec3 fragEyeVector;
 varying vec3 fragLightVector;
 varying vec2 fragTexCoord;
-varying vec3 fragPos;
+
+out mat4 tangentMatrix;
 
 //http://www.learnopengl.com/#!Advanced-Lighting/Normal-Mapping
 varying vec3 TlightPos, TcamPos, TfragPos;
@@ -22,36 +24,14 @@ varying vec3 TlightPos, TcamPos, TfragPos;
 vec4 transformPoint4(in mat4 transformMatrix, in vec3 point);
 vec3 transformPoint3(in mat4 transformMatrix, in vec3 point);
 vec3 transformDirection3(in mat4 transformMatrix, in vec3 vector);
+
 void main() {
 	mat4 modelViewMatrix = in_viewMatrix * in_modelMatrix;
-	vec3 vertexViewPosition = transformPoint3(modelViewMatrix, in_vertexPosition).xyz;
+	vec3 vertexViewPosition = transformPoint3(modelViewMatrix, in_vertexPosition);
 
-	vec3 c1 = cross(in_vertexNormal, vec3(0.0, 0.0, 1.0));
-	vec3 c2 = cross(in_vertexNormal, vec3(0.0, 1.0, 0.0));
-	vec3 in_vertexTangent;
-	if(length(c1) > length(c2)){
-		in_vertexTangent = c1;
-
-	}
-	else
-		in_vertexTangent= c2;
-	in_vertexTangent = normalize(in_vertexTangent);
-
-	vec3 vertexBitangent = cross(in_vertexTangent, in_vertexNormal);
-	mat3 normalMatrix = transpose(inverse(mat3(in_modelMatrix)));
-
-	vec3 T = normalize(normalMatrix * in_vertexTangent);
-	vec3 B = normalize(normalMatrix  * vertexBitangent);
-	vec3 N = normalize(normalMatrix * in_vertexNormal);
-
-	mat3 TBN = transpose(mat3(T,B,N));
-	
-	fragPos = vec3(in_modelMatrix * vec4(in_vertexPosition, 1.0));
-
-	TlightPos = TBN * in_lightVector;
-	TcamPos = TBN * in_cameraPos;
-	TfragPos = TBN * fragPos;
-
+	tangentMatrix = transpose(mat4(
+		vec4(in_tangentVector, 0), vec4(in_bitangentVector, 0), vec4(in_surfaceNormal, 0), vec4(0, 0, 0, 1.0)
+	));
 
 	fragNormalVector = transformDirection3(modelViewMatrix, in_vertexNormal);
 	if(in_lightVectorAsPosition) {
@@ -64,8 +44,6 @@ void main() {
 	fragEyeVector = -normalize(vertexViewPosition);
 
 	fragTexCoord = in_texCoord;
-
-
 
 	gl_Position = transformPoint4(in_projectionMatrix, vertexViewPosition);
 }

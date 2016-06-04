@@ -33,8 +33,10 @@ namespace Resource {
 			"resources/metalNorm.jpg",
 			SOIL_LOAD_AUTO,
 			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_MIPMAPS
+			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y
 			));
+
+		/*textures[TextureNormal] = new Texture(Texture::loadTextureFromFile("resources/metalNorm.jpg"));*/
 		textures[TextureHeight] = new Texture(SOIL_load_OGL_texture(
 			"resources/metalHeight.jpg",
 			SOIL_LOAD_AUTO,

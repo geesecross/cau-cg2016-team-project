@@ -32,7 +32,7 @@ Block::Block() {
 			.bindSpecularTexture(Resource::textures[Resource::TextureSpecular])
 			.bindNormalTexture(Resource::textures[Resource::TextureNormal])
 			.bindHeightTexture(Resource::textures[Resource::TextureHeight])
-			.bindShaderProgram(Resource::shaderPrograms[Resource::Parallax]);
+			.bindShaderProgram(Resource::shaderPrograms[Resource::NormalMap]);
 	}
 
 	for (size_t i = 0; i < 6; ++i) {

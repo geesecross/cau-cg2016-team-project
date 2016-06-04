@@ -113,7 +113,7 @@ void onResize(int width, int height) {
 }
 
 void onKeyboard(unsigned char ascii, int x, int y) {
-	float movingStep = 1, rotatingStep = 1;
+	float movingStep = 0.1f, rotatingStep = 1;
 
 	switch (ascii) {
 	case 'O':

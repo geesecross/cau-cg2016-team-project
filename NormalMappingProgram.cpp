@@ -13,8 +13,9 @@ NormalMappingProgram NormalMappingProgram::create()
 		Recipe()
 		.addShader(Shader::compile(Shader::VertexShader, FileHelper::loadTextFile("shaders/Transform.glsl")))
 		.addShader(Shader::compile(Shader::VertexShader, FileHelper::loadTextFile("shaders/NormalMap.vert")))
-		.addShader(Shader::compile(Shader::FragmentShader, FileHelper::loadTextFile("shaders/NormalMap.frag")))
+		.addShader(Shader::compile(Shader::FragmentShader, FileHelper::loadTextFile("shaders/Transform.glsl")))
 		.addShader(Shader::compile(Shader::FragmentShader, FileHelper::loadTextFile("shaders/SimpleIlluminationModel.glsl")))
+		.addShader(Shader::compile(Shader::FragmentShader, FileHelper::loadTextFile("shaders/NormalMap.frag")))
 		);
 }
 
@@ -26,15 +27,17 @@ void NormalMappingProgram::onPreDraw(const Model & model) const
 	if (nullptr != model.getDiffuseTexture() && nullptr != model.getMesh() && model.getMesh()->getVertices().size() == model.getMesh()->getTexCoords().size()) {
 		GLint texCoordId;
 		GLint texId, normalId;
-		if (0 <= (objectId = glGetUniformLocation(this->getProgramId(), "in_tex0"))
+		if (0 <= (texId = glGetUniformLocation(this->getProgramId(), "in_tex0"))
 			&& 0 <= (texCoordId = glGetAttribLocation(this->getProgramId(), "in_texCoord"))
-			&& 0 <= (objectId = glGetUniformLocation(this->getProgramId(), "in_normal"))
+			&& 0 <= (normalId = glGetUniformLocation(this->getProgramId(), "in_normal"))
 			) {
 			glEnable(GL_TEXTURE_2D);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, model.getDiffuseTexture()->getTextureId());
+			glUniform1i(texId, 0);
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, model.getNormalTexture()->getTextureId());
+			glUniform1i(normalId, 1);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

@@ -41,16 +41,16 @@ Mesh Mesh::createFromDatFile(const std::string & filename) {
 			size_t count;
 			is >> skip >> count;
 
-			Face f;
+			Face face;
 			for (size_t i = 0; i < count; ++i) {
-				is >> f.indices[0] >> f.indices[1] >> f.indices[2];
-				mesh.faces.push_back(f);
+				is >> face.indices[0] >> face.indices[1] >> face.indices[2];
+				Vector3f faceNormal = mesh.calcFaceNormal(face, 0).normalized();
+				face.normal = faceNormal;
 
-				Vector3f faceNormal = mesh.calcFaceNormal(f, 0).normalized();
-				mesh.faceNormals.push_back(faceNormal);
-				mesh.vertexNormals[f.indices[0]] += faceNormal * mesh.calcCornerAngle(f, 0);
-				mesh.vertexNormals[f.indices[1]] += faceNormal * mesh.calcCornerAngle(f, 1);
-				mesh.vertexNormals[f.indices[2]] += faceNormal * mesh.calcCornerAngle(f, 2);
+				mesh.faces.push_back(face);
+				mesh.vertexNormals[face.indices[0]] += faceNormal * mesh.calcCornerAngle(face, 0);
+				mesh.vertexNormals[face.indices[1]] += faceNormal * mesh.calcCornerAngle(face, 1);
+				mesh.vertexNormals[face.indices[2]] += faceNormal * mesh.calcCornerAngle(face, 2);
 			}
 		}
 		else if ("TEXCOORD" == fieldName) {
@@ -71,11 +71,29 @@ Mesh Mesh::createFromDatFile(const std::string & filename) {
 	for (Vector3f & normal : mesh.vertexNormals) {
 		normal = normal.normalized();
 	}
+	
+	if (mesh.texCoords.size() == mesh.vertices.size()) {
+		for (Face & face : mesh.faces) {
+			Vector3f edge1 = mesh.vertices[face.indices[1]] - mesh.vertices[face.indices[0]];
+			Vector3f edge2 = mesh.vertices[face.indices[2]] - mesh.vertices[face.indices[0]];
+			Vector2f deltaUV1 = mesh.texCoords[face.indices[1]] - mesh.texCoords[face.indices[0]];
+			Vector2f deltaUV2 = mesh.texCoords[face.indices[2]] - mesh.texCoords[face.indices[0]];
 
-	//TODO : hard coded tangent value
-	for (int i = 0; i < 4; i++) {
-		mesh.vertexTangents.push_back(Vector3f({0.5, 0, 0}));
+			//float det = 1.0f / (deltaUV1[0] * deltaUV2[1] - deltaUV2[0] * deltaUV1[1]);
+
+			face.tangent = Vector3f(
+				deltaUV2[1] * edge1[0] - deltaUV1[1] * edge2[0],
+				deltaUV2[1] * edge1[1] - deltaUV1[1] * edge2[1],
+				deltaUV2[1] * edge1[2] - deltaUV1[1] * edge2[2]
+			).normalized();
+			face.bitangent = Vector3f(
+				-deltaUV2[0] * edge1[0] + deltaUV1[0] * edge2[0],
+				-deltaUV2[0] * edge1[1] + deltaUV1[0] * edge2[1],
+				-deltaUV2[0] * edge1[2] + deltaUV1[0] * edge2[2]
+			).normalized();
+		}
 	}
+
 	return mesh;
 }
 
@@ -87,9 +105,25 @@ const std::vector<Vector2f>& Mesh::getTexCoords() const {
 	return this->texCoords;
 }
 
-void Mesh::draw(const ShaderProgram & shaderProgram) const {
+const std::vector<Vector3f>& Mesh::getVertexNormals() const {
+	return this->vertexNormals;
+}
 
-	//TODO: glBindTexture(GL_TEXTURE_2D, texture);
+void Mesh::draw(const ShaderProgram & shaderProgram, const Face & face) const {
+	GLint objectId;
+	if (0 <= (objectId = glGetUniformLocation(shaderProgram.getProgramId(), "in_surfaceNormal"))) {
+		glUniform3fv(objectId, 1, face.normal.data());
+	}
+	if (0 <= (objectId = glGetUniformLocation(shaderProgram.getProgramId(), "in_tangentVector"))) {
+		glUniform3fv(objectId, 1, face.tangent.data());
+	}
+	if (0 <= (objectId = glGetUniformLocation(shaderProgram.getProgramId(), "in_bitangentVector"))) {
+		glUniform3fv(objectId, 1, face.bitangent.data());
+	}
+	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, face.indices);
+}
+
+void Mesh::draw(const ShaderProgram & shaderProgram) const {
 	GLint vertexPositionId = glGetAttribLocation(shaderProgram.getProgramId(), "in_vertexPosition");
 	GLint vertexNormalId = glGetAttribLocation(shaderProgram.getProgramId(), "in_vertexNormal");
 	GLint vertexTangentId = glGetAttribLocation(shaderProgram.getProgramId(), "in_vertexTangent");
@@ -102,12 +136,10 @@ void Mesh::draw(const ShaderProgram & shaderProgram) const {
 		glEnableVertexAttribArray(vertexNormalId);
 		glVertexAttribPointer(vertexNormalId, 3, GL_FLOAT, GL_FALSE, 0, this->vertexNormals.data());
 	}
-	if (0 <= vertexTangentId) {
-		glEnableVertexAttribArray(vertexTangentId);
-		glVertexAttribPointer(vertexTangentId, 3, GL_FLOAT, GL_TRUE, 0, vertexTangents.data());
+
+	for (const Face & face : this->faces) {
+		this->draw(shaderProgram, face);
 	}
-	
-	glDrawElements(GL_TRIANGLES, this->faces.size() * 3, GL_UNSIGNED_INT, this->faces.data());
 
 	if (0 <= vertexPositionId) {
 		glDisableVertexAttribArray(vertexPositionId);
