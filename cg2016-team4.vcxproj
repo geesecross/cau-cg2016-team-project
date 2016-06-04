@@ -27,7 +27,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -152,6 +152,7 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="MovingTexShader.cpp" />
     <ClCompile Include="NormalMappingProgram.cpp" />
     <ClCompile Include="ParallaxOcclusionProgram.cpp" />
     <ClCompile Include="Resource.cpp" />
@@ -176,6 +177,7 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <ClInclude Include="FooShader.h" />
     <ClInclude Include="GameRule.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="MovingTexShader.h" />
     <ClInclude Include="NormalMappingProgram.h" />
     <ClInclude Include="ParallaxOcclusionProgram.h" />
     <ClInclude Include="Resource.h" />

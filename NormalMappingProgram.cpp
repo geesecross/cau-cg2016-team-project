@@ -1,8 +1,7 @@
 #include "NormalMappingProgram.h"
 #include "FileHelper.h"
 #include "Resource.h"
-#include "Model.h"
-NormalMappingProgram::NormalMappingProgram(Recipe & recipe) : SimpleIlluminationModelShaderProgram(recipe)
+NormalMappingProgram::NormalMappingProgram(Recipe & recipe) : TextureShaderProgram(recipe)
 {
 
 }

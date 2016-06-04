@@ -1,7 +1,7 @@
 #pragma once
-#include "SimpleIlluminationModelShaderProgram.h"
+#include "TextureShaderProgram.h"
 #include "Vector.h"
-class NormalMappingProgram : public SimpleIlluminationModelShaderProgram {
+class NormalMappingProgram : public TextureShaderProgram {
 public: 
 	NormalMappingProgram(Recipe & recipe);
 	static NormalMappingProgram create();

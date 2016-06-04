@@ -22,13 +22,13 @@ void ParallaxOcclusionProgram::onPreDraw(const Model & model) const
 	//uniform float parallaxScale;
 	GLint objectId;
 	if (0 <= (objectId = glGetUniformLocation(getProgramId(), "parallaxScale"))) {
-		glUniform1f(objectId, 2.0f);
+		glUniform1f(objectId, 0.1f);//0 ~ 0.5 is appropriate
 		GLint heightId;
 		if (0 <= (heightId = glGetUniformLocation(getProgramId(), "in_height"))) {
 			glEnable(GL_TEXTURE_2D);
 			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, model.getHeightTexture()->getTextureId());
-
+			glUniform1i(heightId, 2);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

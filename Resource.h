@@ -18,6 +18,7 @@ namespace Resource {
 		SimpleTexture,
 		NormalMap,
 		Parallax,
+		MovingTexture,
 	};
 	enum TextureId {
 		TexturePng,

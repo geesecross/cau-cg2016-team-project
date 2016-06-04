@@ -3,10 +3,9 @@
 #include "Model.h"
 
 class TextureShaderProgram : public SimpleIlluminationModelShaderProgram {
-private:
-	TextureShaderProgram(Recipe & recipe);
-	
 public:
+	TextureShaderProgram(Recipe & recipe);
+
 	static TextureShaderProgram create();
 
 	virtual void onPreDraw(const Model & model) const;

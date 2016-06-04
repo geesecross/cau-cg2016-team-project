@@ -1,9 +1,7 @@
 #version 150
 uniform mat4 in_modelMatrix, in_viewMatrix, in_projectionMatrix;
 uniform vec3 in_lightVector;
-uniform vec3 in_cameraPos;
 uniform bool in_lightVectorAsPosition;
-uniform float in_time;
 uniform vec3 in_surfaceNormal, in_tangentVector, in_bitangentVector;
 
 attribute vec2 in_texCoord;
@@ -19,7 +17,6 @@ varying vec2 fragTexCoord;
 out mat4 tangentMatrix;
 
 //http://www.learnopengl.com/#!Advanced-Lighting/Normal-Mapping
-varying vec3 TlightPos, TcamPos, TfragPos;
 
 vec4 transformPoint4(in mat4 transformMatrix, in vec3 point);
 vec3 transformPoint3(in mat4 transformMatrix, in vec3 point);

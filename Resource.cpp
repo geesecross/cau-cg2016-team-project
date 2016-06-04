@@ -3,6 +3,7 @@
 #include "TextureShaderProgram.h"
 #include "NormalMappingProgram.h"
 #include "ParallaxOcclusionProgram.h"
+#include "MovingTexShader.h"
 #include <GL/SOIL.h>
 
 namespace Resource {
@@ -21,13 +22,13 @@ namespace Resource {
 			"resources/metalDif.jpg",
 			SOIL_LOAD_AUTO,
 			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_MIPMAPS
+			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y
 		));
 		textures[TextureSpecular] = new Texture(SOIL_load_OGL_texture(
 			"resources/fieldstone_SM.png",
 			SOIL_LOAD_AUTO,
 			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_MIPMAPS
+			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y
 			));
 		textures[TextureNormal] = new Texture(SOIL_load_OGL_texture(
 			"resources/metalNorm.jpg",
@@ -41,7 +42,7 @@ namespace Resource {
 			"resources/metalHeight.jpg",
 			SOIL_LOAD_AUTO,
 			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_MIPMAPS
+			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y
 		));
 		shaderPrograms[Phong] = new SimpleIlluminationModelShaderProgram(
 			SimpleIlluminationModelShaderProgram::createPhong()
@@ -71,10 +72,17 @@ namespace Resource {
 		shaderPrograms[Parallax] = new ParallaxOcclusionProgram(
 			static_cast<ParallaxOcclusionProgram&>(
 				ParallaxOcclusionProgram::create()
-				.setLightVector({0, 50, -50})
+				.setLightVector({50, 50, 50})
 				.enableLightVectorAsPosition(true)
 				)
 		);
+		shaderPrograms[MovingTexture] = new MovingTexShader(
+			static_cast<MovingTexShader&>(
+			MovingTexShader::create()
+			.setLightVector({ 0, 50, 50 })
+			.enableLightVectorAsPosition(true)
+			)
+			);
 	}
 
 	void uninit() {

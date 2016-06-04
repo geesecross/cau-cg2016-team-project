@@ -26,19 +26,7 @@ void TextureShaderProgram::onPreDraw(const Model & model) const {
 			&& 0 <= (texCoordId = glGetAttribLocation(this->getProgramId(), "in_texCoord"))
 		) {
 
-			//for moving textures
-			static long previousTime = glutGet(GLUT_ELAPSED_TIME);
-
-			long currentTime = glutGet(GLUT_ELAPSED_TIME);
-			static float timeDelta = 0.f;
-			timeDelta += 0.00001f;//(currentTime - previousTime) / 10000.0f;
-
-			if (0 < timeDelta) {
-				previousTime = currentTime;
-			}
-			if(objectId = glGetUniformLocation(this->getProgramId(), "in_time")) {
-				glUniform1f(objectId, timeDelta);
-			}
+			
 
 			glEnable(GL_TEXTURE_2D);
 			glActiveTexture(GL_TEXTURE0);
