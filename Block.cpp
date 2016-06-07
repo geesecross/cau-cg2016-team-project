@@ -16,7 +16,7 @@ Block::Block() {
 	static Vector4f colors[] = {
 		{ 1, 1, 1, 1 },
 		{ 0, 1, 0, 1 },
-		{ 0, 0, 1, 1 },
+		{ 0.25f, 0.80f, 1, 1 },
 		{ 1, 1, 0, 1 },
 		{ 0, 1, 1, 1 },
 		{ 1, 0, 1, 1 },
@@ -49,5 +49,5 @@ Block::Block() {
 		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::NormalMap]);
 	(*this)[2]->getComponent<Model>()->
 		bindNormalTexture(Resource::textures[Resource::Textures::WaterNormal])
-		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::MovingTexture]);
+		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Water]);
 }

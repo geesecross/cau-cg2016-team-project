@@ -46,7 +46,7 @@ namespace Resource {
 			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y
 		));
 		textures[Textures::WaterNormal] = new Texture(SOIL_load_OGL_texture(
-			"resources/water_normal.jpg",
+			"resources/water_normal.png",
 			SOIL_LOAD_AUTO,
 			SOIL_CREATE_NEW_ID,
 			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y
@@ -90,10 +90,14 @@ namespace Resource {
 				.enableLightVectorAsPosition(true)
 				)
 		);
-		shaderPrograms[ShaderPrograms::MovingTexture] = new MovingTexShader(
+		shaderPrograms[ShaderPrograms::Water] = new MovingTexShader(
 			static_cast<MovingTexShader&>(
 				MovingTexShader::create()
-				.setLightVector({ 0, 50, 50 })
+				.setAmbientRatio(0.3f)
+				.setDiffusionRatio(0.2f)
+				.setSpecularRatio(0.8f)
+				.setShiness(16)
+				.setLightVector({ 100, 100, 100 })
 				.enableLightVectorAsPosition(true)
 			)
 		);

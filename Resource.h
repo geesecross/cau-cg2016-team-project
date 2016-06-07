@@ -23,7 +23,7 @@ namespace Resource {
 			SimpleTexture,
 			NormalMap,
 			Parallax,
-			MovingTexture,
+			Water,
 			Skybox
 		};
 	}

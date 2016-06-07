@@ -31,7 +31,8 @@ MovingTextureAnimation::MovingTextureAnimation(MovingTexShader & shader) : shade
 }
 
 bool MovingTextureAnimation::stepFrame(const double timeElapsed, const double timeDelta) {
-	movement += (cosf((float)timeElapsed) + 0.5f) * 0.001f;
-	shader.setTexMoveValue(movement);
+	movement += (cosf((float)timeElapsed) + 0.60f) * 0.0005f;
+	shader.setTexMoveValue({ movement * 0.5f, movement });
+	//shader.setTexMoveValue({ timeElapsed * 0.1f, 0 });
 	return false;
 }

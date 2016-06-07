@@ -3,7 +3,7 @@
 
 class Transform {
 private:
-	Matrix4f transformMatrix;
+	Matrix4f matrix, invMatrix;
 
 public:
 	Transform & reset();
@@ -16,8 +16,11 @@ public:
 	Transform & rotatePre(const Rotation & rotation);
 	Transform & scalePre(const Vector3f & coefficient);
 
-	const Matrix4f getMatrix() const;
+	const Matrix4f & getMatrix() const;
+	const Matrix4f & getInvMatrix() const;
 
 	const Vector3f transformPoint(const Vector3f & point) const;
+	const Vector3f invTransformPoint(const Vector3f & point) const;
 	const Vector3f transformDirection(const Vector3f & direction) const;
+	const Vector3f invTransformDirection(const Vector3f & direction) const;
 };

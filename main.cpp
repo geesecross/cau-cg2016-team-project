@@ -53,7 +53,7 @@ bool init() {
 		camera->setPerspectiveProjection(50);
 		initCameraVectors();
 
-		animationManager->push(std::make_shared<MovingTextureAnimation>(*static_cast<MovingTexShader *>(Resource::shaderPrograms[Resource::ShaderPrograms::MovingTexture])));
+		animationManager->push(std::make_shared<MovingTextureAnimation>(*static_cast<MovingTexShader *>(Resource::shaderPrograms[Resource::ShaderPrograms::Water])));
 
 		rubiksCube.reset(new RubiksCube(cube_size, animationManager));
 		gameRule.reset(new GameRule(rubiksCube, animationManager, camera));

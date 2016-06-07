@@ -8,7 +8,7 @@ namespace MatrixFactory {
 		Z,
 	};
 
-	template<typename T> Matrix<T, 4> translation(const Vector<T, 3> xyz) {
+	template<typename T> Matrix<T, 4> translation(const Vector<T, 3> & xyz) {
 		Matrix<T, 4> mat;
 		mat[3][0] = xyz[0];
 		mat[3][1] = xyz[1];
@@ -26,7 +26,7 @@ namespace MatrixFactory {
 		return mat;
 	}
 
-	template<typename T> Matrix<T, 4> scale(const Vector<T, 3> xyz) {
+	template<typename T> Matrix<T, 4> scale(const Vector<T, 3> & xyz) {
 		Matrix<T, 4> mat;
 		mat[0][0] = xyz[0];
 		mat[1][1] = xyz[1];
