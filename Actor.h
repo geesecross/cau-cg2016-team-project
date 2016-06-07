@@ -22,6 +22,8 @@ private:
 	TChildren children;
 	std::list<std::shared_ptr<Component>> components;
 	Transform transform;
+	//Transform worldTransformCache;
+	//bool worldTransformCacheOutdated = true;
 
 public:
 	// parent operation
@@ -42,6 +44,7 @@ public:
 	const Transform & getTransform() const;
 
 	// world transform operations
+	const Transform getWorldTransform() const;
 	const Matrix4f getWorldMatrix() const;
 	const Matrix4f getInvWorldMatrix() const;
 	const Vector3f transformPointToWorld(const Vector3f & point) const;

@@ -15,6 +15,9 @@ varying vec2 fragTexCoord;
 varying vec3 TlightPos;
 varying vec3 TcamPos;
 
+varying vec3 fragEyeVector;
+varying vec3 fragLightVector;
+
 vec4 transformPoint4(in mat4 transformMatrix, in vec3 point);
 vec3 transformPoint3(in mat4 transformMatrix, in vec3 point);
 vec3 transformDirection3(in mat4 transformMatrix, in vec3 vector);
@@ -30,7 +33,14 @@ void main()
 	vec3 viewNormal = normalize(viewNormalMatrix * in_vertexNormal);
 	vec3 viewTangent = normalize(viewNormalMatrix * in_tangentVector);
 
-	vec3 fragLightVector = normalize(transformPoint3(in_viewMatrix, in_lightVector) - vertexViewPosition);
+	if(in_lightVectorAsPosition) {
+		fragLightVector = normalize(transformPoint3(in_viewMatrix, in_lightVector) - vertexViewPosition);
+	}
+	else {
+		fragLightVector = normalize(transformDirection3(in_viewMatrix, in_lightVector));
+	}
+
+	fragEyeVector = -normalize(vertexViewPosition);
 
 	vec3 viewDirToLight = normalize(fragLightVector - viewPosition.xyz);
 	vec3 viewDirToCamera = normalize(-normalize(vertexViewPosition) - viewPosition.xyz); 

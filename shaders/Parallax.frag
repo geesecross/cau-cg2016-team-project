@@ -4,8 +4,13 @@ uniform sampler2D in_texDiffuse;
 uniform sampler2D in_texNormal;
 uniform sampler2D in_texHeight;
 
+// for illumination model
 uniform vec4 in_color;
 uniform float in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness;
+varying vec3 fragEyeVector;
+varying vec3 fragLightVector;
+vec4 simpleIlluminationModel(vec4 faceColor, vec3 eyeVector, vec3 lightVector, vec3 normalVector, float ambientRatio, float diffusionRatio, float specularRatio, float shiness);
+
 uniform float parallaxScale;
 
 varying vec2 fragTexCoord;
@@ -15,6 +20,7 @@ varying vec3 TcamPos;
 
 
 out vec4 resultingColor;
+
 
 
 vec2 parallaxMapping(in vec3 V, in vec2 T, out float parallaxHeight){
@@ -109,7 +115,7 @@ vec4 normalMapLighting(vec2 T, vec3 L, vec3 V, float shadowMult){
 	vec3 N = normalize(texture(in_texNormal, T).xyz * 2 - 1);
 	vec3 D = texture(in_texDiffuse, T).rgb;
 
-	//ambient
+	/*//ambient
 	float iamb = 0.5;
 	//diffuse
 	float idiff = clamp(dot(N, L), 0, 1);
@@ -124,8 +130,9 @@ vec4 normalMapLighting(vec2 T, vec3 L, vec3 V, float shadowMult){
 	vec4 resColor;
 	resColor.rgb = D * (iamb + (idiff + ispec) * pow(shadowMult, 4));
 	resColor.a = 1;
-	return resColor;
+	return resColor;*/
 
+	return simpleIlluminationModel(vec4(D, 1.0), fragEyeVector, L, N, in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness);
 }
 void main(){
 	vec3 V = normalize(TcamPos);

@@ -30,17 +30,16 @@ in mat4 tangentMatrix;
 uniform vec2 in_time;
 
 void main() {
-	vec2 texCoord = fragTexCoord + in_time;
-
 	vec3 normalVector = fragNormalVector;
 	if(in_texNormalExists) {
-		normalVector = texture2D(in_texNormal, texCoord).xyz - vec3(0.5);
+		normalVector = texture2D(in_texNormal, fragTexCoord + in_time).xyz - vec3(0.5);
+		normalVector += texture2D(in_texNormal, fragTexCoord + normalize(normalVector.yz) * 0.5).xyz - vec3(0.5);	// random pick
 		normalVector = transformDirection3(in_viewMatrix * in_modelMatrix * tangentMatrix, normalVector);
 	}
 
 	vec4 color = vec4(1.0);
 	if(in_texDiffuseExists) {
-		color = texture2D(in_texDiffuse, texCoord);
+		color = texture2D(in_texDiffuse, fragTexCoord + in_time);
 	}
 
 	gl_FragColor = 0.3 * in_color + 0.7 * simpleIlluminationModel(color, fragEyeVector, fragLightVector, normalVector, in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness);

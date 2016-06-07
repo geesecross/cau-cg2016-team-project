@@ -8,6 +8,9 @@ private:
 public:
 	Transform & reset();
 
+	Transform & pushPre(const Transform & transform);
+	Transform & pushPost(const Transform & transform);
+
 	Transform & translatePost(const Vector3f & direction);
 	Transform & rotatePost(const Rotation & rotation);
 	Transform & scalePost(const Vector3f & coefficient);

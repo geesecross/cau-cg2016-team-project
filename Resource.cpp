@@ -60,7 +60,7 @@ namespace Resource {
 
 		shaderPrograms[ShaderPrograms::Phong] = new SimpleIlluminationModelShaderProgram(
 			SimpleIlluminationModelShaderProgram::createPhong()
-			.setLightVector({ 0, 0, 50 })
+			.setLightVector({ 100, 100, 100 })
 			.enableLightVectorAsPosition(true)
 			);
 		shaderPrograms[ShaderPrograms::Phong2] = new SimpleIlluminationModelShaderProgram(
@@ -71,7 +71,7 @@ namespace Resource {
 		shaderPrograms[ShaderPrograms::SimpleTexture] = new TextureShaderProgram(
 			static_cast<TextureShaderProgram &>(
 				TextureShaderProgram::create()
-				.setLightVector({ 0, 1, 10 })
+				.setLightVector({ 100, 100, 100 })
 				.enableLightVectorAsPosition(true)
 				.setSpecularRatio(10)
 			)
@@ -79,14 +79,14 @@ namespace Resource {
 		shaderPrograms[ShaderPrograms::NormalMap] = new NormalMappingProgram(
 			static_cast<NormalMappingProgram&>(
 			NormalMappingProgram::create()
-			.setLightVector({ 50, 50, 50 })
+			.setLightVector({ 100, 100, 100 })
 			.enableLightVectorAsPosition(true)
 				)
 		);
 		shaderPrograms[ShaderPrograms::Parallax] = new ParallaxOcclusionProgram(
 			static_cast<ParallaxOcclusionProgram&>(
 				ParallaxOcclusionProgram::create()
-				.setLightVector({50, 50, 50})
+				.setLightVector({ 100, 100, 100 })
 				.enableLightVectorAsPosition(true)
 				)
 		);

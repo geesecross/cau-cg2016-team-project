@@ -21,9 +21,13 @@ GameRule::GameRule(std::weak_ptr<RubiksCube> rubiksCube, std::weak_ptr<Animation
 	animationManager(animationManager),
 	camera(camera),
 	debugMode(false),
-	onFinishedTwistListener(this, &GameRule::onFinishedTwist) {
-
+	onFinishedTwistListener(this, &GameRule::onFinishedTwist),
+	onCursorMovedListener(this, &GameRule::onCursorMoved),
+	onCursorRotatedListener(this, &GameRule::onCursorRotated)
+{
 	this->rubiksCube.lock()->onFinishedTwist.addListener(this->onFinishedTwistListener);
+	this->rubiksCube.lock()->getCursor()->onCursorMoved.addListener(this->onCursorMovedListener);
+	this->rubiksCube.lock()->getCursor()->onCursorRotated.addListener(this->onCursorRotatedListener);
 	this->gameStarted = false;
 	print("press 'y' to start game");
 }
@@ -151,6 +155,52 @@ bool GameRule::toggleDebugMode()
 	return this->debugMode;
 }
 
+void GameRule::onCursorMoved(const RubiksCube::Cursor & cursor, const Vector2f & movement) {
+	auto ani = std::make_shared<CursorMovementFollowAnimation>(camera, cursor, movement);
+	bool empty = this->cursorMoveQueue.isEmpty();
+
+	this->cursorMoveQueue.push([=](bool interrupted) {
+		if (!ani->isStarted()) {
+			this->animationManager.lock()->push(ani);
+		}
+		if (interrupted) {
+			ani->interrupt();
+		}
+
+		return ani->isFinished();
+	});
+
+	if (empty) {
+		// first entry
+		this->cursorMoveQueue.execute();
+	}
+}
+
+void GameRule::onCursorRotated(const RubiksCube::Cursor & cursor, const bool clockwise) {
+	auto ani = std::make_shared<CursorRotationFollowAnimation>(camera, cursor, clockwise);
+	bool empty = this->cursorMoveQueue.isEmpty();
+
+	this->cursorMoveQueue.push([=](bool interrupted) {
+		if (!ani->isStarted()) {
+			this->animationManager.lock()->push(ani);
+		}
+		if (interrupted) {
+			ani->interrupt();
+		}
+
+		return ani->isFinished();
+	});
+
+	if (empty) {
+		// first entry
+		this->cursorMoveQueue.execute();
+	}
+}
+
+void GameRule::step() {
+	this->cursorMoveQueue.execute();
+}
+
 PrintStringAnimation::PrintStringAnimation(std::weak_ptr<Camera> camera, const std::string & message) 
 	: camera(camera), message(message) {
 
@@ -191,9 +241,9 @@ void ParticleAnimation::onStart() {
 		particles[i].setTransform(
 			Transform(particles[i].getTransform())
 			.translatePost({
-				vrp[0] - (vpn[0] * 2.f) - ((float)rand() / RAND_MAX * 10.f - 5.f),
-				vrp[1] - (vpn[1] * 2.f) - ((float)rand() / RAND_MAX * 10.f - 5.f),
-				vrp[2] - (vpn[2] * 2.f) - ((float)rand() / RAND_MAX * 10.f - 5.f)
+				vrp[0] - (vpn[0] * 2.f) - ((float)rand() / RAND_MAX * 5.f - 2.5f),
+				vrp[1] - (vpn[1] * 2.f) - ((float)rand() / RAND_MAX * 5.f - 2.5f),
+				vrp[2] - (vpn[2] * 2.f) - ((float)rand() / RAND_MAX * 5.f)
 			})
 		);
 	}
@@ -206,9 +256,10 @@ bool ParticleAnimation::stepFrame(const double timeElapsed, const double timeDel
 		particles[i].xSpeed += ((float)rand() / RAND_MAX - 0.5f) * (float)timeDelta;
 		particles[i].zSpeed += ((float)rand() / RAND_MAX - 0.5f) * (float)timeDelta;
 		particles[i].setTransform(
-			Transform(particles[i].getTransform()).translatePost({
+			Transform(particles[i].getTransform())
+			.translatePost({
 				(float)timeDelta * particles[i].xSpeed,
-				- ((float)timeDelta * Particle::gravity),
+				-((float)timeDelta * Particle::gravity),
 				(float)timeDelta * particles[i].zSpeed
 			})
 		);
@@ -216,4 +267,50 @@ bool ParticleAnimation::stepFrame(const double timeElapsed, const double timeDel
 	}
 
 	return timeElapsed > 10;
+}
+
+GameRule::CursorMovementFollowAnimation::CursorMovementFollowAnimation(std::weak_ptr<Camera> & camera, const RubiksCube::Cursor & cursor, const Vector2f & movement) {
+	this->camera = camera;
+	this->startingTransform = cursor.getWorldTransform();
+	this->movement = movement;
+}
+
+bool GameRule::CursorMovementFollowAnimation::stepFrame(const double timeElapsed, const double timeDelta) {
+	static const float duration = 0.2f;
+	float phase = (duration - (float)timeElapsed) / duration;
+	if (phase < 0) {
+		phase = 0;
+	}
+
+	this->camera.lock()->setTransform(
+		Transform()
+		.rotatePost(Rotation().rotateByEuler({ -15, 15, 0 }))
+		.translatePost({ 2.5f, 2.5f, 10 })
+		.translatePost({ -this->movement * phase * 2, 0 })
+		.pushPost(this->startingTransform)
+	);
+	return phase <= 0;
+}
+
+GameRule::CursorRotationFollowAnimation::CursorRotationFollowAnimation(std::weak_ptr<Camera>& camera, const RubiksCube::Cursor & cursor, const bool clockwise) {
+	this->camera = camera;
+	this->startingTransform = cursor.getWorldTransform();
+	this->clockwise = clockwise;
+}
+
+bool GameRule::CursorRotationFollowAnimation::stepFrame(const double timeElapsed, const double timeDelta) {
+	static const float duration = 0.2f;
+	float phase = (duration - (float)timeElapsed) / duration;
+	if (phase < 0) {
+		phase = 0;
+	}
+
+	this->camera.lock()->setTransform(
+		Transform()
+		.rotatePost(Rotation().rotateByEuler({ -15, 15, 0 }))
+		.translatePost({ 2.5f, 2.5f, 10 })
+		.rotatePost(Rotation().rotateByEuler(Vector3f::zVector() * phase * (this->clockwise ? 90.f : -90.f)))
+		.pushPost(this->startingTransform)
+	);
+	return phase <= 0;
 }

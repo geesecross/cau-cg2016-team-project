@@ -147,7 +147,6 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CommandQueue.cpp" />
     <ClCompile Include="Exception.cpp" />
-    <ClCompile Include="FooShader.cpp" />
     <ClCompile Include="GameRule.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -174,7 +173,6 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
     <ClInclude Include="Event.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="FileHelper.h" />
-    <ClInclude Include="FooShader.h" />
     <ClInclude Include="GameRule.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="MovingTexShader.h" />
@@ -197,7 +195,6 @@ xcopy /i /y /e "$(ProjectDir)shaders" "$(OutDir)shaders"</Command>
   <ItemGroup>
     <None Include="shaders\Color.frag" />
     <None Include="shaders\FillColor.frag" />
-    <None Include="shaders\foo.vert" />
     <None Include="shaders\Gouraud.frag" />
     <None Include="shaders\Gouraud.vert" />
     <None Include="shaders\MovingTexture.frag" />

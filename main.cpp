@@ -118,6 +118,8 @@ void onIdle() {
 	long currentTime = glutGet(GLUT_ELAPSED_TIME);
 	timeDelta = (currentTime - previousTime) / 1000.0f;
 
+	gameRule->step();
+
 	if (0 < timeDelta) {
 		previousTime = currentTime;
 		glutPostRedisplay();
@@ -129,9 +131,17 @@ void onResize(int width, int height) {
 }
 
 void onKeyboard(unsigned char ascii, int x, int y) {
+	static int prevX = x, prevY = y;
 	float movingStep = 0.1f, rotatingStep = 1;
+	
 
 	switch (ascii) {
+	case '1':
+		camera->setTransform(
+			Transform(camera->getTransform())
+			.rotatePre(Rotation().rotateByEuler({ 0.5f * (prevY - y), 0.5f * (prevX - x), 0 }))
+		);
+		break;
 	case 'O':
 	case 'o':
 		camera->setOrthographicProjection();
@@ -224,11 +234,21 @@ void onKeyboard(unsigned char ascii, int x, int y) {
 		initCameraVectors();
 		std::cout << "** Resetted Camera Position and Rotation" << std::endl;
 		break;
+	case ' ':
+		camera->setTransform(
+			Transform(rubiksCube->getCursor()->getWorldTransform())
+			.translatePre({ 0, 0, 10 })
+		);
+		break;
 	case '`':
 		debugMode = !debugMode;
 		gameRule->toggleDebugMode();
 		break;
 	}
+	prevX = x;
+	prevY = y;
+
+	glutPostRedisplay();
 }
 
 void onKeyboardUp(unsigned char ascii, int x, int y) {

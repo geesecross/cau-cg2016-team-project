@@ -46,6 +46,14 @@ const Transform & Actor::getTransform() const {
 	return this->transform;
 }
 
+const Transform Actor::getWorldTransform() const {
+	if (this->isRoot()) {
+		return this->transform;
+	}
+
+	return Transform(this->parent->getWorldTransform()).pushPre(this->transform);
+}
+
 const Matrix4f Actor::getWorldMatrix() const {
 	if (this->isRoot()) {
 		return this->transform.getMatrix();

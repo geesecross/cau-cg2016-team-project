@@ -7,6 +7,18 @@ Transform & Transform::reset() {
 	return *this;
 }
 
+Transform & Transform::pushPre(const Transform & transform) {
+	this->matrix *= transform.getMatrix();
+	this->invMatrix = transform.getInvMatrix() * this->invMatrix;
+	return *this;
+}
+
+Transform & Transform::pushPost(const Transform & transform) {
+	this->matrix = transform.getMatrix() * this->matrix;
+	this->invMatrix *= transform.getInvMatrix();
+	return *this;
+}
+
 Transform & Transform::translatePost(const Vector3f & direction) {
 	this->matrix = MatrixFactory::translation(direction) * this->matrix;
 	this->invMatrix *= MatrixFactory::translation(Vector3f(-direction));

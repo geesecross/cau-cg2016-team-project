@@ -2,7 +2,8 @@
 
 #include "RubiksCube.h"
 #include "Camera.h"
-#define MAX_PARTICLES 500 // 최대 Particle 개수
+
+#define MAX_PARTICLES 100 // 최대 Particle 개수
 
 class PrintStringAnimaiton;
 class ParticleAnimation;
@@ -10,7 +11,28 @@ class ParticleAnimation;
 class GameRule {
 	friend class PrintStringAnimation;
 private:
+	class CursorMovementFollowAnimation : public Animation {
+	private:
+		std::weak_ptr<Camera> camera;
+		Transform startingTransform;
+		Vector2f movement;
+	public:
+		CursorMovementFollowAnimation(std::weak_ptr<Camera> & camera, const RubiksCube::Cursor & cursor, const Vector2f & movement);
+		virtual bool stepFrame(const double timeElapsed, const double timeDelta) override;
+	};
+	class CursorRotationFollowAnimation : public Animation {
+	private:
+		std::weak_ptr<Camera> camera;
+		Transform startingTransform;
+		bool clockwise;
+	public:
+		CursorRotationFollowAnimation(std::weak_ptr<Camera> & camera, const RubiksCube::Cursor & cursor, const bool clockwise);
+		virtual bool stepFrame(const double timeElapsed, const double timeDelta) override;
+	};
+
 	Event<void()>::MemberFunctionListener<GameRule> onFinishedTwistListener;
+	RubiksCube::Cursor::OnCursorMoved::MemberFunctionListener<GameRule> onCursorMovedListener;
+	RubiksCube::Cursor::OnCursorRotated::MemberFunctionListener<GameRule> onCursorRotatedListener;
 	std::weak_ptr<RubiksCube> rubiksCube;
 	std::weak_ptr<AnimationManager> animationManager;
 	std::weak_ptr<Camera> camera;
@@ -19,6 +41,7 @@ private:
 	bool gameStarted;
 	static int maxScramble;
 	bool debugMode;
+	CommandQueue cursorMoveQueue;
 
 	bool isAllBlockAligned(Vector3f std_vector) const;
 	void print(const std::string & message);
@@ -31,6 +54,9 @@ public:
 	void win();
 	bool isStarted() const;
 	bool toggleDebugMode();
+	void onCursorMoved(const RubiksCube::Cursor & cursor, const Vector2f & movement);
+	void onCursorRotated(const RubiksCube::Cursor & cursor, const bool clockwise);
+	void step();
 };
 
 class PrintStringAnimation : public Animation {

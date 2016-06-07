@@ -211,6 +211,7 @@ RubiksCube::Cursor & RubiksCube::Cursor::move(const Vector2f & vector) {
 	}
 
 	this->updateTransform();
+	this->onCursorMoved.raise(*this, vector);
 	return *this;
 }
 
@@ -242,6 +243,7 @@ void RubiksCube::Cursor::rotateAxis(bool clockwise) {
 		this->position[1] = this->cube.getSize() - 1 - temp;
 	}
 	this->updateTransform();
+	this->onCursorRotated.raise(*this, clockwise);
 }
 
 void RubiksCube::Cursor::resetPositionAndRotation()

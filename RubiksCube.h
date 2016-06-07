@@ -10,12 +10,17 @@ class RubiksCube : public Actor {
 	friend class TwistAnimation;
 public:
 	class Cursor : public Actor {
+	public:
+		using OnCursorMoved = Event<void(const Cursor &, const Vector2f &)>;
+		using OnCursorRotated = Event<void(const Cursor &, const bool)>;
 	private:
 		RubiksCube & cube;
 		Vector3f position;
 		Rotation rotation;
 		void updateTransform();
 	public:
+		OnCursorMoved onCursorMoved;
+		OnCursorRotated onCursorRotated;
 		Cursor(RubiksCube & cube);
 		Cursor & move(const Vector2f & vector);
 		Vector3f getSelected();
