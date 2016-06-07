@@ -32,8 +32,9 @@ float degree2radian(float degree) {
 }
 
 void initCameraVectors() {
-	camera->setViewReferencePoint({ 0, 0, 10 })
-		.setViewPlaneNormal({ 0, 0, 1 });
+	camera->setTransform(
+		Transform().translatePost({ 0, 0, 10 })
+	);
 }
 
 bool init() {
@@ -83,20 +84,25 @@ void render() {
 
 	try {
 		animationManager->step(timeDelta);
-		/*
-		Actor actor;
-		actor.createComponent<Model>()->bindMesh(Resource::meshes[Resource::Plane])
-			.bindShaderProgram(Resource::shaderPrograms[Resource::Phong])
+		
+		/*Actor actor;
+		actor.createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Plane])
+			.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Phong])
 			.setColor({ 1, 1, 1, 1 });
 		auto child = actor.createChild<Actor>();
-		child->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Plane])
-			.bindShaderProgram(Resource::shaderPrograms[Resource::Phong])
+		child->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Plane])
+			.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Phong])
 			.setColor({ 1, 0, 0, 1 });
-		child->getTransform().rotatePost(Rotation().rotateByEuler({}));
-		camera->render(actor);
-		*/
+		child->setTransform(
+			Transform()
+			.rotatePost(Rotation().rotateByEuler({}))
+		);
+		camera->render(actor);*/
+		
 		camera->render(*rubiksCube, true);
-		skybox->getTransform().reset().scalePost(0.5f).translatePost(camera->getViewReferencePoint());
+		skybox->setTransform(
+			Transform().scalePost(0.5f).translatePost(camera->getViewReferencePoint())
+		);
 		camera->render(*skybox, true);
 	}
 	catch (Exception & e) {
@@ -173,16 +179,18 @@ void onKeyboard(unsigned char ascii, int x, int y) {
 	case 'Q':
 		rotatingStep *= 10;
 	case 'q':
-		camera->rotate(degree2radian(rotatingStep));
+		camera->rotate(Rotation().rotateByEuler(Vector3f::yVector() * rotatingStep));
 		break;
 
 	case 'E':
 		rotatingStep *= 10;
 	case 'e':
-		camera->rotate(degree2radian(-rotatingStep));
+		camera->rotate(Rotation().rotateByEuler(Vector3f::yVector() * -rotatingStep));
 		break;
 
 	case '.':
+		std::cout << "ViewMat2: " << camera->getTransform().getInvMatrix() << std::endl;
+		std::cout << "ViewMat: " << camera->getViewMatrix() << std::endl;
 		std::cout << "VRP: " << camera->getViewReferencePoint() << std::endl;
 		std::cout << "VPN: " << camera->getViewPlaneNormal() << std::endl;
 		break;

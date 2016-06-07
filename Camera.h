@@ -7,15 +7,14 @@
 #include "Actor.h"
 #include "Model.h"
 
-class Camera {
+class Camera : public Actor {
 private:
 	enum Projection {
 		Orthographic,
 		Perspective,
 	};
-
-	Matrix4f viewMatrix, projectionMatrix;
-	Vector3f viewReferencePoint, viewPlaneNormal, viewUpVector;
+	
+	Matrix4f projectionMatrix;
 	struct {
 		int width, height;
 	} viewport;
@@ -23,23 +22,21 @@ private:
 	float fieldOfView = 60;
 	Projection currentProjection;
 
-	void updateViewMatrix();
-	Camera & setViewMatrix(const Matrix4f & matrix);
 	Camera & setProjectionMatrix(const Matrix4f & matrix);
 
 public:
 	Camera();
 
+	virtual Camera & setTransform(const Transform & transform);
+
 	Camera & setScale(GLfloat scale);
-	const Vector3f & getViewReferencePoint() const;
-	Camera & setViewReferencePoint(const Vector3f & point);
-	const Vector3f & getViewPlaneNormal() const;
-	Camera & setViewPlaneNormal(const Vector3f & viewPlaneNormal);
+	const Vector3f getViewReferencePoint() const;
+	const Vector3f getViewPlaneNormal() const;
 
 	Camera & move(const Vector3f & vector);
-	Camera & rotate(const float radian);
+	Camera & rotate(const Rotation & rotation);
 
-	const Matrix4f & getViewMatrix() const;
+	const Matrix4f getViewMatrix() const;
 	const Matrix4f & getProjectionMatrix() const;
 
 	Camera & setOrthographicProjection();

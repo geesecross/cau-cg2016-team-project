@@ -24,9 +24,11 @@ Block::Block() {
 
 	for (std::pair<Vector3f, Vector3f> & position : positions) {
 		std::shared_ptr<Actor> child = this->createChild<Actor>();
-		child->getTransform()
+		child->setTransform(
+			Transform(child->getTransform())
 			.rotatePost(Rotation().rotateByEuler(position.second))
-			.translatePost(position.first);
+			.translatePost(position.first)
+		);
 		child->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Plane])
 			.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Phong]);
 	}

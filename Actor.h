@@ -38,14 +38,16 @@ public:
 	ConstIterator end() const;
 
 	// transform operation
-	Actor & setTransform(const Transform & transform);
-	Transform & getTransform();
+	virtual Actor & setTransform(const Transform & transform);
 	const Transform & getTransform() const;
 
 	// world transform operations
 	const Matrix4f getWorldMatrix() const;
+	const Matrix4f getInvWorldMatrix() const;
 	const Vector3f transformPointToWorld(const Vector3f & point) const;
+	const Vector3f invTransformPointToWorld(const Vector3f & point) const;
 	const Vector3f transformDirectionToWorld(const Vector3f & direction) const;
+	const Vector3f invTransformDirectionToWorld(const Vector3f & direction) const;
 	const Vector3f getWorldPosition() const;
 
 	// component operations

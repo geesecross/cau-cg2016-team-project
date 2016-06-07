@@ -42,10 +42,6 @@ Actor & Actor::setTransform(const Transform & transform) {
 	return *this;
 }
 
-Transform & Actor::getTransform() {
-	return this->transform;
-}
-
 const Transform & Actor::getTransform() const {
 	return this->transform;
 }
@@ -58,12 +54,28 @@ const Matrix4f Actor::getWorldMatrix() const {
 	return this->parent->getWorldMatrix() * this->transform.getMatrix();
 }
 
+const Matrix4f Actor::getInvWorldMatrix() const {
+	if (this->isRoot()) {
+		return this->transform.getInvMatrix();
+	}
+
+	return this->transform.getInvMatrix() * this->parent->getInvWorldMatrix();
+}
+
 const Vector3f Actor::transformPointToWorld(const Vector3f & point) const {
 	return (this->getWorldMatrix() * Vector4f(point, 1)).xyz();
 }
 
+const Vector3f Actor::invTransformPointToWorld(const Vector3f & point) const {
+	return (this->getInvWorldMatrix() * Vector4f(point, 1)).xyz();
+}
+
 const Vector3f Actor::transformDirectionToWorld(const Vector3f & direction) const {
 	return (this->getWorldMatrix() * Vector4f(direction, 0)).xyz();
+}
+
+const Vector3f Actor::invTransformDirectionToWorld(const Vector3f & direction) const {
+	return (this->getInvWorldMatrix() * Vector4f(direction, 0)).xyz();
 }
 
 const Vector3f Actor::getWorldPosition() const {

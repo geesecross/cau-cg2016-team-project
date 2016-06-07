@@ -188,11 +188,14 @@ void ParticleAnimation::onStart() {
 	const Vector3f & vpn = camera.lock()->getViewPlaneNormal();
 	for(int i = 0; i < MAX_PARTICLES; i++)
 	{
-		particles[i].getTransform().translatePost({
-			vrp[0] - (vpn[0] * 2.f) - ((float)rand() / RAND_MAX * 10.f - 5.f),
-			vrp[1] - (vpn[1] * 2.f) - ((float)rand() / RAND_MAX * 10.f - 5.f),
-			vrp[2] - (vpn[2] * 2.f) - ((float)rand() / RAND_MAX * 10.f - 5.f)
-		});
+		particles[i].setTransform(
+			Transform(particles[i].getTransform())
+			.translatePost({
+				vrp[0] - (vpn[0] * 2.f) - ((float)rand() / RAND_MAX * 10.f - 5.f),
+				vrp[1] - (vpn[1] * 2.f) - ((float)rand() / RAND_MAX * 10.f - 5.f),
+				vrp[2] - (vpn[2] * 2.f) - ((float)rand() / RAND_MAX * 10.f - 5.f)
+			})
+		);
 	}
 }
 
@@ -202,11 +205,13 @@ bool ParticleAnimation::stepFrame(const double timeElapsed, const double timeDel
 	{	
 		particles[i].xSpeed += ((float)rand() / RAND_MAX - 0.5f) * (float)timeDelta;
 		particles[i].zSpeed += ((float)rand() / RAND_MAX - 0.5f) * (float)timeDelta;
-		particles[i].getTransform().translatePost({
-			(float)timeDelta * particles[i].xSpeed,
-			- ((float)timeDelta * Particle::gravity),
-			(float)timeDelta * particles[i].zSpeed
-		});
+		particles[i].setTransform(
+			Transform(particles[i].getTransform()).translatePost({
+				(float)timeDelta * particles[i].xSpeed,
+				- ((float)timeDelta * Particle::gravity),
+				(float)timeDelta * particles[i].zSpeed
+			})
+		);
 		camera.lock()->render(particles[i], true);
 	}
 
