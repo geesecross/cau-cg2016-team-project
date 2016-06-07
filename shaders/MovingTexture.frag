@@ -33,7 +33,8 @@ void main() {
 	vec3 normalVector = fragNormalVector;
 	if(in_texNormalExists) {
 		normalVector = texture2D(in_texNormal, fragTexCoord + in_time).xyz - vec3(0.5);
-		normalVector += texture2D(in_texNormal, fragTexCoord + normalize(normalVector.yz) * 0.5).xyz - vec3(0.5);	// random pick
+		//normalVector += texture2D(in_texNormal, fragTexCoord + vec2(1.0 - in_time.x, in_time.y)).xyz - vec3(0.5);	// random pick
+		normalVector += texture2D(in_texNormal, fragTexCoord + normalize(normalVector.yz) * 0.05).xyz - vec3(0.5);	// random pick
 		normalVector = transformDirection3(in_viewMatrix * in_modelMatrix * tangentMatrix, normalVector);
 	}
 
