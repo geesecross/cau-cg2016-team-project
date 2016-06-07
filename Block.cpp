@@ -27,30 +27,27 @@ Block::Block() {
 		child->getTransform()
 			.rotatePost(Rotation().rotateByEuler(position.second))
 			.translatePost(position.first);
-		child->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Plane])
-			.bindShaderProgram(Resource::shaderPrograms[Resource::Phong]);
+		child->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Plane])
+			.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Phong]);
 	}
 
 	for (size_t i = 0; i < 6; ++i) {
 		(*this)[i]->getComponent<Model>()->setColor(colors[i]);
 	}
 
-	(*this)[2]->getComponent<Model>()->
-		bindDiffuseTexture(Resource::textures[Resource::TexturePng])
-		.bindSpecularTexture(Resource::textures[Resource::TextureSpecular])
-		.bindNormalTexture(Resource::textures[Resource::TextureNormal])
-		.bindHeightTexture(Resource::textures[Resource::TextureHeight])
-		.bindShaderProgram(Resource::shaderPrograms[Resource::Parallax]);
-	(*this)[5]->getComponent<Model>()->
-		bindDiffuseTexture(Resource::textures[Resource::TexturePng])
-		.bindSpecularTexture(Resource::textures[Resource::TextureSpecular])
-		.bindNormalTexture(Resource::textures[Resource::TextureNormal])
-		.bindHeightTexture(Resource::textures[Resource::TextureHeight])
-		.bindShaderProgram(Resource::shaderPrograms[Resource::NormalMap]);
 	(*this)[0]->getComponent<Model>()->
-		bindDiffuseTexture(Resource::textures[Resource::TexturePng])
-		.bindSpecularTexture(Resource::textures[Resource::TextureSpecular])
-		.bindNormalTexture(Resource::textures[Resource::TextureNormal])
-		.bindHeightTexture(Resource::textures[Resource::TextureHeight])
-		.bindShaderProgram(Resource::shaderPrograms[Resource::MovingTexture]);
+		bindDiffuseTexture(Resource::textures[Resource::Textures::TexturePng])
+		.bindSpecularTexture(Resource::textures[Resource::Textures::TextureSpecular])
+		.bindNormalTexture(Resource::textures[Resource::Textures::TextureNormal])
+		.bindHeightTexture(Resource::textures[Resource::Textures::TextureHeight])
+		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Parallax]);
+	(*this)[5]->getComponent<Model>()->
+		bindDiffuseTexture(Resource::textures[Resource::Textures::TexturePng])
+		.bindSpecularTexture(Resource::textures[Resource::Textures::TextureSpecular])
+		.bindNormalTexture(Resource::textures[Resource::Textures::TextureNormal])
+		.bindHeightTexture(Resource::textures[Resource::Textures::TextureHeight])
+		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::NormalMap]);
+	(*this)[2]->getComponent<Model>()->
+		bindNormalTexture(Resource::textures[Resource::Textures::WaterNormal])
+		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::MovingTexture]);
 }

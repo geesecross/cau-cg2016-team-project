@@ -1,8 +1,8 @@
 #version 150
 uniform mat4 in_modelMatrix, in_viewMatrix, in_projectionMatrix;
-uniform sampler2D in_tex0;
-uniform sampler2D in_normal;
-uniform sampler2D in_height;
+uniform sampler2D in_texDiffuse;
+uniform sampler2D in_texNormal;
+uniform sampler2D in_texHeight;
 
 uniform vec4 in_color;
 uniform float in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness;
@@ -29,11 +29,11 @@ vec2 parallaxMapping(in vec3 V, in vec2 T, out float parallaxHeight){
 	vec2 dtex = parallaxScale * V.xy / V.z / numLayers;
 	vec2 currentTextureCoords = T;
 
-	float heightFromTexture = texture(in_height, currentTextureCoords).r;
+	float heightFromTexture = texture(in_texHeight, currentTextureCoords).r;
 	while(heightFromTexture > currentLayerheight){
 		currentLayerheight += layerHeight;
 		currentTextureCoords -= dtex;
-		heightFromTexture = texture(in_height, currentTextureCoords).r;
+		heightFromTexture = texture(in_texHeight, currentTextureCoords).r;
 	}
 
 	//relief parallax mapping
@@ -47,7 +47,7 @@ vec2 parallaxMapping(in vec3 V, in vec2 T, out float parallaxHeight){
 	for(int i=0; i<numSearches; i++){
 		deltaTexCoord /=2;
 		deltaHeight /=2;
-		heightFromTexture = texture(in_height, currentTextureCoords).r;
+		heightFromTexture = texture(in_texHeight, currentTextureCoords).r;
 		if(heightFromTexture > currentLayerheight){
 			currentTextureCoords -= deltaTexCoord;
 			currentLayerheight += deltaHeight;
@@ -80,7 +80,7 @@ float parallaxSoftShadowMult(vec3 L, vec2 initTexCoord, float initHeight){
 
 		float currentLayerHeight = initHeight - layerHeight;
 		vec2 currentTexCoord = initTexCoord + texStep;
-		float heightFromTexture = texture(in_height, currentTexCoord).r;
+		float heightFromTexture = texture(in_texHeight, currentTexCoord).r;
 		int stepIndex = 1;
 
 		while(currentLayerHeight > 0){
@@ -92,7 +92,7 @@ float parallaxSoftShadowMult(vec3 L, vec2 initTexCoord, float initHeight){
 			stepIndex==1;
 			currentLayerHeight -= layerHeight;
 			currentTexCoord += texStep;
-			heightFromTexture = texture(in_height, currentTexCoord).r;
+			heightFromTexture = texture(in_texHeight, currentTexCoord).r;
 
 		}
 
@@ -106,8 +106,8 @@ float parallaxSoftShadowMult(vec3 L, vec2 initTexCoord, float initHeight){
 }
 
 vec4 normalMapLighting(vec2 T, vec3 L, vec3 V, float shadowMult){
-	vec3 N = normalize(texture(in_normal, T).xyz * 2 - 1);
-	vec3 D = texture(in_tex0, T).rgb;
+	vec3 N = normalize(texture(in_texNormal, T).xyz * 2 - 1);
+	vec3 D = texture(in_texDiffuse, T).rgb;
 
 	//ambient
 	float iamb = 0.5;

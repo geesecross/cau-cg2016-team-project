@@ -5,31 +5,41 @@
 #include "Texture.h"
 
 namespace Resource {
-	enum MeshId {
-		Plane,
-		Arrow,
-		Cube,
-		Teapot,
-		Particle
-	};
-	enum ShaderProgramId {
-		Phong,
-		Phong2,
-		SimpleTexture,
-		NormalMap,
-		Parallax,
-		MovingTexture,
-	};
-	enum TextureId {
-		TexturePng,
-		TextureSpecular,
-		TextureNormal,
-		TextureHeight,
-	};
+	namespace Meshes {
+		enum Id {
+			Plane,
+			Arrow,
+			Cube,
+			Teapot,
+			Particle,
+			Skybox
+		};
 
-	extern std::map<MeshId, Mesh *> meshes;
-	extern std::map<ShaderProgramId, ShaderProgram *> shaderPrograms;
-	extern std::map<TextureId, Texture *> textures;
+	}
+	namespace ShaderPrograms {
+		enum Id {
+			Phong,
+			Phong2,
+			SimpleTexture,
+			NormalMap,
+			Parallax,
+			MovingTexture,
+			Skybox
+		};
+	}
+	namespace Textures {
+		enum Id {
+			TexturePng,
+			TextureSpecular,
+			TextureNormal,
+			TextureHeight,
+			WaterNormal,
+			Skybox,
+		};
+	}
+	extern std::map<Meshes::Id, ::Mesh *> meshes;
+	extern std::map<ShaderPrograms::Id, ::ShaderProgram *> shaderPrograms;
+	extern std::map<Textures::Id, ::Texture *> textures;
 
 	void init();
 	void uninit();

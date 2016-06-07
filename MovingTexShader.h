@@ -1,9 +1,11 @@
 #pragma once
-#include "TextureShaderProgram.h"
+#include "NormalMappingProgram.h"
 #include "Model.h"
 #include "Animation.h"
 
-class MovingTexShader : public TextureShaderProgram {
+class MovingTexShader : public NormalMappingProgram {
+private:
+	Vector2f texMoveValue;
 public:
 	MovingTexShader(Recipe & recipe);
 
@@ -11,14 +13,13 @@ public:
 
 	virtual void onPreDraw(const Model & model) const;
 	virtual void onPostDraw(const Model & model) const;
-	const inline void setTexMoveValue(const float& value){ texMoveValue = value; }
-private:
-	float texMoveValue;
+	const inline void setTexMoveValue(const Vector2f & offset){ texMoveValue = offset; }
 };
 
 class MovingTextureAnimation : public Animation {
 private:
 	MovingTexShader & shader;
+	float movement = 0.0f;
 public:
 	MovingTextureAnimation(MovingTexShader & shader);
 	virtual bool stepFrame(const double timeElapsed, const double timeDelta);

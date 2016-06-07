@@ -171,8 +171,8 @@ bool PrintStringAnimation::stepFrame(const double timeElapsed, const double time
 }
 
 Particle::Particle() {
-	this->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Particle])
-		.bindShaderProgram(Resource::shaderPrograms[Resource::Phong])
+	this->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Particle])
+		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Phong])
 		.setColor(colors[(int)((float)rand() / RAND_MAX * 10)]);
 	xSpeed = ((float)rand() / RAND_MAX * 0.1f - 0.2f);
 	zSpeed = ((float)rand() / RAND_MAX * 0.1f - 0.2f);

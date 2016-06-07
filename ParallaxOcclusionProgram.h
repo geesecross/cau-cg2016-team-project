@@ -8,7 +8,6 @@ private:
 public:
 	static ParallaxOcclusionProgram create();
 
-
 	virtual void onPreDraw(const Model & model) const;
 	virtual void onPostDraw(const Model & model) const;
 };

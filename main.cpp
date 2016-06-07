@@ -21,6 +21,7 @@
 float timeDelta = 0;
 const size_t cube_size = 3; // 큐브의 한 열의 블럭 개수
 std::shared_ptr<Camera> camera;
+std::shared_ptr<Actor> skybox;
 std::shared_ptr<RubiksCube> rubiksCube;
 std::shared_ptr<AnimationManager> animationManager;
 std::shared_ptr<GameRule> gameRule;
@@ -52,10 +53,14 @@ bool init() {
 		camera->setPerspectiveProjection(50);
 		initCameraVectors();
 
-		animationManager->push(std::make_shared<MovingTextureAnimation>(*static_cast<MovingTexShader *>(Resource::shaderPrograms[Resource::MovingTexture])));
+		animationManager->push(std::make_shared<MovingTextureAnimation>(*static_cast<MovingTexShader *>(Resource::shaderPrograms[Resource::ShaderPrograms::MovingTexture])));
 
 		rubiksCube.reset(new RubiksCube(cube_size, animationManager));
 		gameRule.reset(new GameRule(rubiksCube, animationManager, camera));
+		skybox.reset(new Actor());
+		skybox->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Skybox])
+			.bindDiffuseTexture(Resource::textures[Resource::Textures::Skybox])
+			.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Skybox]);
 	}
 	catch (Exception & e) {
 		std::cout << e.what() << std::endl;
@@ -91,6 +96,8 @@ void render() {
 		camera->render(actor);
 		*/
 		camera->render(*rubiksCube, true);
+		skybox->getTransform().reset().scalePost(0.5f).translatePost(camera->getViewReferencePoint());
+		camera->render(*skybox, true);
 	}
 	catch (Exception & e) {
 		std::cerr << e.what() << std::endl;

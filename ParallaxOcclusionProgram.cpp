@@ -23,25 +23,12 @@ void ParallaxOcclusionProgram::onPreDraw(const Model & model) const
 	GLint objectId;
 	if (0 <= (objectId = glGetUniformLocation(getProgramId(), "parallaxScale"))) {
 		glUniform1f(objectId, 0.1f);//0 ~ 0.5 is appropriate
-		GLint heightId;
-		if (0 <= (heightId = glGetUniformLocation(getProgramId(), "in_height"))) {
-			glEnable(GL_TEXTURE_2D);
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, model.getHeightTexture()->getTextureId());
-			glUniform1i(heightId, 2);
-
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-		}
-
 	}
+	this->initTexture(3, "in_texHeight", model.getHeightTexture());
 }
 
-void ParallaxOcclusionProgram::onPostDraw(const Model & model) const
-{
+void ParallaxOcclusionProgram::onPostDraw(const Model & model) const {
+	this->uninitTexture(3, "in_texHeight");
 	NormalMappingProgram::onPostDraw(model);
 }
 

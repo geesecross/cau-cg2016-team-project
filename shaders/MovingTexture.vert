@@ -1,9 +1,10 @@
-#version 110
+#version 150
 
 uniform mat4 in_modelMatrix, in_viewMatrix, in_projectionMatrix;
 uniform vec3 in_lightVector;
 uniform bool in_lightVectorAsPosition;
-uniform float in_time;
+
+
 attribute vec2 in_texCoord;
 attribute vec3 in_vertexPosition;
 attribute vec3 in_vertexNormal;
@@ -13,6 +14,9 @@ varying vec3 fragEyeVector;
 varying vec3 fragLightVector;
 varying vec2 fragTexCoord;
 
+uniform vec3 in_surfaceNormal, in_tangentVector, in_bitangentVector;
+out mat4 tangentMatrix;
+
 vec4 transformPoint4(in mat4 transformMatrix, in vec3 point);
 vec3 transformPoint3(in mat4 transformMatrix, in vec3 point);
 vec3 transformDirection3(in mat4 transformMatrix, in vec3 vector);
@@ -20,6 +24,10 @@ vec3 transformDirection3(in mat4 transformMatrix, in vec3 vector);
 void main() {
 	mat4 modelViewMatrix = in_viewMatrix * in_modelMatrix;
 	vec3 vertexViewPosition = transformPoint3(modelViewMatrix, in_vertexPosition).xyz;
+	
+	tangentMatrix = transpose(mat4(
+		vec4(in_tangentVector, 0), vec4(in_bitangentVector, 0), vec4(in_surfaceNormal, 0), vec4(0, 0, 0, 1.0)
+	));
 
 	fragNormalVector = transformDirection3(modelViewMatrix, in_vertexNormal);
 	if(in_lightVectorAsPosition) {

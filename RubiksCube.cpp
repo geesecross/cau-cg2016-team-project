@@ -175,8 +175,8 @@ void RubiksCube::Cursor::updateTransform() {
 }
 
 RubiksCube::Cursor::Cursor(RubiksCube & cube) : cube(cube) {
-	this->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Arrow])
-		.bindShaderProgram(Resource::shaderPrograms[Resource::Phong]);
+	this->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Arrow])
+		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Phong]);
 	this->position = { (float)(cube.size / 2), (float)(cube.size / 2), (float)(cube.size - 1) };
 	this->updateTransform();
 }
