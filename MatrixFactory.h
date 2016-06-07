@@ -35,28 +35,46 @@ namespace MatrixFactory {
 		return mat;
 	}
 
-	template<typename T> Matrix<T, 4> rotation(const T radian, const Axis axis) {
+	template<typename T> Matrix<T, 4> rotation(const T degree, const Axis axis) {
+		T cosValue;
+		T sinValue;
+
+		// 특수근 처리 (정확도 향상용)
+		if (90 == degree) {
+			cosValue = 0;
+			sinValue = 1;
+		}
+		else if (-90 == degree) {
+			cosValue = 0;
+			sinValue = -1;
+		}
+		else {
+			const double radian = (degree * M_PI) / 180.0;
+			cosValue = (T)cos(radian);
+			sinValue = (T)sin(radian);
+		}
+
 		Matrix<T, 4> mat;
 		switch (axis) {
 		case X:
-			mat[1][1] = (T)cos((double)radian);
-			mat[2][1] = (T)-sin((double)radian);
-			mat[1][2] = (T)sin((double)radian);
-			mat[2][2] = (T)cos((double)radian);
+			mat[1][1] = cosValue;
+			mat[2][1] = -sinValue;
+			mat[1][2] = sinValue;
+			mat[2][2] = cosValue;
 			break;
 
 		case Y:
-			mat[0][0] = (T)cos((double)radian);
-			mat[2][0] = (T)sin((double)radian);
-			mat[0][2] = (T)-sin((double)radian);
-			mat[2][2] = (T)cos((double)radian);
+			mat[0][0] = cosValue;
+			mat[2][0] = sinValue;
+			mat[0][2] = -sinValue;
+			mat[2][2] = cosValue;
 			break;
 
 		case Z:
-			mat[0][0] = (T)cos((double)radian);
-			mat[1][0] = (T)-sin((double)radian);
-			mat[0][1] = (T)sin((double)radian);
-			mat[1][1] = (T)cos((double)radian);
+			mat[0][0] = cosValue;
+			mat[1][0] = -sinValue;
+			mat[0][1] = sinValue;
+			mat[1][1] = cosValue;
 			break;
 		}
 

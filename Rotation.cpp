@@ -5,13 +5,13 @@
 #include <cmath>
 
 Rotation & Rotation::rotateByEuler(const Vector3f & euler) {
-	this->matrix = MatrixFactory::rotation((float)(euler[2] * M_PI / 180), MatrixFactory::Z)
-		* MatrixFactory::rotation((float)(euler[1] * M_PI / 180), MatrixFactory::Y)
-		* MatrixFactory::rotation((float)(euler[0] * M_PI / 180), MatrixFactory::X)
+	this->matrix = MatrixFactory::rotation(euler[2], MatrixFactory::Z)
+		* MatrixFactory::rotation(euler[1], MatrixFactory::Y)
+		* MatrixFactory::rotation(euler[0], MatrixFactory::X)
 		* this->matrix;
-	this->invMatrix *= MatrixFactory::rotation((float)(-euler[0] * M_PI / 180), MatrixFactory::X)
-		* MatrixFactory::rotation((float)(-euler[1] * M_PI / 180), MatrixFactory::Y)
-		* MatrixFactory::rotation((float)(-euler[2] * M_PI / 180), MatrixFactory::Z);
+	this->invMatrix *= MatrixFactory::rotation(-euler[0], MatrixFactory::X)
+		* MatrixFactory::rotation(-euler[1], MatrixFactory::Y)
+		* MatrixFactory::rotation(-euler[2], MatrixFactory::Z);
 	return *this;
 }
 
