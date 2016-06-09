@@ -7,6 +7,7 @@
 
 class PrintStringAnimaiton;
 class ParticleAnimation;
+class ScatterAnimation;
 
 class GameRule {
 	friend class PrintStringAnimation;
@@ -38,6 +39,7 @@ private:
 	std::weak_ptr<Camera> camera;
 	std::shared_ptr<PrintStringAnimation> messageAnimation;
 	std::shared_ptr<ParticleAnimation> particleAnimation;
+	std::shared_ptr<ScatterAnimation> scatterAnimation;
 	bool gameStarted;
 	static int maxScramble;
 	bool debugMode;
@@ -94,4 +96,15 @@ public:
 	ParticleAnimation(std::weak_ptr<Camera> camera);
 	void onStart() override;
 	bool stepFrame(const double timeElapsed, const double timeDelta) override;
+};
+
+class ScatterAnimation : public Animation
+{
+	std::weak_ptr<RubiksCube> rubiksCube;
+	GLfloat speed;
+public:
+	ScatterAnimation(std::weak_ptr<RubiksCube> rubiksCube);
+	bool stepFrame(const double timeElapsed, const double timeDelta) override;
+	void onFinished() override;
+	void onStart() override;
 };

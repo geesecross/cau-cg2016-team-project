@@ -136,6 +136,13 @@ void GameRule::win() {
 	}
 	this->particleAnimation = std::make_shared<ParticleAnimation>(camera);
 	this->animationManager.lock()->push(this->particleAnimation);
+
+	if (this->scatterAnimation)
+	{
+		this->scatterAnimation->interrupt();
+	}
+	this->scatterAnimation = std::make_shared<ScatterAnimation>(this->rubiksCube);
+	this->animationManager.lock()->push(this->scatterAnimation);
 	this->gameStarted = false;
 }
 
@@ -226,6 +233,7 @@ Particle::Particle() {
 		.setColor(colors[(int)((float)rand() / RAND_MAX * 10)]);
 	xSpeed = ((float)rand() / RAND_MAX * 0.1f - 0.2f);
 	zSpeed = ((float)rand() / RAND_MAX * 0.1f - 0.2f);
+	this->setTransform(Transform(this->getTransform()).scalePre(2.0f));
 }
 
 ParticleAnimation::ParticleAnimation(std::weak_ptr<Camera> camera) 
@@ -241,7 +249,7 @@ void ParticleAnimation::onStart() {
 		particles[i].setTransform(
 			Transform(particles[i].getTransform())
 			.translatePost({
-				vrp[0] - (vpn[0] * 2.f) - ((float)rand() / RAND_MAX * 5.f - 2.5f),
+				vrp[0] - (vpn[0] * 2.f) - ((float)rand() / RAND_MAX * 5.f - 3.0f),
 				vrp[1] - (vpn[1] * 2.f) - ((float)rand() / RAND_MAX * 5.f - 2.5f),
 				vrp[2] - (vpn[2] * 2.f) - ((float)rand() / RAND_MAX * 5.f)
 			})
@@ -266,7 +274,29 @@ bool ParticleAnimation::stepFrame(const double timeElapsed, const double timeDel
 		camera.lock()->render(particles[i], true);
 	}
 
-	return timeElapsed > 10;
+	return timeElapsed > 5;
+}
+
+ScatterAnimation::ScatterAnimation(std::weak_ptr<RubiksCube> rubiksCube) : rubiksCube(rubiksCube)
+{
+}
+
+bool ScatterAnimation::stepFrame(const double timeElapsed, const double timeDelta)
+{
+	speed += (float)timeDelta * 2.f;
+	if (timeElapsed < 5) rubiksCube.lock()->setTransform(Transform(rubiksCube.lock()->getTransform()).rotatePost(Rotation().rotateByEuler(Vector3f{ speed })));
+	else rubiksCube.lock()->setTransform(Transform(rubiksCube.lock()->getTransform()).scalePost((float)timeDelta * 10.f));
+	return timeElapsed > 7;
+}
+
+void ScatterAnimation::onFinished()
+{
+	rubiksCube.lock()->setTransform(Transform());
+}
+
+void ScatterAnimation::onStart()
+{
+	speed = 1.f;
 }
 
 GameRule::CursorMovementFollowAnimation::CursorMovementFollowAnimation(std::weak_ptr<Camera> & camera, const RubiksCube::Cursor & cursor, const Vector2f & movement) {
