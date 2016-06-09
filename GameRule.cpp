@@ -281,21 +281,44 @@ ScatterAnimation::ScatterAnimation(std::weak_ptr<RubiksCube> rubiksCube) : rubik
 {
 }
 
-bool ScatterAnimation::stepFrame(const double timeElapsed, const double timeDelta)
-{
-	speed += (float)timeDelta * 2.f;
-	if (timeElapsed < 5) rubiksCube.lock()->setTransform(Transform(rubiksCube.lock()->getTransform()).rotatePost(Rotation().rotateByEuler(Vector3f{ speed })));
-	else rubiksCube.lock()->setTransform(Transform(rubiksCube.lock()->getTransform()).scalePost((float)timeDelta * 10.f));
-	return timeElapsed > 7;
+bool ScatterAnimation::stepFrame(const double timeElapsed, const double timeDelta) {
+	speed += (float)timeDelta * 3.f;
+	float scale = ((float)sin(-timeElapsed * 5) * 0.15f + 1.0f);
+	std::cout << scale << std::endl;
+	if (timeElapsed < 3) {
+		rubiksCube.lock()->setTransform(
+			Transform(rubiksCube.lock()->getTransform())
+			.scalePost(scale)
+			.rotatePost(
+				Rotation().rotateByEuler(Vector3f(speed))
+			)
+		);
+	}
+	else {
+		for (std::shared_ptr<Actor> & block : *this->rubiksCube.lock()) {
+			block->setTransform(
+				Transform(block->getTransform())
+				.translatePost(block->getTransform().transformPoint({ 0, 0, 0 }).normalized())
+			);
+		}
+	}
+	return timeElapsed > 5;
 }
 
-void ScatterAnimation::onFinished()
-{
+void ScatterAnimation::onFinished() {
 	rubiksCube.lock()->setTransform(Transform());
+	size_t i = 0;
+	for (std::shared_ptr<Actor> & block : *this->rubiksCube.lock()) {
+		block->setTransform(
+			Transform(this->initialBlockTransforms[i++])
+		);
+	}
 }
 
-void ScatterAnimation::onStart()
-{
+void ScatterAnimation::onStart() {
+	for (std::shared_ptr<Actor> & block : *this->rubiksCube.lock()) {
+		this->initialBlockTransforms.push_back(block->getTransform());
+	}
 	speed = 1.f;
 }
 

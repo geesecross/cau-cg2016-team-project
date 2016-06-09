@@ -24,7 +24,8 @@ namespace Resource {
 			NormalMap,
 			Parallax,
 			Water,
-			Skybox
+			Skybox,
+			Cobble,
 		};
 	}
 	namespace Textures {
@@ -35,6 +36,8 @@ namespace Resource {
 			TextureHeight,
 			WaterNormal,
 			Skybox,
+			Cobble,
+			CobbleNormal,
 		};
 	}
 	extern std::map<Meshes::Id, ::Mesh *> meshes;

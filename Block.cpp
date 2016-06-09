@@ -15,7 +15,7 @@ Block::Block() {
 
 	static Vector4f colors[] = {
 		{ 1, 1, 1, 1 },
-		{ 0, 1, 0, 1 },
+		{ 1, 1, 1, 1 },
 		{ 0.25f, 0.80f, 1, 1 },
 		{ 1, 1, 0, 1 },
 		{ 0, 1, 1, 1 },
@@ -52,4 +52,8 @@ Block::Block() {
 	(*this)[2]->getComponent<Model>()->
 		bindNormalTexture(Resource::textures[Resource::Textures::WaterNormal])
 		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Water]);
+	(*this)[1]->getComponent<Model>()->
+		bindDiffuseTexture(Resource::textures[Resource::Textures::Cobble])
+		.bindNormalTexture(Resource::textures[Resource::Textures::CobbleNormal])
+		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Cobble]);
 }

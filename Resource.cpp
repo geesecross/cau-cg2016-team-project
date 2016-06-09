@@ -6,6 +6,17 @@
 #include "MovingTexShader.h"
 #include <GL/SOIL.h>
 
+Texture * createTextureFromFile(const std::string & fileName) {
+	std::string path = "resources/" + fileName;
+	Texture * tex = new Texture(SOIL_load_OGL_texture(
+		path.c_str(),
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y
+	));
+	return tex;
+}
+
 namespace Resource {
 	std::map<Meshes::Id, Mesh *> meshes;
 	std::map<ShaderPrograms::Id, ShaderProgram *> shaderPrograms;
@@ -51,6 +62,8 @@ namespace Resource {
 			SOIL_CREATE_NEW_ID,
 			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y
 		));
+		textures[Textures::Cobble] = createTextureFromFile("brickwall.jpg");
+		textures[Textures::CobbleNormal] = createTextureFromFile("brickwall_normal.jpg");
 		/*
 		textures[Textures::Skybox] = new Texture(SOIL_load_OGL_texture(
 			"resources/skybox.jpg",
@@ -96,7 +109,7 @@ namespace Resource {
 		shaderPrograms[ShaderPrograms::Water] = new MovingTexShader(
 			static_cast<MovingTexShader&>(
 				MovingTexShader::create()
-				.setAmbientRatio(0.3f)
+				.setAmbientRatio(0.4f)
 				.setDiffusionRatio(0.2f)
 				.setSpecularRatio(0.8f)
 				.setShiness(16)
@@ -110,6 +123,17 @@ namespace Resource {
 				.setAmbientRatio(1.0f)
 				.setDiffusionRatio(0.0f)
 				.setSpecularRatio(0.0f)
+			)
+		);
+		shaderPrograms[ShaderPrograms::Cobble] = new TextureShaderProgram(
+			static_cast<TextureShaderProgram &>(
+				TextureShaderProgram::create()
+				.setAmbientRatio(0.4f)
+				.setDiffusionRatio(0.3f)
+				.setSpecularRatio(0.3f)
+				.setShiness(16)
+				.setLightVector({ 100, 100, 100 })
+				.enableLightVectorAsPosition(true)
 			)
 		);
 	}

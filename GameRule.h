@@ -102,6 +102,7 @@ class ScatterAnimation : public Animation
 {
 	std::weak_ptr<RubiksCube> rubiksCube;
 	GLfloat speed;
+	std::vector<Transform> initialBlockTransforms;
 public:
 	ScatterAnimation(std::weak_ptr<RubiksCube> rubiksCube);
 	bool stepFrame(const double timeElapsed, const double timeDelta) override;
