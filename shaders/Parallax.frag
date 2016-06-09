@@ -132,7 +132,7 @@ vec4 normalMapLighting(vec2 T, vec3 L, vec3 V, float shadowMult){
 	resColor.a = 1;
 	return resColor;*/
 
-	return simpleIlluminationModel(texture(in_texDiffuse, T), fragEyeVector, fragLightVector, N, in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness);
+	return simpleIlluminationModel(texture(in_texDiffuse, T), fragEyeVector, L, N, in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness);
 }
 void main(){
 	vec3 V = normalize(TcamPos);
