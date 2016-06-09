@@ -16,10 +16,11 @@ Block::Block() {
 	static Vector4f colors[] = {
 		{ 1, 1, 1, 1 },
 		{ 1, 1, 1, 1 },
-		{ 0.25f, 0.80f, 1, 1 },
-		{ 1, 1, 0, 1 },
-		{ 0, 1, 1, 1 },
-		{ 1, 0, 1, 1 },
+		{ 0.6f, 0.2f, 0.6f, 1 },
+		{ 1, 1, 1, 1 },
+		{ 0.20f, 0.75f, 1, 1 },
+		//{ 1, 0, 1, 1 },
+		{ 1, 1, 1, 1 }
 	};
 
 	for (std::pair<Vector3f, Vector3f> & position : positions) {
@@ -38,22 +39,30 @@ Block::Block() {
 	}
 
 	(*this)[0]->getComponent<Model>()->
-		bindDiffuseTexture(Resource::textures[Resource::Textures::TexturePng])
-		.bindSpecularTexture(Resource::textures[Resource::Textures::TextureSpecular])
-		.bindNormalTexture(Resource::textures[Resource::Textures::TextureNormal])
-		.bindHeightTexture(Resource::textures[Resource::Textures::TextureHeight])
-		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Parallax]);
-	(*this)[5]->getComponent<Model>()->
-		bindDiffuseTexture(Resource::textures[Resource::Textures::TexturePng])
-		.bindSpecularTexture(Resource::textures[Resource::Textures::TextureSpecular])
-		.bindNormalTexture(Resource::textures[Resource::Textures::TextureNormal])
-		.bindHeightTexture(Resource::textures[Resource::Textures::TextureHeight])
-		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::NormalMap]);
-	(*this)[2]->getComponent<Model>()->
-		bindNormalTexture(Resource::textures[Resource::Textures::WaterNormal])
-		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Water]);
+		bindDiffuseTexture(Resource::textures[Resource::Textures::Metal])
+		.bindNormalTexture(Resource::textures[Resource::Textures::MetalNormal])
+		.bindHeightTexture(Resource::textures[Resource::Textures::MetalHeight])
+		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::MetalParallax]);
 	(*this)[1]->getComponent<Model>()->
 		bindDiffuseTexture(Resource::textures[Resource::Textures::Cobble])
+		.bindSpecularTexture(Resource::textures[Resource::Textures::CobbleSpecular])
 		.bindNormalTexture(Resource::textures[Resource::Textures::CobbleNormal])
+		.bindHeightTexture(Resource::textures[Resource::Textures::CobbleHeight])
 		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Cobble]);
+	(*this)[2]->getComponent<Model>()->
+		//bindDiffuseTexture(Resource::textures[Resource::Textures::Cushion])
+		bindNormalTexture(Resource::textures[Resource::Textures::CushionNormal])
+		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Cushion]);
+	(*this)[3]->getComponent<Model>()->
+		bindDiffuseTexture(Resource::textures[Resource::Textures::Wood])
+		.bindNormalTexture(Resource::textures[Resource::Textures::WoodNormal])
+		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Wood]);
+	(*this)[4]->getComponent<Model>()->
+		bindNormalTexture(Resource::textures[Resource::Textures::WaterNormal])
+		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Water]);
+	(*this)[5]->getComponent<Model>()->
+		bindDiffuseTexture(Resource::textures[Resource::Textures::Metal])
+		.bindNormalTexture(Resource::textures[Resource::Textures::MetalNormal])
+		.bindHeightTexture(Resource::textures[Resource::Textures::MetalHeight])
+		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::MetalNormal]);
 }

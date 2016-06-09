@@ -132,7 +132,7 @@ vec4 normalMapLighting(vec2 T, vec3 L, vec3 V, float shadowMult){
 	resColor.a = 1;
 	return resColor;*/
 
-	return simpleIlluminationModel(vec4(D, 1.0), fragEyeVector, L, N, in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness);
+	return simpleIlluminationModel(texture(in_texDiffuse, T), fragEyeVector, fragLightVector, N, in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness);
 }
 void main(){
 	vec3 V = normalize(TcamPos);
@@ -141,7 +141,8 @@ void main(){
 	float parallaxHeight;
 	vec2 T = parallaxMapping(V, fragTexCoord, parallaxHeight);
 
-	float shadowMult = parallaxSoftShadowMult(L, T, parallaxHeight - 0.05);
+	//float shadowMult = parallaxSoftShadowMult(L, T, parallaxHeight - 0.05);
+	float shadowMult = 0.0;
 
 	//gl_FragColor = normalMapLighting(T,L,V, shadowMult);
 	resultingColor = in_color * clamp(normalMapLighting(T,L,V, shadowMult), 0, 1);

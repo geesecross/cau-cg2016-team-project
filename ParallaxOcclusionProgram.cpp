@@ -19,11 +19,12 @@ ParallaxOcclusionProgram ParallaxOcclusionProgram::create()
 void ParallaxOcclusionProgram::onPreDraw(const Model & model) const
 {
 	NormalMappingProgram::onPreDraw(model);
-	//uniform float parallaxScale;
+
 	GLint objectId;
 	if (0 <= (objectId = glGetUniformLocation(getProgramId(), "parallaxScale"))) {
 		glUniform1f(objectId, 0.1f);//0 ~ 0.5 is appropriate
 	}
+
 	this->initTexture(3, "in_texHeight", model.getHeightTexture());
 }
 

@@ -17,6 +17,8 @@ Texture * createTextureFromFile(const std::string & fileName) {
 	return tex;
 }
 
+Vector3f sun = { 25, 100, 25 };
+
 namespace Resource {
 	std::map<Meshes::Id, Mesh *> meshes;
 	std::map<ShaderPrograms::Id, ShaderProgram *> shaderPrograms;
@@ -30,90 +32,63 @@ namespace Resource {
 		meshes[Meshes::Particle] = new Mesh(Mesh::createFromDatFile("resources/particle.dat"));
 		meshes[Meshes::Skybox] = new Mesh(Mesh::createFromDatFile("resources/skybox.dat"));
 
-		textures[Textures::TexturePng] = new Texture(SOIL_load_OGL_texture(
-			"resources/metalDif.jpg",
-			SOIL_LOAD_AUTO,
-			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y
-		));
-		textures[Textures::TextureSpecular] = new Texture(SOIL_load_OGL_texture(
-			"resources/fieldstone_SM.png",
-			SOIL_LOAD_AUTO,
-			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y
-			));
-		textures[Textures::TextureNormal] = new Texture(SOIL_load_OGL_texture(
-			"resources/metalNorm.jpg",
-			SOIL_LOAD_AUTO,
-			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y
-			));
-
-		/*textures[TextureNormal] = new Texture(Texture::loadTextureFromFile("resources/metalNorm.jpg"));*/
-		textures[Textures::TextureHeight] = new Texture(SOIL_load_OGL_texture(
-			"resources/metalHeight.jpg",
-			SOIL_LOAD_AUTO,
-			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y
-		));
-		textures[Textures::WaterNormal] = new Texture(SOIL_load_OGL_texture(
-			"resources/water_normal.png",
-			SOIL_LOAD_AUTO,
-			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y
-		));
-		textures[Textures::Cobble] = createTextureFromFile("brickwall.jpg");
-		textures[Textures::CobbleNormal] = createTextureFromFile("brickwall_normal.jpg");
-		/*
-		textures[Textures::Skybox] = new Texture(SOIL_load_OGL_texture(
-			"resources/skybox.jpg",
-			SOIL_LOAD_AUTO,
-			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y
-		));
-		*/
+		textures[Textures::Metal] = createTextureFromFile("metalDif.jpg");
+		textures[Textures::TextureSpecular] = createTextureFromFile("fieldstone_SM.png");
+		textures[Textures::MetalNormal] = createTextureFromFile("metalNorm.jpg");
+		textures[Textures::MetalHeight] = createTextureFromFile("metalHeight.jpg");
+		textures[Textures::WaterNormal] = createTextureFromFile("water_normal.png");
+		textures[Textures::Cobble] = createTextureFromFile("cobble.png");
+		textures[Textures::CobbleNormal] = createTextureFromFile("cobble_normal.png");
+		textures[Textures::CobbleHeight] = createTextureFromFile("cobble_height.png");
+		textures[Textures::CobbleSpecular] = createTextureFromFile("cobble_specular.png");
+		textures[Textures::Cushion] = createTextureFromFile("cushion.jpg");
+		textures[Textures::CushionNormal] = createTextureFromFile("cushion_normal.png");
+		textures[Textures::Wood] = createTextureFromFile("wood1-dif-1024p.tga");
+		textures[Textures::WoodNormal] = createTextureFromFile("wood1-nor-1024p.tga");
+		textures[Textures::WoodSpecular] = createTextureFromFile("wood1-spec-1024p.tga");
 		textures[Textures::Skybox] = new Texture(Texture::loadTextureFromFile("resources/skybox.jpg"));
 
 		shaderPrograms[ShaderPrograms::Phong] = new SimpleIlluminationModelShaderProgram(
 			SimpleIlluminationModelShaderProgram::createPhong()
-			.setLightVector({ 100, 100, 100 })
-			.enableLightVectorAsPosition(true)
-			);
-		shaderPrograms[ShaderPrograms::Phong2] = new SimpleIlluminationModelShaderProgram(
-			SimpleIlluminationModelShaderProgram::createPhong()
-			.setLightVector({ -1000, -1000, -1000 })
+			.setLightVector(sun)
 			.enableLightVectorAsPosition(true)
 		);
 		shaderPrograms[ShaderPrograms::SimpleTexture] = new TextureShaderProgram(
 			static_cast<TextureShaderProgram &>(
 				TextureShaderProgram::create()
-				.setLightVector({ 100, 100, 100 })
+				.setLightVector(sun)
 				.enableLightVectorAsPosition(true)
 				.setSpecularRatio(10)
 			)
 		);
-		shaderPrograms[ShaderPrograms::NormalMap] = new NormalMappingProgram(
+		shaderPrograms[ShaderPrograms::MetalNormal] = new NormalMappingProgram(
 			static_cast<NormalMappingProgram&>(
-			NormalMappingProgram::create()
-			.setLightVector({ 100, 100, 100 })
-			.enableLightVectorAsPosition(true)
-				)
+				NormalMappingProgram::create()
+				.setAmbientRatio(0.3f)
+				.setDiffusionRatio(0.7f)
+				.setSpecularRatio(0.5f)
+				.setLightVector(sun)
+				.enableLightVectorAsPosition(true)
+			)
 		);
-		shaderPrograms[ShaderPrograms::Parallax] = new ParallaxOcclusionProgram(
+		shaderPrograms[ShaderPrograms::MetalParallax] = new ParallaxOcclusionProgram(
 			static_cast<ParallaxOcclusionProgram&>(
 				ParallaxOcclusionProgram::create()
-				.setLightVector({ 100, 100, 100 })
+				.setAmbientRatio(0.3f)
+				.setDiffusionRatio(0.6f)
+				.setSpecularRatio(0.5f)
+				.setLightVector(sun)
 				.enableLightVectorAsPosition(true)
-				)
+			)
 		);
 		shaderPrograms[ShaderPrograms::Water] = new MovingTexShader(
 			static_cast<MovingTexShader&>(
 				MovingTexShader::create()
-				.setAmbientRatio(0.4f)
-				.setDiffusionRatio(0.2f)
+				.setAmbientRatio(0.2f)
+				.setDiffusionRatio(0.4f)
 				.setSpecularRatio(0.8f)
 				.setShiness(16)
-				.setLightVector({ 100, 100, 100 })
+				.setLightVector(sun)
 				.enableLightVectorAsPosition(true)
 			)
 		);
@@ -125,16 +100,38 @@ namespace Resource {
 				.setSpecularRatio(0.0f)
 			)
 		);
-		shaderPrograms[ShaderPrograms::Cobble] = new TextureShaderProgram(
-			static_cast<TextureShaderProgram &>(
-				TextureShaderProgram::create()
+		shaderPrograms[ShaderPrograms::Cobble] = new ParallaxOcclusionProgram(
+			static_cast<ParallaxOcclusionProgram &>(
+				ParallaxOcclusionProgram::create()
 				.setAmbientRatio(0.4f)
-				.setDiffusionRatio(0.3f)
-				.setSpecularRatio(0.3f)
-				.setShiness(16)
-				.setLightVector({ 100, 100, 100 })
+				.setDiffusionRatio(0.6f)
+				.setSpecularRatio(0.5f)
+				.setShiness(32)
+				.setLightVector(sun)
 				.enableLightVectorAsPosition(true)
 			)
+		);
+		shaderPrograms[ShaderPrograms::Cushion] = new NormalMappingProgram(
+			static_cast<NormalMappingProgram &>(
+				NormalMappingProgram::create()
+				.setAmbientRatio(0.6f)
+				.setDiffusionRatio(0.6f)
+				.setSpecularRatio(0.2f)
+				.setShiness(2)
+				.setLightVector(sun)
+				.enableLightVectorAsPosition(true)
+			)
+		);
+		shaderPrograms[ShaderPrograms::Wood] = new NormalMappingProgram(
+			static_cast<NormalMappingProgram &>(
+				NormalMappingProgram::create()
+				.setAmbientRatio(0.4f)
+				.setDiffusionRatio(0.9f)
+				.setSpecularRatio(0.2f)
+				.setShiness(2)
+				.setLightVector(sun)
+				.enableLightVectorAsPosition(true)
+				)
 		);
 	}
 

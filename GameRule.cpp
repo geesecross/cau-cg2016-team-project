@@ -341,8 +341,8 @@ bool GameRule::CursorMovementFollowAnimation::stepFrame(const double timeElapsed
 
 	this->camera.lock()->setTransform(
 		Transform()
+		.translatePost({ 0, 0, 9 })
 		.rotatePost(Rotation().rotateByEuler({ -15, 15, 0 }))
-		.translatePost({ 2.5f, 2.5f, 10 })
 		.translatePost({ -this->movement * phase * 2, 0 })
 		.pushPost(this->startingTransform)
 	);
@@ -364,8 +364,8 @@ bool GameRule::CursorRotationFollowAnimation::stepFrame(const double timeElapsed
 
 	this->camera.lock()->setTransform(
 		Transform()
+		.translatePost({ 0, 0, 9 })
 		.rotatePost(Rotation().rotateByEuler({ -15, 15, 0 }))
-		.translatePost({ 2.5f, 2.5f, 10 })
 		.rotatePost(Rotation().rotateByEuler(Vector3f::zVector() * phase * (this->clockwise ? 90.f : -90.f)))
 		.pushPost(this->startingTransform)
 	);

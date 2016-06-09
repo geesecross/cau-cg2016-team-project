@@ -84,7 +84,7 @@ void render() {
 
 	try {
 		animationManager->step(timeDelta);
-		
+
 		/*Actor actor;
 		actor.createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Plane])
 			.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Phong])
@@ -98,10 +98,12 @@ void render() {
 			.rotatePost(Rotation().rotateByEuler({}))
 		);
 		camera->render(actor);*/
-		
+
 		camera->render(*rubiksCube, true);
 		skybox->setTransform(
-			Transform().scalePost(0.5f).translatePost(camera->getViewReferencePoint())
+			Transform()
+			.rotatePost(Rotation().rotateByEuler({ 0, 90, 0 }))
+			.translatePost(camera->getViewReferencePoint())
 		);
 		camera->render(*skybox, true);
 	}
@@ -142,11 +144,11 @@ void onKeyboard(unsigned char ascii, int x, int y) {
 			.rotatePre(Rotation().rotateByEuler({ 0.5f * (prevY - y), 0.5f * (prevX - x), 0 }))
 		);
 		break;
-	case 'O':
+	/*case 'O':
 	case 'o':
 		camera->setOrthographicProjection();
 		std::cout << "** Enabled Orthographic Projection" << std::endl;
-		break;
+		break;*/
 	case 'P':
 	case 'p':
 		camera->setPerspectiveProjection();

@@ -251,4 +251,5 @@ void RubiksCube::Cursor::resetPositionAndRotation()
 	this->position = { (float)(cube.size / 2), (float)(cube.size / 2), (float)(cube.size - 1) };
 	this->rotation = Rotation();
 	this->updateTransform();
+	this->onCursorMoved.raise(*this, { 0, 0 });
 }

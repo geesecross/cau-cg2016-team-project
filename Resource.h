@@ -19,25 +19,33 @@ namespace Resource {
 	namespace ShaderPrograms {
 		enum Id {
 			Phong,
-			Phong2,
 			SimpleTexture,
-			NormalMap,
-			Parallax,
+			MetalNormal,
+			MetalParallax,
 			Water,
 			Skybox,
 			Cobble,
+			Cushion,
+			Wood,
 		};
 	}
 	namespace Textures {
 		enum Id {
-			TexturePng,
+			Metal,
 			TextureSpecular,
-			TextureNormal,
-			TextureHeight,
+			MetalNormal,
+			MetalHeight,
 			WaterNormal,
 			Skybox,
 			Cobble,
 			CobbleNormal,
+			CobbleHeight,
+			CobbleSpecular,
+			Cushion,
+			CushionNormal,
+			Wood,
+			WoodNormal,
+			WoodSpecular,
 		};
 	}
 	extern std::map<Meshes::Id, ::Mesh *> meshes;

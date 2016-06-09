@@ -64,6 +64,7 @@ void TextureShaderProgram::onPreDraw(const Model & model) const {
 	}
 
 	this->initTexture(0, "in_texDiffuse", model.getDiffuseTexture());
+	this->initTexture(1, "in_texSpecular", model.getSpecularTexture());
 }
 
 void TextureShaderProgram::onPostDraw(const Model & model) const {
@@ -76,6 +77,7 @@ void TextureShaderProgram::onPostDraw(const Model & model) const {
 	}
 
 	this->uninitTexture(0, "in_texDiffuse");
+	this->uninitTexture(1, "in_texSpecular");
 
 	SimpleIlluminationModelShaderProgram::onPostDraw(model);
 }

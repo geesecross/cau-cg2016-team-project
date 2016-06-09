@@ -25,13 +25,7 @@ vec3 transformDirection3(in mat4 transformMatrix, in vec3 vector);
 void main()
 {
 	mat4 modelViewMatrix = in_viewMatrix * in_modelMatrix;
-	vec4 viewPosition = modelViewMatrix * vec4(in_vertexPosition, 1);
 	vec3 vertexViewPosition = transformPoint3(modelViewMatrix, in_vertexPosition);
-
-	mat3 viewNormalMatrix = mat3(transpose(inverse(modelViewMatrix)));
-	
-	vec3 viewNormal = normalize(viewNormalMatrix * in_vertexNormal);
-	vec3 viewTangent = normalize(viewNormalMatrix * in_tangentVector);
 
 	if(in_lightVectorAsPosition) {
 		fragLightVector = normalize(transformPoint3(in_viewMatrix, in_lightVector) - vertexViewPosition);
@@ -42,10 +36,12 @@ void main()
 
 	fragEyeVector = -normalize(vertexViewPosition);
 
-	vec3 viewDirToLight = normalize(fragLightVector - viewPosition.xyz);
-	vec3 viewDirToCamera = normalize(-normalize(vertexViewPosition) - viewPosition.xyz); 
-
-	vec3 viewBitangent = normalize(mat3(modelViewMatrix) * in_bitangentVector);//cross(viewNormal, viewTangent) * in_tangentVector.z;
+	vec3 viewDirToLight = fragLightVector;
+	vec3 viewDirToCamera = normalize(-vertexViewPosition); 
+	
+	vec3 viewNormal = transformDirection3(modelViewMatrix, in_surfaceNormal);
+	vec3 viewTangent = transformDirection3(modelViewMatrix, in_tangentVector);
+	vec3 viewBitangent = transformDirection3(modelViewMatrix, in_bitangentVector); //cross(viewNormal, viewTangent) * in_tangentVector.z;
 
 	TlightPos = vec3(
 		dot(viewDirToLight, viewTangent),
