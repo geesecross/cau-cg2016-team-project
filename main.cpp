@@ -228,28 +228,28 @@ void onKeyboard(unsigned char ascii, int x, int y) {
 		break;
 
 	case 'i':
-		rubiksCube->getCursor()->move(Vector2f({ 0, 1 }) * 1);
+		gameRule->move(Vector2f({ 0, 1 }) * 1);
 		break;
 	case 'k':
-		rubiksCube->getCursor()->move(Vector2f({ 0, 1 }) * -1);
+		gameRule->move(Vector2f({ 0, 1 }) * -1);
 		break;
 	case 'j':
-		rubiksCube->getCursor()->move(Vector2f({ 1, 0 }) * -1);
+		gameRule->move(Vector2f({ 1, 0 }) * -1);
 		break;
 	case 'l':
-		rubiksCube->getCursor()->move(Vector2f({ 1, 0 }) * 1);
+		gameRule->move(Vector2f({ 1, 0 }) * 1);
 		break;
 	case ';':
 		std::cout << rubiksCube->getCursor()->getSelected() << std::endl;
 		break;
 	case 'z':
-		rubiksCube->getCursor()->twist(true);
+		gameRule->twist(true);
 		break;
 	case 'x':
-		rubiksCube->getCursor()->twist(false);
+		gameRule->twist(false);
 		break;
 	case 'c':
-		rubiksCube->getCursor()->rotateAxis(true);
+		gameRule->rotateAxis(true);
 		break;
 
 	case 13:

@@ -26,7 +26,7 @@ namespace Resource {
 
 	void init() {
 		meshes[Meshes::Plane] = new Mesh(Mesh::createFromDatFile("resources/plane.dat"));
-		meshes[Meshes::Blockside] = new Mesh(Mesh::createFromDatFile("resources/blockside.dat"));
+		meshes[Meshes::Blockside] = new Mesh(Mesh::createFromDatFile("resources/plane.dat"));
 		meshes[Meshes::Arrow] = new Mesh(Mesh::createFromDatFile("resources/arrow.dat"));
 		meshes[Meshes::Cube] = new Mesh(Mesh::createFromDatFile("resources/cube.dat"));
 		meshes[Meshes::Teapot] = new Mesh(Mesh::createFromDatFile("resources/Teapot.dat"));

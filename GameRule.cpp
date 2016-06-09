@@ -36,6 +36,7 @@ void GameRule::resetGame() {
 	rubiksCube.lock()->resetBlocksAndCursor();
 	print("reset");
 	this->gameStarted = false;
+	this->blockedInput = false;
 }
 
 void GameRule::scramble() {
@@ -141,9 +142,10 @@ void GameRule::win() {
 	{
 		this->scatterAnimation->interrupt();
 	}
-	this->scatterAnimation = std::make_shared<ScatterAnimation>(this->rubiksCube);
+	this->scatterAnimation = std::make_shared<ScatterAnimation>(*this, this->rubiksCube);
 	this->animationManager.lock()->push(this->scatterAnimation);
 	this->gameStarted = false;
+	this->blockedInput = true;
 }
 
 bool GameRule::isStarted() const {
@@ -206,6 +208,25 @@ void GameRule::onCursorRotated(const RubiksCube::Cursor & cursor, const bool clo
 
 void GameRule::step() {
 	this->cursorMoveQueue.execute();
+}
+
+void GameRule::move(const Vector2f & vector){
+	if (blockedInput) return;
+	this->rubiksCube.lock()->getCursor()->move(vector);
+}
+
+void GameRule::twist(bool clockwise) {
+	if (blockedInput) return;
+	this->rubiksCube.lock()->getCursor()->twist(clockwise);
+}
+
+void GameRule::rotateAxis(bool clockwise) {
+	if (blockedInput) return;
+	this->rubiksCube.lock()->getCursor()->rotateAxis(clockwise);
+}
+
+void GameRule::setBlockedInput(bool blocked) {
+	this->blockedInput = blocked;
 }
 
 PrintStringAnimation::PrintStringAnimation(std::weak_ptr<Camera> camera, const std::string & message) 
@@ -277,7 +298,7 @@ bool ParticleAnimation::stepFrame(const double timeElapsed, const double timeDel
 	return timeElapsed > 5;
 }
 
-ScatterAnimation::ScatterAnimation(std::weak_ptr<RubiksCube> rubiksCube) : rubiksCube(rubiksCube)
+ScatterAnimation::ScatterAnimation(GameRule & gameRule, std::weak_ptr<RubiksCube> rubiksCube) : gameRule(gameRule), rubiksCube(rubiksCube)
 {
 }
 
@@ -317,6 +338,7 @@ void ScatterAnimation::onFinished() {
 			Transform(this->initialBlockTransforms[i++])
 		);
 	}
+	gameRule.setBlockedInput(false);
 }
 
 void ScatterAnimation::onStart() {

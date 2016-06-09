@@ -40,7 +40,7 @@ private:
 	std::shared_ptr<PrintStringAnimation> messageAnimation;
 	std::shared_ptr<ParticleAnimation> particleAnimation;
 	std::shared_ptr<ScatterAnimation> scatterAnimation;
-	bool gameStarted;
+	bool gameStarted, blockedInput = false;
 	static int maxScramble;
 	bool debugMode;
 	CommandQueue cursorMoveQueue;
@@ -59,6 +59,10 @@ public:
 	void onCursorMoved(const RubiksCube::Cursor & cursor, const Vector2f & movement);
 	void onCursorRotated(const RubiksCube::Cursor & cursor, const bool clockwise);
 	void step();
+	void move(const Vector2f & vector);
+	void twist(bool clockwise);
+	void rotateAxis(bool clockwise);
+	void setBlockedInput(bool blocked);
 };
 
 class PrintStringAnimation : public Animation {
@@ -103,8 +107,9 @@ class ScatterAnimation : public Animation
 	std::weak_ptr<RubiksCube> rubiksCube;
 	GLfloat speed;
 	std::vector<Transform> initialBlockTransforms;
+	GameRule & gameRule;
 public:
-	ScatterAnimation(std::weak_ptr<RubiksCube> rubiksCube);
+	ScatterAnimation(GameRule & gameRule, std::weak_ptr<RubiksCube> rubiksCube);
 	bool stepFrame(const double timeElapsed, const double timeDelta) override;
 	void onFinished() override;
 	void onStart() override;
