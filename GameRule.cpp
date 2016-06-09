@@ -282,19 +282,14 @@ ScatterAnimation::ScatterAnimation(std::weak_ptr<RubiksCube> rubiksCube) : rubik
 }
 
 bool ScatterAnimation::stepFrame(const double timeElapsed, const double timeDelta) {
-	speed += (float)timeDelta * 3.f;
-	float scale = ((float)sin(-timeElapsed * 5) * 0.15f + 1.0f);
-	std::cout << scale << std::endl;
+	float scale = 1.0f;
+
 	if (timeElapsed < 3) {
-		rubiksCube.lock()->setTransform(
-			Transform(rubiksCube.lock()->getTransform())
-			.scalePost(scale)
-			.rotatePost(
-				Rotation().rotateByEuler(Vector3f(speed))
-			)
-		);
+		scale = ((float)sin(-timeElapsed * 5) * 0.15f + 1.0f);
+		speed += (float)timeDelta * 3.f;
 	}
 	else {
+		speed -= speed * (float)timeDelta;
 		for (std::shared_ptr<Actor> & block : *this->rubiksCube.lock()) {
 			block->setTransform(
 				Transform(block->getTransform())
@@ -302,6 +297,15 @@ bool ScatterAnimation::stepFrame(const double timeElapsed, const double timeDelt
 			);
 		}
 	}
+
+	rubiksCube.lock()->setTransform(
+		Transform(rubiksCube.lock()->getTransform())
+		.scalePost(scale)
+		.rotatePost(
+			Rotation().rotateByEuler(Vector3f(speed))
+		)
+	);
+
 	return timeElapsed > 5;
 }
 
