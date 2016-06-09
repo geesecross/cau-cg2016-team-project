@@ -40,8 +40,11 @@ void main() {
 
 	vec4 color = vec4(1.0);
 	if(in_texDiffuseExists) {
-		color = texture2D(in_texDiffuse, fragTexCoord + in_time);
+		color = texture2D(in_texDiffuse, fragTexCoord);
 	}
 
-	gl_FragColor = 0.3 * in_color + 0.7 * simpleIlluminationModel(color, fragEyeVector, fragLightVector, normalVector, in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness);
+	gl_FragColor = vec4(0.3 * in_color.rgb + 0.7 * simpleIlluminationModel(color, fragEyeVector, fragLightVector, normalVector, in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness).rgb, in_color.a * color.a);
+	//gl_FragColor = simpleIlluminationModel(in_color * color, fragEyeVector, fragLightVector, normalVector, in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness).rgb, );
+	//gl_FragColor = simpleIlluminationModel(in_color, fragEyeVector, fragLightVector, normalVector, in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness);
+	//gl_FragColor = vec4(0.5, 0.5, 0.5, 0.5);
 }

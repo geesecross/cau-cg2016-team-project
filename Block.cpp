@@ -14,12 +14,17 @@ Block::Block() {
 	};
 
 	static Vector4f colors[] = {
-		{ 1, 1, 1, 1 },
+		/*{ 1, 1, 1, 1 },
 		{ 1, 1, 1, 1 },
 		{ 0.6f, 0.2f, 0.6f, 1 },
 		{ 1, 1, 1, 1 },
 		{ 0.20f, 0.75f, 1, 1 },
-		//{ 1, 0, 1, 1 },
+		{ 1, 1, 1, 1 }*/
+		{ 1, 1, 1, 1 },
+		{ 1, 0.8f, 0.8f, 1 },
+		{ 0.8f, 0.8f, 1.f, 1 },
+		{ 0.8f, 1, 0.8f, 1 },
+		{ 0.20f, 0.75f, 1, 1 },
 		{ 1, 1, 1, 1 }
 	};
 
@@ -30,15 +35,18 @@ Block::Block() {
 			.rotatePost(Rotation().rotateByEuler(position.second))
 			.translatePost(position.first)
 		);
-		child->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Plane])
-			.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Phong]);
+		child->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Blockside])
+			.bindDiffuseTexture(Resource::textures[Resource::Textures::Metal])
+			.bindNormalTexture(Resource::textures[Resource::Textures::MetalNormal])
+			.bindHeightTexture(Resource::textures[Resource::Textures::MetalHeight])
+			.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::MetalParallax]);
 	}
 
 	for (size_t i = 0; i < 6; ++i) {
 		(*this)[i]->getComponent<Model>()->setColor(colors[i]);
 	}
 
-	(*this)[0]->getComponent<Model>()->
+	/*(*this)[0]->getComponent<Model>()->
 		bindDiffuseTexture(Resource::textures[Resource::Textures::Metal])
 		.bindNormalTexture(Resource::textures[Resource::Textures::MetalNormal])
 		.bindHeightTexture(Resource::textures[Resource::Textures::MetalHeight])
@@ -56,9 +64,10 @@ Block::Block() {
 	(*this)[3]->getComponent<Model>()->
 		bindDiffuseTexture(Resource::textures[Resource::Textures::Wood])
 		.bindNormalTexture(Resource::textures[Resource::Textures::WoodNormal])
-		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Wood]);
+		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Wood]);*/
 	(*this)[4]->getComponent<Model>()->
-		bindNormalTexture(Resource::textures[Resource::Textures::WaterNormal])
+		bindDiffuseTexture(nullptr)
+		.bindNormalTexture(Resource::textures[Resource::Textures::WaterNormal])
 		.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Water]);
 	(*this)[5]->getComponent<Model>()->
 		bindDiffuseTexture(Resource::textures[Resource::Textures::Metal])

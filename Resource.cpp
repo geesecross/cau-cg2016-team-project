@@ -17,7 +17,7 @@ Texture * createTextureFromFile(const std::string & fileName) {
 	return tex;
 }
 
-Vector3f sun = { 25, 100, 25 };
+Vector3f sun = { 50, 100, 50 };
 
 namespace Resource {
 	std::map<Meshes::Id, Mesh *> meshes;
@@ -26,6 +26,7 @@ namespace Resource {
 
 	void init() {
 		meshes[Meshes::Plane] = new Mesh(Mesh::createFromDatFile("resources/plane.dat"));
+		meshes[Meshes::Blockside] = new Mesh(Mesh::createFromDatFile("resources/blockside.dat"));
 		meshes[Meshes::Arrow] = new Mesh(Mesh::createFromDatFile("resources/arrow.dat"));
 		meshes[Meshes::Cube] = new Mesh(Mesh::createFromDatFile("resources/cube.dat"));
 		meshes[Meshes::Teapot] = new Mesh(Mesh::createFromDatFile("resources/Teapot.dat"));
@@ -46,7 +47,8 @@ namespace Resource {
 		textures[Textures::Wood] = createTextureFromFile("wood1-dif-1024p.tga");
 		textures[Textures::WoodNormal] = createTextureFromFile("wood1-nor-1024p.tga");
 		textures[Textures::WoodSpecular] = createTextureFromFile("wood1-spec-1024p.tga");
-		textures[Textures::Skybox] = new Texture(Texture::loadTextureFromFile("resources/skybox.jpg"));
+		textures[Textures::AlphaCircle] = createTextureFromFile("alphacircle.png");
+		textures[Textures::Skybox] = new Texture(Texture::loadTextureFromFile("resources/bluecloud.png"));
 
 		shaderPrograms[ShaderPrograms::Phong] = new SimpleIlluminationModelShaderProgram(
 			SimpleIlluminationModelShaderProgram::createPhong()
@@ -91,6 +93,17 @@ namespace Resource {
 				.setLightVector(sun)
 				.enableLightVectorAsPosition(true)
 			)
+		);
+		shaderPrograms[ShaderPrograms::Sea] = new MovingTexShader(
+			static_cast<MovingTexShader&>(
+				MovingTexShader::create()
+				.setAmbientRatio(0.4f)
+				.setDiffusionRatio(0.4f)
+				.setSpecularRatio(0.8f)
+				.setShiness(16)
+				.setLightVector(sun)
+				.enableLightVectorAsPosition(true)
+				)
 		);
 		shaderPrograms[ShaderPrograms::Skybox] = new TextureShaderProgram(
 			static_cast<TextureShaderProgram &>(

@@ -8,6 +8,7 @@ namespace Resource {
 	namespace Meshes {
 		enum Id {
 			Plane,
+			Blockside,
 			Arrow,
 			Cube,
 			Teapot,
@@ -23,6 +24,7 @@ namespace Resource {
 			MetalNormal,
 			MetalParallax,
 			Water,
+			Sea,
 			Skybox,
 			Cobble,
 			Cushion,
@@ -46,6 +48,7 @@ namespace Resource {
 			Wood,
 			WoodNormal,
 			WoodSpecular,
+			AlphaCircle,
 		};
 	}
 	extern std::map<Meshes::Id, ::Mesh *> meshes;

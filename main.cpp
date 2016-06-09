@@ -21,7 +21,7 @@
 float timeDelta = 0;
 const size_t cube_size = 3; // 큐브의 한 열의 블럭 개수
 std::shared_ptr<Camera> camera;
-std::shared_ptr<Actor> skybox;
+std::shared_ptr<Actor> skybox, sea;
 std::shared_ptr<RubiksCube> rubiksCube;
 std::shared_ptr<AnimationManager> animationManager;
 std::shared_ptr<GameRule> gameRule;
@@ -46,6 +46,9 @@ bool init() {
 
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
+		glEnable(GL_BLEND);
+		//glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glCullFace(GL_BACK);
 
 		Resource::init();
@@ -55,6 +58,7 @@ bool init() {
 		initCameraVectors();
 
 		animationManager->push(std::make_shared<MovingTextureAnimation>(*static_cast<MovingTexShader *>(Resource::shaderPrograms[Resource::ShaderPrograms::Water])));
+		animationManager->push(std::make_shared<MovingTextureAnimation>(*static_cast<MovingTexShader *>(Resource::shaderPrograms[Resource::ShaderPrograms::Sea])));
 
 		rubiksCube.reset(new RubiksCube(cube_size, animationManager));
 		gameRule.reset(new GameRule(rubiksCube, animationManager, camera));
@@ -62,6 +66,12 @@ bool init() {
 		skybox->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Skybox])
 			.bindDiffuseTexture(Resource::textures[Resource::Textures::Skybox])
 			.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Skybox]);
+		sea.reset(new Actor());
+		sea->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Plane])
+			.setColor({ 112 / 255.f, 181 / 255.f, 213 / 255.f, 0.8f })
+			.bindDiffuseTexture(Resource::textures[Resource::Textures::AlphaCircle])
+			.bindNormalTexture(Resource::textures[Resource::Textures::WaterNormal])
+			.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Sea]);
 	}
 	catch (Exception & e) {
 		std::cout << e.what() << std::endl;
@@ -86,11 +96,11 @@ void render() {
 		animationManager->step(timeDelta);
 
 		/*Actor actor;
-		actor.createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Plane])
+		actor.createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Blockside])
 			.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Phong])
 			.setColor({ 1, 1, 1, 1 });
 		auto child = actor.createChild<Actor>();
-		child->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Plane])
+		child->createComponent<Model>()->bindMesh(Resource::meshes[Resource::Meshes::Blockside])
 			.bindShaderProgram(Resource::shaderPrograms[Resource::ShaderPrograms::Phong])
 			.setColor({ 1, 0, 0, 1 });
 		child->setTransform(
@@ -99,13 +109,23 @@ void render() {
 		);
 		camera->render(actor);*/
 
-		camera->render(*rubiksCube, true);
+		camera->render(*rubiksCube);
 		skybox->setTransform(
 			Transform()
-			.rotatePost(Rotation().rotateByEuler({ 0, 90, 0 }))
+			.scalePost(Vector3f(2.5f))
+			//.rotatePost(Rotation().rotateByEuler({ 0, 90, 0 }))
+			.translatePost({ 0, -20, 0 })
 			.translatePost(camera->getViewReferencePoint())
 		);
-		camera->render(*skybox, true);
+		camera->render(*skybox);
+		sea->setTransform(
+			Transform()
+			.scalePost({ 500, 500, 1 })
+			.rotatePost(Rotation().rotateByEuler(Vector3f::xVector() * -90))
+			.translatePost({ 0, -20, 0 })
+			.translatePost(camera->getViewReferencePoint())
+		);
+		camera->render(*sea);
 	}
 	catch (Exception & e) {
 		std::cerr << e.what() << std::endl;
