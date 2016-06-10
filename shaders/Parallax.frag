@@ -1,15 +1,18 @@
 #version 150
+
+vec3 transformDirection3(in mat4 transformMatrix, in vec3 vector);
+
 uniform mat4 in_modelMatrix, in_viewMatrix, in_projectionMatrix;
 uniform sampler2D in_texDiffuse;
 uniform sampler2D in_texNormal;
 uniform sampler2D in_texHeight;
+in mat4 tangentMatrix;
 
 // for illumination model
 uniform vec4 in_color;
 uniform float in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness;
 varying vec3 fragEyeVector;
 varying vec3 fragLightVector;
-vec4 simpleIlluminationModel(vec4 faceColor, vec3 eyeVector, vec3 lightVector, vec3 normalVector, float ambientRatio, float diffusionRatio, float specularRatio, float shiness);
 
 uniform float parallaxScale;
 
@@ -21,7 +24,31 @@ varying vec3 TcamPos;
 
 out vec4 resultingColor;
 
+vec4 simpleIlluminationModel(vec4 faceColor, vec3 eyeVector, vec3 lightVector, vec3 normalVector, float ambientRatio, float diffusionRatio, float specularRatio, float shiness, float shadow) {
+	vec3 l = normalize(lightVector);
+	vec3 v = normalize(eyeVector);
+	vec3 n = normalize(normalVector);
+	vec3 r = dot(n, l) > 0.0 ? normalize((2.0 * dot(n, l) * n) - l) : vec3(0, 0, 0);
+	//vec3 h = dot(n, l) > 0.0 ? normalize(l + v) : vec3(0, 0, 0);
 
+	//vec3 r = (2.0 * dot(n, l) * n) - l;
+
+	float ambient = 1.0;
+	//float diffusion = max(0.0, dot(n, l));
+	float diffusion = max(-1.0, dot(n, l));
+	float specular = pow(max(0.0, dot(v, r)), shiness);
+	//float specular = pow(max(0.0, dot(n, h)), shiness);
+
+	if(diffusion < 0.0) {
+		specular = 0.0;
+		if(diffusionRatio > 0.0)
+			diffusion *= ambientRatio / diffusionRatio;
+		else
+			diffusion = 0.0;
+	}
+
+	return vec4(faceColor.xyz * (ambientRatio * ambient + (diffusionRatio * diffusion + specularRatio * specular) * shadow), faceColor.w);
+}
 
 vec2 parallaxMapping(in vec3 V, in vec2 T, out float parallaxHeight){
 
@@ -115,6 +142,8 @@ vec4 normalMapLighting(vec2 T, vec3 L, vec3 V, float shadowMult){
 	vec3 N = normalize(texture(in_texNormal, T).xyz * 2 - 1);
 	vec3 D = texture(in_texDiffuse, T).rgb;
 
+	N = transformDirection3(in_viewMatrix * in_modelMatrix * tangentMatrix, N);
+
 	/*//ambient
 	float iamb = 0.5;
 	//diffuse
@@ -132,7 +161,7 @@ vec4 normalMapLighting(vec2 T, vec3 L, vec3 V, float shadowMult){
 	resColor.a = 1;
 	return resColor;*/
 
-	return simpleIlluminationModel(texture(in_texDiffuse, T), fragEyeVector, L, N, in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness);
+	return simpleIlluminationModel(texture(in_texDiffuse, T), fragEyeVector, L, N, in_ambientRatio, in_diffusionRatio, in_specularRatio, in_shiness, 1.0);
 }
 void main(){
 	vec3 V = normalize(TcamPos);

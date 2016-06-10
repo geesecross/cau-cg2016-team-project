@@ -18,6 +18,8 @@ varying vec3 TcamPos;
 varying vec3 fragEyeVector;
 varying vec3 fragLightVector;
 
+out mat4 tangentMatrix;
+
 vec4 transformPoint4(in mat4 transformMatrix, in vec3 point);
 vec3 transformPoint3(in mat4 transformMatrix, in vec3 point);
 vec3 transformDirection3(in mat4 transformMatrix, in vec3 vector);
@@ -26,6 +28,10 @@ void main()
 {
 	mat4 modelViewMatrix = in_viewMatrix * in_modelMatrix;
 	vec3 vertexViewPosition = transformPoint3(modelViewMatrix, in_vertexPosition);
+
+	tangentMatrix = transpose(mat4(
+		vec4(in_tangentVector, 0), vec4(in_bitangentVector, 0), vec4(in_surfaceNormal, 0), vec4(0, 0, 0, 1.0)
+	));
 
 	if(in_lightVectorAsPosition) {
 		fragLightVector = normalize(transformPoint3(in_viewMatrix, in_lightVector) - vertexViewPosition);

@@ -11,7 +11,8 @@ ParallaxOcclusionProgram ParallaxOcclusionProgram::create()
 		Recipe()
 		.addShader(Shader::compile(Shader::VertexShader, FileHelper::loadTextFile("shaders/Transform.glsl")))
 		.addShader(Shader::compile(Shader::VertexShader, FileHelper::loadTextFile("shaders/Parallax.vert")))
-		.addShader(Shader::compile(Shader::FragmentShader, FileHelper::loadTextFile("shaders/SimpleIlluminationModel.glsl")))
+		.addShader(Shader::compile(Shader::FragmentShader, FileHelper::loadTextFile("shaders/Transform.glsl")))
+		//.addShader(Shader::compile(Shader::FragmentShader, FileHelper::loadTextFile("shaders/SimpleIlluminationModel.glsl")))
 		.addShader(Shader::compile(Shader::FragmentShader, FileHelper::loadTextFile("shaders/Parallax.frag")))
 	);
 }

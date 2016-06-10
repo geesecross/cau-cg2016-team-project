@@ -10,8 +10,6 @@ namespace Resource {
 			Plane,
 			Blockside,
 			Arrow,
-			Cube,
-			Teapot,
 			Particle,
 			Skybox
 		};
@@ -27,14 +25,11 @@ namespace Resource {
 			Sea,
 			Skybox,
 			Cobble,
-			Cushion,
-			Wood,
 		};
 	}
 	namespace Textures {
 		enum Id {
 			Metal,
-			TextureSpecular,
 			MetalNormal,
 			MetalHeight,
 			WaterNormal,
@@ -43,11 +38,6 @@ namespace Resource {
 			CobbleNormal,
 			CobbleHeight,
 			CobbleSpecular,
-			Cushion,
-			CushionNormal,
-			Wood,
-			WoodNormal,
-			WoodSpecular,
 			AlphaCircle,
 		};
 	}

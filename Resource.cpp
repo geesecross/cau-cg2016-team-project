@@ -28,13 +28,10 @@ namespace Resource {
 		meshes[Meshes::Plane] = new Mesh(Mesh::createFromDatFile("resources/plane.dat"));
 		meshes[Meshes::Blockside] = new Mesh(Mesh::createFromDatFile("resources/plane.dat"));
 		meshes[Meshes::Arrow] = new Mesh(Mesh::createFromDatFile("resources/arrow.dat"));
-		meshes[Meshes::Cube] = new Mesh(Mesh::createFromDatFile("resources/cube.dat"));
-		meshes[Meshes::Teapot] = new Mesh(Mesh::createFromDatFile("resources/Teapot.dat"));
 		meshes[Meshes::Particle] = new Mesh(Mesh::createFromDatFile("resources/particle.dat"));
 		meshes[Meshes::Skybox] = new Mesh(Mesh::createFromDatFile("resources/skybox.dat"));
 
 		textures[Textures::Metal] = createTextureFromFile("metalDif.jpg");
-		textures[Textures::TextureSpecular] = createTextureFromFile("fieldstone_SM.png");
 		textures[Textures::MetalNormal] = createTextureFromFile("metalNorm.jpg");
 		textures[Textures::MetalHeight] = createTextureFromFile("metalHeight.jpg");
 		textures[Textures::WaterNormal] = createTextureFromFile("water_normal.png");
@@ -42,13 +39,8 @@ namespace Resource {
 		textures[Textures::CobbleNormal] = createTextureFromFile("cobble_normal.png");
 		textures[Textures::CobbleHeight] = createTextureFromFile("cobble_height.png");
 		textures[Textures::CobbleSpecular] = createTextureFromFile("cobble_specular.png");
-		textures[Textures::Cushion] = createTextureFromFile("cushion.jpg");
-		textures[Textures::CushionNormal] = createTextureFromFile("cushion_normal.png");
-		textures[Textures::Wood] = createTextureFromFile("wood1-dif-1024p.tga");
-		textures[Textures::WoodNormal] = createTextureFromFile("wood1-nor-1024p.tga");
-		textures[Textures::WoodSpecular] = createTextureFromFile("wood1-spec-1024p.tga");
 		textures[Textures::AlphaCircle] = createTextureFromFile("alphacircle.png");
-		textures[Textures::Skybox] = new Texture(Texture::loadTextureFromFile("resources/bluecloud.png"));
+		textures[Textures::Skybox] = new Texture(Texture::loadTextureFromFile("resources/bluecloud.jpg"));
 
 		shaderPrograms[ShaderPrograms::Phong] = new SimpleIlluminationModelShaderProgram(
 			SimpleIlluminationModelShaderProgram::createPhong()
@@ -123,28 +115,6 @@ namespace Resource {
 				.setLightVector(sun)
 				.enableLightVectorAsPosition(true)
 			)
-		);
-		shaderPrograms[ShaderPrograms::Cushion] = new NormalMappingProgram(
-			static_cast<NormalMappingProgram &>(
-				NormalMappingProgram::create()
-				.setAmbientRatio(0.6f)
-				.setDiffusionRatio(0.6f)
-				.setSpecularRatio(0.2f)
-				.setShiness(2)
-				.setLightVector(sun)
-				.enableLightVectorAsPosition(true)
-			)
-		);
-		shaderPrograms[ShaderPrograms::Wood] = new NormalMappingProgram(
-			static_cast<NormalMappingProgram &>(
-				NormalMappingProgram::create()
-				.setAmbientRatio(0.4f)
-				.setDiffusionRatio(0.9f)
-				.setSpecularRatio(0.2f)
-				.setShiness(2)
-				.setLightVector(sun)
-				.enableLightVectorAsPosition(true)
-				)
 		);
 	}
 

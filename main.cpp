@@ -27,10 +27,6 @@ std::shared_ptr<AnimationManager> animationManager;
 std::shared_ptr<GameRule> gameRule;
 bool debugMode = false;
 
-float degree2radian(float degree) {
-	return degree / 180.0f * (float)M_PI;
-}
-
 void initCameraVectors() {
 	camera->setTransform(
 		Transform().translatePost({ 0, 0, 10 })
@@ -158,22 +154,18 @@ void onKeyboard(unsigned char ascii, int x, int y) {
 	
 
 	switch (ascii) {
+		/*
 	case '1':
 		camera->setTransform(
 			Transform(camera->getTransform())
 			.rotatePre(Rotation().rotateByEuler({ 0.5f * (prevY - y), 0.5f * (prevX - x), 0 }))
 		);
 		break;
-	/*case 'O':
-	case 'o':
-		camera->setOrthographicProjection();
-		std::cout << "** Enabled Orthographic Projection" << std::endl;
-		break;*/
 	case 'P':
 	case 'p':
 		camera->setPerspectiveProjection();
 		std::cout << "** Enabled Perspective Projection" << std::endl;
-		break;
+		break;*/
 
 	case 'W':
 		movingStep *= 10;
@@ -219,35 +211,40 @@ void onKeyboard(unsigned char ascii, int x, int y) {
 	case 'e':
 		camera->rotate(Rotation().rotateByEuler(Vector3f::yVector() * -rotatingStep));
 		break;
-
+		/*
 	case '.':
 		std::cout << "ViewMat2: " << camera->getTransform().getInvMatrix() << std::endl;
 		std::cout << "ViewMat: " << camera->getViewMatrix() << std::endl;
 		std::cout << "VRP: " << camera->getViewReferencePoint() << std::endl;
 		std::cout << "VPN: " << camera->getViewPlaneNormal() << std::endl;
 		break;
+		*/
 
+	case 'I':
 	case 'i':
 		gameRule->move(Vector2f({ 0, 1 }) * 1);
 		break;
+	case 'K':
 	case 'k':
 		gameRule->move(Vector2f({ 0, 1 }) * -1);
 		break;
+	case 'J':
 	case 'j':
 		gameRule->move(Vector2f({ 1, 0 }) * -1);
 		break;
+	case 'L':
 	case 'l':
 		gameRule->move(Vector2f({ 1, 0 }) * 1);
 		break;
-	case ';':
-		std::cout << rubiksCube->getCursor()->getSelected() << std::endl;
-		break;
+	case 'Z':
 	case 'z':
 		gameRule->twist(true);
 		break;
+	case 'X':
 	case 'x':
 		gameRule->twist(false);
 		break;
+	case 'C':
 	case 'c':
 		gameRule->rotateAxis(true);
 		break;
@@ -255,12 +252,6 @@ void onKeyboard(unsigned char ascii, int x, int y) {
 	case 13:
 		initCameraVectors();
 		std::cout << "** Resetted Camera Position and Rotation" << std::endl;
-		break;
-	case ' ':
-		camera->setTransform(
-			Transform(rubiksCube->getCursor()->getWorldTransform())
-			.translatePre({ 0, 0, 10 })
-		);
 		break;
 	case '`':
 		debugMode = !debugMode;
@@ -276,12 +267,14 @@ void onKeyboard(unsigned char ascii, int x, int y) {
 void onKeyboardUp(unsigned char ascii, int x, int y) {
 	switch(ascii)
 	{
-		case 't':
-			gameRule->resetGame();
-			break;
-		case 'y':
-			gameRule->scramble();
-			break;
+	case 'T':
+	case 't':
+		gameRule->resetGame();
+		break;
+	case 'Y':
+	case 'y':
+		gameRule->scramble();
+		break;
 	}
 }
 
@@ -289,7 +282,7 @@ int main(int argc, char ** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 
-	glutCreateWindow("20121955_HW03");
+	glutCreateWindow("CG 2016 - Team4 - Rubiks Cube");
 	glutDisplayFunc(render);
 	glutIdleFunc(onIdle);
 	glutKeyboardFunc(onKeyboard);

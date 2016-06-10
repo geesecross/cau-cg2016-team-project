@@ -25,7 +25,7 @@ Block::Block() {
 		{ 0.8f, 0.8f, 1.f, 1 },
 		{ 0.8f, 1, 0.8f, 1 },
 		{ 0.20f, 0.75f, 1, 1 },
-		{ 1, 1, 1, 1 }
+		{ 1, 1, 0.8f, 1 }
 	};
 
 	for (std::pair<Vector3f, Vector3f> & position : positions) {

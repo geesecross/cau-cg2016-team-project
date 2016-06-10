@@ -29,12 +29,12 @@ GameRule::GameRule(std::weak_ptr<RubiksCube> rubiksCube, std::weak_ptr<Animation
 	this->rubiksCube.lock()->getCursor()->onCursorMoved.addListener(this->onCursorMovedListener);
 	this->rubiksCube.lock()->getCursor()->onCursorRotated.addListener(this->onCursorRotatedListener);
 	this->gameStarted = false;
-	print("press 'y' to start game");
+	print("Press 'Y' to start game");
 }
 
 void GameRule::resetGame() {
 	rubiksCube.lock()->resetBlocksAndCursor();
-	print("reset");
+	print("Resetted : Press 'Y' to start");
 	this->gameStarted = false;
 	this->blockedInput = false;
 }
@@ -68,7 +68,7 @@ void GameRule::scramble() {
 		previous_rotation_degree = current_rotation_degree;
 	}
 	// game start
-	print("game start");
+	print("Game Start!");
 	this->gameStarted = true;
 }
 
@@ -131,7 +131,7 @@ bool GameRule::judge() {
 }
 
 void GameRule::win() {
-	print("win");
+	print("YOU WIN!");
 	if (this->particleAnimation) {
 		this->particleAnimation->interrupt();
 	}
@@ -158,7 +158,9 @@ bool GameRule::toggleDebugMode()
 	if(this->debugMode)
 	{
 		maxScramble = 1;
+		this->print("Cheat Mode ON");
 	} else {
+		this->print("Cheat Mode OFF");
 		maxScramble = 20;
 	}
 	return this->debugMode;
